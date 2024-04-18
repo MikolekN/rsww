@@ -1,0 +1,5 @@
+com\example\transportation\RabbitMQConfig.class
+com\example\transportation\TransportListener.class
+com\example\transportation\TransportationServiceApplication.class
+com\example\transportation\DTO\ReservePlaneSitRequest.class
+com\example\transportation\Entity\Plane.class
