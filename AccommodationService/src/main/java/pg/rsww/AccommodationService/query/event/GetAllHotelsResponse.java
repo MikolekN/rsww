@@ -14,6 +14,8 @@ import java.util.UUID;
 public class GetAllHotelsResponse {
     @JsonProperty("hotels_list")
     private List<HotelShortModel> hotelsList;
+    @JsonProperty("request_uuid")
+    private UUID requestUuid;
 
     @Builder
     public static class HotelShortModel {

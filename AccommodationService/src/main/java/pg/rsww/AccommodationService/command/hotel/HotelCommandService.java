@@ -11,23 +11,21 @@ import java.util.UUID;
 @Service
 public class HotelCommandService {
     private final HotelEventRepository hotelEventRepository;
-    private final RabbitTemplate rabbitTemplate;
 
     @Autowired
-    public HotelCommandService(HotelEventRepository hotelEventRepository,
-                               RabbitTemplate rabbitTemplate) {
+    public HotelCommandService(HotelEventRepository hotelEventRepository) {
         this.hotelEventRepository = hotelEventRepository;
-        this.rabbitTemplate = rabbitTemplate;
     }
 
-    public void addNewHotel(AddNewHotelCommand addNewHotelCommand) {
+    public HotelAddedEvent addNewHotel(AddNewHotelCommand addNewHotelCommand) {
         HotelAddedEvent hotelAddedEvent = new HotelAddedEvent(
                 UUID.randomUUID(),
                 addNewHotelCommand.getUuid(),
                 addNewHotelCommand.getName(),
                 addNewHotelCommand.getCountry());
         hotelEventRepository.save(hotelAddedEvent);
-        System.out.println(hotelEventRepository.findAll());
-        rabbitTemplate.convertAndSend("hotel-created-queue", hotelAddedEvent);
+        return hotelAddedEvent;
+        //System.out.println(hotelEventRepository.findAll());
+        //rabbitTemplate.convertAndSend("hotel-created-queue", hotelAddedEvent);
     }
 }

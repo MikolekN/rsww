@@ -4,76 +4,62 @@ import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 @Configuration
 public class RabbitMQConfiguration {
-    static final String accommodationQueueName = "accommodation-queue";
     static final String accommodationTopic = "accommodation-topic";
 
-
     @Bean
-    public Queue accommodationQueue() {
-        return new Queue(accommodationQueueName);
+    public Queue hotelCreateQueue(@Value("${spring.rabbitmq.queue.hotelCreateQueue}") String queue) {
+        return new Queue(queue);
     }
     @Bean
-    public Queue hotelCreateQueue() {
-        return new Queue("hotel-create-queue");
+    public Queue hotelCreatedQueue(@Value("${spring.rabbitmq.queue.hotelCreatedQueue}") String queue) {
+        return new Queue(queue);
     }
     @Bean
-    public Queue hotelCreatedQueue() {
-        return new Queue("hotel-created-queue");
+    public Queue roomCreateQueue(@Value("${spring.rabbitmq.queue.roomCreateQueue}") String queue) {
+        return new Queue(queue);
     }
     @Bean
-    public Queue roomCreateQueue() {
-        return new Queue("room-create-queue");
+    public Queue roomCreatedQueue(@Value("${spring.rabbitmq.queue.roomCreatedQueue}") String queue) {
+        return new Queue(queue);
     }
     @Bean
-    public Queue roomCreatedQueue() {
-        return new Queue("room-created-queue");
+    public Queue reservationMakeQueue(@Value("${spring.rabbitmq.queue.reservationMakeQueue}") String queue) {
+        return new Queue(queue);
     }
     @Bean
-    public Queue reservationMakeQueue() {
-        return new Queue("reservation-make-queue");
+    public Queue reservationCancelQueue(@Value("${spring.rabbitmq.queue.reservationCancelQueue}") String queue) {
+        return new Queue(queue);
     }
     @Bean
-    public Queue reservationCancelQueue() {
-        return new Queue("reservation-cancel-queue");
+    public Queue reservationMadeQueue(@Value("${spring.rabbitmq.queue.reservationMadeQueue}") String queue) {
+        return new Queue(queue);
     }
     @Bean
-    public Queue reservationMadeQueue() {
-        return new Queue("reservation-made-queue");
+    public Queue reservationCancelledQueue(@Value("${spring.rabbitmq.queue.reservationCancelledQueue}") String queue) {
+        return new Queue(queue);
     }
     @Bean
-    public Queue reservationCancelledQueue() {
-        return new Queue("reservation-cancelled-queue");
+    public Queue getAllHotelsRequestQueue(@Value("${spring.rabbitmq.queue.hotelAllRequestQueue}") String queue) {
+        return new Queue(queue);
     }
     @Bean
-    public Queue getAllHotelsRequestQueue() {
-        return new Queue("hotel-all-request-queue");
+    public Queue getAllHotelsResponseQueue(@Value("${spring.rabbitmq.queue.hotelAllResponseQueue}") String queue) {
+        return new Queue(queue);
     }
     @Bean
-    public Queue getAllHotelsResponseQueue() {
-        return new Queue("hotel-all-response-queue");
+    public Queue getHotelInfoRequestQueue(@Value("${spring.rabbitmq.queue.hotelInfoRequestQueue}") String queue) {
+        return new Queue(queue);
     }
     @Bean
-    public Queue getHotelInfoRequestQueue() {
-        return new Queue("hotel-info-request-queue");
-    }
-    @Bean
-    public Queue getHotelInfoResponseQueue() {
-        return new Queue("hotel-info-response-queue");
-    }
-    @Bean
-    public Queue accommodationQueue2() {
-        return new Queue("accommodation-queue-2");
-    }
-
-    @Bean
-    public Queue accommodationQueue3() {
-        return new Queue("accommodation-queue-3");
+    public Queue getHotelInfoResponseQueue(@Value("${spring.rabbitmq.queue.hotelInfoResponseQueue}") String queue) {
+        return new Queue(queue);
     }
 
     @Bean

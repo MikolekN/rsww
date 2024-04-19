@@ -41,7 +41,7 @@ public class DataInitialization {
         hotelRepository.save(new Hotel(UUID.randomUUID(), "HOTEL123", "Poland"));
 
         System.out.println(hotelRepository.findAll());
-        rabbitTemplate.convertAndSend("accommodation-topic", "", "Hello, !");
+        //rabbitTemplate.convertAndSend("accommodation-topic", "", "Hello, !");
         rabbitTemplate.setMessageConverter(new Jackson2JsonMessageConverter());
         //rabbitTemplate.convertAndSend("accommodation-queue-2", new HotelAddedEvent(UUID.randomUUID(),"fr", "Polska"));
         rabbitTemplate.convertAndSend("hotel-create-queue", new AddNewHotelCommand(UUID.randomUUID(), "HOTELTEST", "Francja"));

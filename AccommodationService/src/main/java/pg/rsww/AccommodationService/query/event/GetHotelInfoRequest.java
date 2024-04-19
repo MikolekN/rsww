@@ -14,6 +14,9 @@ import java.util.UUID;
 @Getter
 @Setter
 public class GetHotelInfoRequest {
+
+    @JsonProperty("request_uuid")
+    private UUID requestUuid;
     @JsonProperty("hotel_uuid")
     private UUID hotelUuid;
     @JsonProperty("start_date")

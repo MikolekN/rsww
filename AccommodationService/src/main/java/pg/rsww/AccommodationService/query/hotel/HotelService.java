@@ -1,10 +1,8 @@
 package pg.rsww.AccommodationService.query.hotel;
 
-import org.antlr.v4.runtime.tree.Tree;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pg.rsww.AccommodationService.command.entity.RoomAddedEvent;
 import pg.rsww.AccommodationService.query.entity.Hotel;
 import pg.rsww.AccommodationService.command.entity.HotelAddedEvent;
 import pg.rsww.AccommodationService.query.entity.Reservation;
@@ -16,7 +14,6 @@ import pg.rsww.AccommodationService.query.event.GetHotelInfoResponse;
 import pg.rsww.AccommodationService.query.reservation.ReservationRepository;
 import pg.rsww.AccommodationService.query.room.RoomRepository;
 
-import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -25,14 +22,12 @@ public class HotelService {
     private final HotelRepository hotelRepository;
     private final RoomRepository roomRepository;
     private final ReservationRepository reservationRepository;
-    private final RabbitTemplate rabbitTemplate;
 
     @Autowired
-    public HotelService(HotelRepository hotelRepository, RoomRepository roomRepository, ReservationRepository reservationRepository, RabbitTemplate rabbitTemplate) {
+    public HotelService(HotelRepository hotelRepository, RoomRepository roomRepository, ReservationRepository reservationRepository) {
         this.hotelRepository = hotelRepository;
         this.roomRepository = roomRepository;
         this.reservationRepository = reservationRepository;
-        this.rabbitTemplate = rabbitTemplate;
     }
 
     public void addNewHotel(HotelAddedEvent hotelAddedEvent) {
@@ -42,21 +37,8 @@ public class HotelService {
                         .country(hotelAddedEvent.getCountry())
                 .build());
     }
-    public void addNewRoom(RoomAddedEvent roomAddedEvent) {
-       Hotel hotelToUpdate = hotelRepository.findHotelByUuid(roomAddedEvent.getHotelUuid().toString());
-       if (hotelToUpdate == null) {
-           return; // TODO SOME ERROR
-       }
-       hotelToUpdate.getRooms().add(new Room(roomAddedEvent.getRoomUuid().toString(),
-               roomAddedEvent.getNumberOfAdults(),
-               roomAddedEvent.getNumberOfChildren(),
-               roomAddedEvent.getType(),
-               roomAddedEvent.getPrice(),
-               roomAddedEvent.getHotelUuid().toString()));
-       hotelRepository.save(hotelToUpdate);
-    }
-    public void getAllHotels(GetAllHotelsRequest getAllHotelsRequest) {
-        // TODO implement logic
+
+    public GetAllHotelsResponse getAllHotels(GetAllHotelsRequest getAllHotelsRequest) {
         List<Hotel> hotels;
         if (!getAllHotelsRequest.getCountry().isEmpty()) {
             hotels = hotelRepository.findAllByCountry(getAllHotelsRequest.getCountry());
@@ -65,13 +47,10 @@ public class HotelService {
             hotels = hotelRepository.findAll();
         }
         /*
-        TODO
-        TODO use - getAllHotelsRequest.getNumberOfAdults(), getAllHotelsRequest.getNumberOfChildren()
-        TODO to get Hotels that have rooms with this exact capacity
-        TODO use - getAllHotelsRequest.getStartDate(), getAllHotelsRequest.getEndDate()
+        use - getAllHotelsRequest.getNumberOfAdults(), getAllHotelsRequest.getNumberOfChildren()
+        to get Hotels that have rooms with this exact capacity
+        use - getAllHotelsRequest.getStartDate(), getAllHotelsRequest.getEndDate()
              if they are not empty, to filter if any of these rooms are free during this period
-
-             TODO - ITS DONE ????
         * */
 
         // Removing unavailable hotels
@@ -115,18 +94,20 @@ public class HotelService {
                         .name(hotel.getName())
                         .country(hotel.getCountry())
                         .build()).toList())
+                .requestUuid(getAllHotelsRequest.getRequestUuid())
                 .build();
-        rabbitTemplate.convertAndSend("hotel-all-response-queue", response);
-        System.out.println("RESPONSE = " + response);
+        //rabbitTemplate.convertAndSend("hotel-all-response-queue", response);
+        return response;
+        //System.out.println("RESPONSE = " + response);
     }
-    public void getHotelInfo(GetHotelInfoRequest getHotelInfoRequest) {
+    public GetHotelInfoResponse getHotelInfo(GetHotelInfoRequest getHotelInfoRequest) {
         Hotel hotel = hotelRepository.findHotelByUuid(getHotelInfoRequest.getHotelUuid().toString());
         if (hotel == null) {
-            GetHotelInfoResponse response = GetHotelInfoResponse.builder()
+            //rabbitTemplate.convertAndSend("hotel-info-response-queue", response);
+            return GetHotelInfoResponse.builder()
                     .resultFound(false)
+                    .requestUuid(getHotelInfoRequest.getRequestUuid())
                     .build();
-            rabbitTemplate.convertAndSend("hotel-info-response-queue", response);
-            return;
         }
         List<Room> rooms = roomRepository.findAllByHotelUuidAndNumberOfAdultsAndNumberOfChildren(
                 getHotelInfoRequest.getHotelUuid().toString(),
@@ -154,21 +135,22 @@ public class HotelService {
 
         Set<String> roomTypesAvailable = rooms.stream().map(Room::getType).collect(Collectors.toCollection(TreeSet::new));
         if (roomTypesAvailable.isEmpty()) {
-            GetHotelInfoResponse response = GetHotelInfoResponse.builder()
+            //rabbitTemplate.convertAndSend("hotel-info-response-queue", response);
+            return GetHotelInfoResponse.builder()
                     .resultFound(false)
+                    .requestUuid(getHotelInfoRequest.getRequestUuid())
                     .build();
-            rabbitTemplate.convertAndSend("hotel-info-response-queue", response);
-            return;
         }
 
-        GetHotelInfoResponse response = GetHotelInfoResponse.builder()
+        //rabbitTemplate.convertAndSend("hotel-info-response-queue", response);
+        //System.out.println("RESPONSE = " + response);
+        return GetHotelInfoResponse.builder()
                 .resultFound(true)
                 .hotelUuid(UUID.fromString(hotel.getUuid()))
                 .name(hotel.getName())
                 .country(hotel.getCountry())
                 .roomTypes(new ArrayList<>(roomTypesAvailable))
+                .requestUuid(getHotelInfoRequest.getRequestUuid())
                 .build();
-        rabbitTemplate.convertAndSend("hotel-info-response-queue", response);
-        System.out.println("RESPONSE = " + response);
     }
 }

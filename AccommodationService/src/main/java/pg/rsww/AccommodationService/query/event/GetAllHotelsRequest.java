@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @ToString
 @AllArgsConstructor
@@ -14,6 +15,8 @@ import java.time.LocalDate;
 @Setter
 public class GetAllHotelsRequest {
 
+    @JsonProperty("request_uuid")
+    private UUID requestUuid;
     @JsonProperty("country")
     private String country;
     @JsonProperty("start_date")

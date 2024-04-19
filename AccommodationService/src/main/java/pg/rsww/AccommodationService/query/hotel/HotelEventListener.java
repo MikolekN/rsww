@@ -1,5 +1,7 @@
 package pg.rsww.AccommodationService.query.hotel;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.QueueBinding;
@@ -11,16 +13,15 @@ import pg.rsww.AccommodationService.command.entity.HotelAddedEvent;
 @Component
 public class HotelEventListener {
     private final HotelService hotelService;
-
+    private final static Logger log = LoggerFactory.getLogger(HotelEventListener.class);
     @Autowired
     public HotelEventListener(HotelService hotelService) {
         this.hotelService = hotelService;
     }
 
-    @RabbitListener(queues = "hotel-created-queue")
+    @RabbitListener(queues = "${spring.rabbitmq.queue.hotelCreatedQueue}")
     public void HotelAddedEventHandler(HotelAddedEvent hotelAddedEvent) {
-        System.out.println("GOT NEW HOTEL ADDED EVENT");
-        System.out.println(hotelAddedEvent);
+        log.info(String.format("Received HotelAddedEvent %s", hotelAddedEvent));
         hotelService.addNewHotel(hotelAddedEvent);
     }
 }
