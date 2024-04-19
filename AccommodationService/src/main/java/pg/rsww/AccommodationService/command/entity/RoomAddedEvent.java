@@ -22,16 +22,13 @@ public class RoomAddedEvent extends RoomEvent {
     private String type;
     @JsonProperty("price")
     private float price;
-    @JsonProperty("hotel_uuid")
-    private UUID hotelUuid;
 
     public RoomAddedEvent(UUID uuid, UUID roomUuid, int numberOfAdults, int numberOfChildren, String type, float price, UUID hotelUuid) {
-        super(uuid, roomUuid);
+        super(uuid, roomUuid, hotelUuid);
         this.numberOfAdults = numberOfAdults;
         this.numberOfChildren = numberOfChildren;
         this.type = type;
         this.price = price;
-        this.hotelUuid = hotelUuid;
         this.setEventType(1);
     }
 }

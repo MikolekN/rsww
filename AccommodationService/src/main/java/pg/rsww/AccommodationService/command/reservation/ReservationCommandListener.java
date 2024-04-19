@@ -13,6 +13,9 @@ import pg.rsww.AccommodationService.command.entity.command.MakeNewReservationCom
 import pg.rsww.AccommodationService.command.hotel.HotelCommandService;
 import pg.rsww.AccommodationService.query.hotel.HotelEventListener;
 
+import javax.swing.text.html.Option;
+import java.util.Optional;
+
 @Component
 public class ReservationCommandListener {
     private final ReservationCommandService reservationCommandService;
@@ -28,8 +31,8 @@ public class ReservationCommandListener {
     @RabbitListener(queues = "${spring.rabbitmq.queue.reservationMakeQueue}")
     public void MakeNewReservationCommandHandler(MakeNewReservationCommand makeNewReservationCommand) {
         log.info(String.format("Received MakeNewReservationCommand %s", makeNewReservationCommand));
-        ReservationMadeEvent event = reservationCommandService.makeNewReservation(makeNewReservationCommand);
-        reservationEventNotifier.ReservationMadeEventNotify(event);
+        Optional<ReservationMadeEvent> event = reservationCommandService.makeNewReservation(makeNewReservationCommand);
+        event.ifPresent(reservationEventNotifier::ReservationMadeEventNotify);
     }
     @RabbitListener(queues = "${spring.rabbitmq.queue.reservationCancelQueue}")
     public void CancelReservationCommandHandler(CancelReservationCommand cancelReservationCommand) {

@@ -18,10 +18,12 @@ public class RoomEvent extends Event {
     private UUID roomUuid;
     @JsonProperty("event_type")
     private int eventType;
-
-    public RoomEvent(UUID uuid, UUID roomUuid) {
+    @JsonProperty("hotel_uuid")
+    private UUID hotelUuid;
+    public RoomEvent(UUID uuid, UUID roomUuid, UUID hotelUuid) {
         super(uuid, LocalDateTime.now());
         this.roomUuid = roomUuid;
+        this.hotelUuid = hotelUuid;
         this.eventType = 0;
     }
 }

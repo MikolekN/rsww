@@ -3,6 +3,7 @@ package pg.rsww.AccommodationService.command.entity.command;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 @ToString
 @AllArgsConstructor
@@ -12,4 +13,8 @@ import java.util.UUID;
 public class CancelReservationCommand {
     @JsonProperty("uuid")
     private UUID uuid;
+    @JsonProperty("timestamp")
+    private LocalDateTime timeStamp;
+    @JsonProperty("reservation_to_cancel_uuid")
+    private UUID reservationUuid;
 }
