@@ -1,4 +1,4 @@
-package com.rsww.mikolekn.rsww_user;
+package com.rsww.mikolekn.user_ms;
 
 import java.util.HashMap;
 import java.util.Map;

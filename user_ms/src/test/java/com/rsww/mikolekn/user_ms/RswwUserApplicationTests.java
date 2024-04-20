@@ -1,4 +1,4 @@
-package com.rsww.mikolekn.rsww_user;
+package com.rsww.mikolekn.user_ms;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
