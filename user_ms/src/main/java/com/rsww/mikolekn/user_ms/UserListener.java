@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import java.util.Random;
 
 @Component
 public class UserListener {
@@ -20,37 +21,37 @@ public class UserListener {
     @Autowired
     private Queue loginResponseQueue;
 
-//    @RabbitListener(queues = RswwUserApplication.MESSAGE_QUEUE)
-//    public void receiveMessage(UserMessage message) {
-//        logger.info("Received login attempt from {} with password {}.", message.getUsername(), message.getPassword());
-//    }
-
     @RabbitListener(queues = "${spring.rabbitmq.queue.loginRequestQueue}")
     public void receiveMessage(String message) {
-        UserMessage receivedUser = UserMessage.fromJSON(message);
-        logger.info("Received message {}.", message);
+        String requestNumber = "[" + Integer.toHexString(new Random().nextInt(0xFFFF)) + "]";
+        LoginRequest loginRequest = LoginRequest.fromJSON(message);
+        logger.debug("{} Received a message.", requestNumber);
 
-        if (receivedUser != null) {
-            boolean userExists = UserRepository.userExists(receivedUser);
+        if (loginRequest != null) {
+            boolean userExists = UserRepository.userExists(loginRequest);
             if (userExists) {
-                logger.info("User with username '{}' and password '{}' exists.", receivedUser.getUsername(), receivedUser.getPassword());
-                String responseMessage = "User with username '" + receivedUser.getUsername() + "' exists.";
-                rabbitTemplate.convertAndSend(loginResponseQueue.getName(), responseMessage);
+                logger.debug("{} Successful login attempt for username {}.", requestNumber, loginRequest.getUsername());
+                LoginResponse loginResponse = new LoginResponse(loginRequest.getUuid(), true);
+                rabbitTemplate.convertAndSend(loginResponseQueue.getName(), loginResponse.toJSON());
             } else {
-                logger.info("User with username '{}' and password '{}' does not exist.", receivedUser.getUsername(), receivedUser.getPassword());
-                String responseMessage = "User with username '" + receivedUser.getUsername() + "' doesn't exist.";
-                rabbitTemplate.convertAndSend(loginResponseQueue.getName(), responseMessage);
+                logger.debug("{} Unsuccessful login attempt for username {}.", requestNumber, loginRequest.getUsername());
+                LoginResponse loginResponse = new LoginResponse(loginRequest.getUuid(), false);
+                rabbitTemplate.convertAndSend(loginResponseQueue.getName(), loginResponse.toJSON());
             }
         } else {
-            logger.info("Could not deserialize the received message.");
-            String responseMessage = "Error in parsing the received message.";
-            rabbitTemplate.convertAndSend(loginResponseQueue.getName(), responseMessage);
+            logger.debug("{} Could not deserialize the received message.", requestNumber);
         }
     }
 
+    // TEMPORARY - message will be received by API Gateway
     @RabbitListener(queues = "${spring.rabbitmq.queue.loginResponseQueue}")
     public void receiveMessage2(String message) {
-        logger.info("Received message '{}'.", message);
+        String requestNumber = "[" + Integer.toHexString(new Random().nextInt(0xFFFF)) + "]";
+        LoginResponse loginResponse = LoginResponse.fromJSON(message);
+        if (loginResponse != null) {
+            logger.debug("{} Login response received {}, {}.", requestNumber, loginResponse.getUuid(), loginResponse.isResponse());
+        } else {
+            logger.debug("{} Could not deserialize the received message.", requestNumber);
+        }
     }
-
 }
