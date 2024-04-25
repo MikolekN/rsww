@@ -16,7 +16,6 @@ import java.util.UUID;
 public class Flight {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private UUID id;
 
     @Column(name = "departure_airport")

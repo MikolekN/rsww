@@ -3,8 +3,6 @@ package com.example.transportation;
 import com.example.transportation.command.AddFlightCommand;
 import com.example.transportation.Entity.Flight;
 import com.example.transportation.Repository.FlightRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
