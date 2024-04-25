@@ -27,7 +27,7 @@ public class UserRepository {
         return password != null && password.equals(input_password);
     }
 
-    public static boolean userExists(UserMessage input_user) {
+    public static boolean userExists(LoginRequest input_user) {
         String password = users.get(input_user.getUsername());
         return password != null && password.equals(input_user.getPassword());
     }

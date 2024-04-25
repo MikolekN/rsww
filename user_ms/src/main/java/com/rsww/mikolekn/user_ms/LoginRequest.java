@@ -9,15 +9,18 @@ import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.UUID;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserMessage {
+public class LoginRequest {
+    private UUID uuid;
     private String username;
     private String password;
 
-    static Logger logger = LoggerFactory.getLogger(UserMessage.class);
+    static Logger logger = LoggerFactory.getLogger(LoginRequest.class);
 
     public String toJSON() {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -30,13 +33,13 @@ public class UserMessage {
         }
     }
 
-    public static UserMessage fromJSON(String json) {
+    public static LoginRequest fromJSON(String json) {
         json = json.replace('\'', '"');
         json = json.replaceAll("\\s+", "");
 
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            return objectMapper.readValue(json, UserMessage.class);
+            return objectMapper.readValue(json, LoginRequest.class);
         } catch (JsonProcessingException e) {
             logger.info("Error converting from JSON message {}", json);
             logger.error(e.getMessage());
