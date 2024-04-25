@@ -1,0 +1,9 @@
+- MakeReservationCommand      <---- Główne komendy związane z rezerwacją danej oferty
+- CancelReservationCommand
+
+- AddNewHotelCommand <----- (?) Komendy do modyfikacji dostępnej oferty na stronie
+- RemoveHotelCommand
+- UpdateHotelCommand
+- AddNewRoomCommand
+- RemoveRoomCommand
+- UpdateRoomCommand
