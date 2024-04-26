@@ -1,4 +1,4 @@
-package com.rsww.mikolekn.user_ms;
+package com.rsww.mikolekn.UserService;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
