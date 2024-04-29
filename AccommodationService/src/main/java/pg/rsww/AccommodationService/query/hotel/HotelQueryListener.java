@@ -14,6 +14,7 @@ import pg.rsww.AccommodationService.command.entity.HotelAddedEvent;
 import pg.rsww.AccommodationService.query.event.GetAllHotelsRequest;
 import pg.rsww.AccommodationService.query.event.GetAllHotelsResponse;
 import pg.rsww.AccommodationService.query.event.GetHotelInfoRequest;
+import pg.rsww.AccommodationService.query.event.GetHotelInfoResponse;
 
 @Component
 public class HotelQueryListener {
@@ -26,16 +27,16 @@ public class HotelQueryListener {
     }
 
     @RabbitListener(queues = "${spring.rabbitmq.queue.hotelAllRequestQueue}")
-    @SendTo("#{environment['spring.rabbitmq.queue.hotelAllResponseQueue']}")
+    //@SendTo("#{environment['spring.rabbitmq.queue.hotelAllResponseQueue']}")
     public GetAllHotelsResponse GetAllHotelsHandler(GetAllHotelsRequest getAllHotelsRequest) {
         log.info(String.format("Received GetAllHotelsRequest %s", getAllHotelsRequest));
         return hotelService.getAllHotels(getAllHotelsRequest);
     }
     @RabbitListener(queues = "${spring.rabbitmq.queue.hotelInfoRequestQueue}")
-    @SendTo("#{environment['spring.rabbitmq.queue.hotelInfoResponseQueue']}")
-    public void GetHotelInfoHandler(GetHotelInfoRequest getHotelInfoRequest) {
+    //@SendTo("#{environment['spring.rabbitmq.queue.hotelInfoResponseQueue']}")
+    public GetHotelInfoResponse GetHotelInfoHandler(GetHotelInfoRequest getHotelInfoRequest) {
         log.info(String.format("Received GetHotelInfoRequest %s", getHotelInfoRequest));
-        hotelService.getHotelInfo(getHotelInfoRequest);
+        return hotelService.getHotelInfo(getHotelInfoRequest);
     }
 
 }

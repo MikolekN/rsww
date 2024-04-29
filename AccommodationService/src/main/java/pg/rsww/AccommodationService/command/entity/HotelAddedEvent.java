@@ -30,4 +30,5 @@ public class HotelAddedEvent extends HotelEvent {
         this.country = country;
         this.setEventType(1);
     }
+
 }

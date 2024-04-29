@@ -41,6 +41,8 @@ public class AccommodationServiceApplication implements CommandLineRunner {
 		rabbitTemplate.convertAndSend("hotel-create-queue", new AddNewHotelCommand(testAddedHotelUuid, "HOTELTEST", "Francja"));
 		x = myObj.nextLine();
 		rabbitTemplate.convertAndSend("room-create-queue", new AddNewRoomCommand(UUID.randomUUID(), 1, 2, "type1", 240.5F, testAddedHotelUuid));
+		rabbitTemplate.convertAndSend("room-create-queue", new AddNewRoomCommand(UUID.randomUUID(), 1, 2, "type2", 280.5F, testAddedHotelUuid));
+
 		x = myObj.nextLine();
 		UUID reservationToCancelUuid = UUID.randomUUID();
 		rabbitTemplate.convertAndSend("reservation-make-queue", new MakeNewReservationCommand(reservationToCancelUuid, LocalDateTime.now(), LocalDate.now(), LocalDate.now(), "type1", 1, 2, testAddedHotelUuid));

@@ -1,20 +1,24 @@
-package pg.rsww.AccommodationService.query.event;
+package pg.rsww.OfferService.query.offer;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDate;
 import java.util.UUID;
 
 @ToString
 @AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
-public class GetAllHotelsRequest {
+public class GetOfferInfoRequest {
 
     @JsonProperty("request_uuid")
     private UUID requestUuid;
+    @JsonProperty("hotel_uuid")
+    private UUID hotelUuid;
     @JsonProperty("country")
     private String country;
     @JsonProperty("start_date")
@@ -25,4 +29,5 @@ public class GetAllHotelsRequest {
     private int numberOfAdults;
     @JsonProperty("number_of_children")
     private int numberOfChildren;
+    // TODO - maybe add 'private String whereFrom'
 }

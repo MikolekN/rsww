@@ -1,4 +1,4 @@
-package pg.rsww.AccommodationService.query.event;
+package pg.rsww.OfferService.query.accommodation;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
