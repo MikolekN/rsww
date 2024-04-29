@@ -33,33 +33,37 @@ public class Flight {
     @Column(name = "travel_time")
     private int travelTime;
 
-    @Column(name = "places_count")
-    private int placesCount;
+    @Column(name = "sits_count")
+    private int sitsCount;
 
-    @Column(name = "places_occupied")
-    private int placesOccupied;
+    @Column(name = "sits_occupied")
+    private int sitsOccupied;
 
     private int price;
 
     public Flight(String departureAirport, String arrivalAirport,
                   String departureDate, String arrivalDate,
-                  int travelTime, int placesCount, int price) {
+                  int travelTime, int sitsCount, int price) {
         this.id = UUID.randomUUID();
         this.departureAirport = departureAirport;
         this.arrivalAirport = arrivalAirport;
         this.departureDate = departureDate;
         this.arrivalDate = arrivalDate;
         this.travelTime = travelTime;
-        this.placesCount = placesCount;
-        this.placesOccupied = 0;
+        this.sitsCount = sitsCount;
+        this.sitsOccupied = 0;
         this.price = price;
     }
 
     public void reservePlaces(int places) {
-        this.placesOccupied += places;
+        this.sitsOccupied += places;
     }
 
     public void updatePrice(int price) {
         this.price = price;
+    }
+
+    public boolean hasAvailableSits(int sitsNumber) {
+        return sitsNumber <= (sitsCount - sitsOccupied);
     }
 }

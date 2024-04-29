@@ -13,12 +13,12 @@ public class AddFlightCommand {
     private String departureDate;
     private String arrivalDate;
     private int travelTime;
-    private int placesCount;
+    private int sitsCount;
     private int price;
 
     public static Flight commandToEntityMapper(AddFlightCommand command) {
         return new Flight(command.getDepartureAirport(), command.getArrivalAirport(),
                 command.getDepartureDate(), command.getArrivalDate(),
-                command.getTravelTime(), command.getPlacesCount(), command.getPrice());
+                command.getTravelTime(), command.getSitsCount(), command.getPrice());
     }
 }
