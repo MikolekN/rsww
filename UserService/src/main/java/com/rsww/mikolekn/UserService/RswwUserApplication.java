@@ -1,4 +1,4 @@
-package com.rsww.mikolekn.user_ms;
+package com.rsww.mikolekn.UserService;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
