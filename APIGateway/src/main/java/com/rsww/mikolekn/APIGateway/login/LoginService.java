@@ -37,7 +37,11 @@ public class LoginService {
                 new LoginRequest(uuid, loginDto.username(), loginDto.password()).toJSON()));
         logger.info("{} Received a response: {}", requestNumber, loginResponse);
         if (loginResponse != null) {
-            return new ResponseEntity<>(loginResponse.isResponse(), HttpStatus.UNAUTHORIZED);
+            if (loginResponse.isResponse()) {
+                return new ResponseEntity<>(true, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(false, HttpStatus.UNAUTHORIZED);
+            }
         } else {
             return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
         }
