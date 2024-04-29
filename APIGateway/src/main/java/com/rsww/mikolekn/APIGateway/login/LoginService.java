@@ -2,7 +2,9 @@ package com.rsww.mikolekn.APIGateway.login;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,13 +17,13 @@ import java.util.UUID;
 @Service
 public class LoginService {
     private final RabbitTemplate rabbitTemplate;
-    private final Queue loginRequestQueue;
     static Logger logger = LoggerFactory.getLogger(LoginService.class);
+    private final DirectExchange exchange;
 
     @Autowired
-    LoginService(RabbitTemplate rabbitTemplate, Queue loginRequestQueue) {
+    LoginService(RabbitTemplate rabbitTemplate, DirectExchange exchange) {
         this.rabbitTemplate = rabbitTemplate;
-        this.loginRequestQueue = loginRequestQueue;
+        this.exchange = exchange;
     }
 
     ResponseEntity<Boolean> login(LoginDto loginDto) {
@@ -29,16 +31,15 @@ public class LoginService {
         UUID uuid = UUID.randomUUID();
         logger.info("{} Started a request with uuid: {}", requestNumber, uuid);
 
-        LoginResponse loginResponse = (LoginResponse) rabbitTemplate.convertSendAndReceive(
-                loginRequestQueue.getName(),
-                new LoginRequest(uuid, loginDto.username(), loginDto.password()).toJSON());
+        LoginResponse loginResponse = LoginResponse.fromJSON( (String) rabbitTemplate.convertSendAndReceive(
+                exchange.getName(),
+                "request",
+                new LoginRequest(uuid, loginDto.username(), loginDto.password()).toJSON()));
         logger.info("{} Received a response: {}", requestNumber, loginResponse);
-
-        logger.info("{} Finished a request with uuid: {}", requestNumber, uuid);
         if (loginResponse != null) {
-            return new ResponseEntity<>(loginResponse.isResponse(), HttpStatus.OK);
+            return new ResponseEntity<>(loginResponse.isResponse(), HttpStatus.UNAUTHORIZED);
         } else {
-            return new ResponseEntity<>(false, HttpStatus.OK);
+            return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

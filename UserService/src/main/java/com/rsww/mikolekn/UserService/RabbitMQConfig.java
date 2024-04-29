@@ -1,5 +1,8 @@
 package com.rsww.mikolekn.UserService;
 
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -11,19 +14,21 @@ public class RabbitMQConfig {
     @Value("${spring.rabbitmq.queue.loginTopic}")
     private String loginTopic;
 
-    @Value("${spring.rabbitmq.queue.loginRequestQueue}")
-    private String loginRequestQueue;
-
-    @Value("${spring.rabbitmq.queue.loginResponseQueue}")
-    private String loginResponseQueue;
+    @Value("${spring.rabbitmq.queue.loginQueue}")
+    private String loginQueue;
 
     @Bean
     public Queue loginRequestQueue() {
-        return new Queue(loginRequestQueue);
+        return new Queue(loginQueue);
     }
 
     @Bean
-    public Queue loginResponseQueue() {
-        return new Queue(loginResponseQueue);
+    public DirectExchange exchange() {
+        return new DirectExchange(loginTopic);
+    }
+
+    @Bean
+    public Binding binding(DirectExchange exchange, Queue queue) {
+        return BindingBuilder.bind(queue).to(exchange).with("request");
     }
 }

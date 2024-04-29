@@ -2,11 +2,7 @@ package com.rsww.mikolekn.UserService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.Random;
@@ -15,14 +11,8 @@ import java.util.Random;
 public class UserListener {
     static Logger logger = LoggerFactory.getLogger(UserListener.class);
 
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
-    @Qualifier("loginResponseQueue")
-    @Autowired
-    private Queue loginResponseQueue;
-
-    @RabbitListener(queues = "${spring.rabbitmq.queue.loginRequestQueue}")
-    public void receiveMessage(String message) {
+    @RabbitListener(queues = "${spring.rabbitmq.queue.loginQueue}")
+    public String receiveMessage(String message) {
         String requestNumber = "[" + Integer.toHexString(new Random().nextInt(0xFFFF)) + "]";
         LoginRequest loginRequest = LoginRequest.fromJSON(message);
         logger.info("{} Received a message.", requestNumber);
@@ -31,15 +21,14 @@ public class UserListener {
             boolean userExists = UserRepository.userExists(loginRequest);
             if (userExists) {
                 logger.info("{} Successful login attempt for username {}.", requestNumber, loginRequest.getUsername());
-                LoginResponse loginResponse = new LoginResponse(loginRequest.getUuid(), true);
-                rabbitTemplate.convertAndSend(loginResponseQueue.getName(), loginResponse.toJSON());
+                return new LoginResponse(loginRequest.getUuid(), true).toJSON();
             } else {
                 logger.info("{} Unsuccessful login attempt for username {}.", requestNumber, loginRequest.getUsername());
-                LoginResponse loginResponse = new LoginResponse(loginRequest.getUuid(), false);
-                rabbitTemplate.convertAndSend(loginResponseQueue.getName(), loginResponse.toJSON());
+                return new LoginResponse(loginRequest.getUuid(), false).toJSON();
             }
         } else {
             logger.info("{} Could not deserialize the received message.", requestNumber);
+            return new LoginResponse(null, false).toJSON();
         }
     }
 }

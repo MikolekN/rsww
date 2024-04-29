@@ -7,9 +7,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-public class RswwUserApplication {
+public class UserServiceApplication {
 	public static void main(String[] args) {
-		SpringApplication.run(RswwUserApplication.class, args);
+		SpringApplication.run(UserServiceApplication.class, args);
 	}
-
 }
