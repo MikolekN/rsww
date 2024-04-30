@@ -5,10 +5,13 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
     <div class="navbar-nav">
-      <a class="nav-item nav-link active" href="#">Home</a>
-      <a class="nav-item nav-link" href="/login">Log In</a>
-      <a class="nav-item nav-link" href="#">Pricing</a>
-      <a class="nav-item nav-link disabled" href="#">Disabled</a>
+      <a class="nav-item nav-link" href="#">Home</a>
+      <a *ngIf="!isUserLoggedIn(); else logOut" class="nav-item nav-link" href="/login">Log in</a>
+      <ng-template #logOut>
+        <a class="nav-item nav-link active" href="/logout">Log out</a>
+      </ng-template>
+
+      <a class="nav-item nav-link" href="/offers">Offers</a>
     </div>
   </div>
 </nav>
