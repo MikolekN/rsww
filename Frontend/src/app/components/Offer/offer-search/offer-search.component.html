@@ -1,1 +1,10 @@
-<p>offer-search works!</p>
+<mat-form-field appearance="fill">
+  <mat-label>Search offers</mat-label>
+  <input matInput type="text" [(ngModel)]="searchTerm" (input)="search()">
+  <button mat-button *ngIf="searchTerm" matSuffix aria-label="Clear" (click)="clearSearch()">
+    <mat-icon>close</mat-icon>
+  </button>
+  <button mat-button matSuffix aria-label="Search offers">
+    <mat-icon>search</mat-icon>
+  </button>
+</mat-form-field>
