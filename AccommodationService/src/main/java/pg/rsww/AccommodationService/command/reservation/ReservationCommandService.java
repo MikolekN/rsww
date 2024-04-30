@@ -61,7 +61,9 @@ public class ReservationCommandService {
                     // checking if any of previous reservations overlaps with this reservation
                     for (ReservationMadeEvent reservationMadeEvent: reservationEvents) {
                         if ((!(makeNewReservationCommand.getStartDate().isBefore(reservationMadeEvent.getStartDate()) || makeNewReservationCommand.getStartDate().isAfter(reservationMadeEvent.getEndDate())))
-                                || (!(makeNewReservationCommand.getEndDate().isBefore(reservationMadeEvent.getStartDate()) || makeNewReservationCommand.getEndDate().isAfter(reservationMadeEvent.getEndDate())))) {
+                                || (!(makeNewReservationCommand.getEndDate().isBefore(reservationMadeEvent.getStartDate()) || makeNewReservationCommand.getEndDate().isAfter(reservationMadeEvent.getEndDate())))
+                                || (!(reservationMadeEvent.getStartDate().isBefore(makeNewReservationCommand.getStartDate()) || reservationMadeEvent.getStartDate().isAfter(makeNewReservationCommand.getEndDate())))
+                                || (!(reservationMadeEvent.getEndDate().isBefore(makeNewReservationCommand.getStartDate()) || reservationMadeEvent.getEndDate().isAfter(makeNewReservationCommand.getEndDate())))) {
                             // checking if overlapping reservation was cancelled
                             List<ReservationEvent> overlappingReservationEvents = reservationEventRepository.findAllByReservationUuid(reservationMadeEvent.getReservationUuid());
                             boolean isCancelled = false;

@@ -78,6 +78,12 @@ public class HotelService {
                             else if (!(getAllHotelsRequest.getEndDate().isBefore(reservation.getStartDate()) || getAllHotelsRequest.getEndDate().isAfter(reservation.getEndDate()))) {
                                 return false;
                             }
+                            else if (!(reservation.getStartDate().isBefore(getAllHotelsRequest.getStartDate()) || reservation.getStartDate().isAfter(getAllHotelsRequest.getEndDate()))) {
+                                return false;
+                            }
+                            else if (!(reservation.getEndDate().isBefore(getAllHotelsRequest.getStartDate()) || reservation.getEndDate().isAfter(getAllHotelsRequest.getEndDate()))) {
+                                return false;
+                            }
                         }
                         return true;
                     }
@@ -126,6 +132,12 @@ public class HotelService {
                         return false;
                     }
                     else if (!(getHotelInfoRequest.getEndDate().isBefore(reservation.getStartDate()) || getHotelInfoRequest.getEndDate().isAfter(reservation.getEndDate()))) {
+                        return false;
+                    }
+                    else if (!(reservation.getStartDate().isBefore(getHotelInfoRequest.getStartDate()) || reservation.getStartDate().isAfter(getHotelInfoRequest.getEndDate()))) {
+                        return false;
+                    }
+                    else if (!(reservation.getEndDate().isBefore(getHotelInfoRequest.getStartDate()) || reservation.getEndDate().isAfter(getHotelInfoRequest.getEndDate()))) {
                         return false;
                     }
                 }
