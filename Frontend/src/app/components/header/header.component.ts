@@ -20,4 +20,11 @@ export class HeaderComponent {
   public isUserLoggedIn(): boolean {
     return this.authService.isLoggedIn()
   }
+
+  public logOutUser(): void {
+    if (this.isUserLoggedIn()) {
+      console.log("Logout")
+      this.authService.logOut()
+    }
+  }
 }

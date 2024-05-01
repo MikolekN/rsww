@@ -4,6 +4,8 @@ import {MatCard, MatCardContent, MatCardHeader} from "@angular/material/card";
 import {MatFormField} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
 import {MatButton} from "@angular/material/button";
+import {AuthService} from "../../service/auth.service";
+import {LoginRequest} from "../../DTO/loginRequest";
 
 @Component({
   selector: 'app-login-form',
@@ -15,14 +17,19 @@ import {MatButton} from "@angular/material/button";
 export class LoginFormComponent {
   loginForm: FormGroup;
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(private formBuilder: FormBuilder,
+              private authService: AuthService) {
     this.loginForm = this.formBuilder.group({
-      email: ['', [Validators.required, Validators.email]],
+      username: ['', [Validators.required]],
       password: ['', Validators.required],
     });
   }
 
   public login(): void {
-
+    let request : LoginRequest = {
+      username: this.loginForm.value.username,
+      password: this.loginForm.value.password
+    }
+    this.authService.logIn(request)
   }
 }

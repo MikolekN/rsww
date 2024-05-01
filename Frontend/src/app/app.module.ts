@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {NgbModule} from "@ng-bootstrap/ng-bootstrap";
 import { MatFormFieldModule } from '@angular/material/form-field';
+import {HttpClientModule} from "@angular/common/http";
 
 @NgModule({
   declarations: [
@@ -9,8 +10,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
   imports: [
     CommonModule,
     NgbModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    HttpClientModule,
   ],
+  providers: []
 })
 export class AppModule {
 
