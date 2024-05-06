@@ -1,14 +1,14 @@
-package com.rsww.lydka.paymentms.payment.response;
+package com.rsww.lydka.paymentservice.payment.response;
 
 import lombok.Builder;
 import lombok.Getter;
 
 @Builder
 @Getter
-public class PaymentReqeust {
+public class PaymentRequest {
     private String message;
 
-    public PaymentReqeust(String message) {
+    public PaymentRequest(String message) {
         this.message = message;
     }
 }

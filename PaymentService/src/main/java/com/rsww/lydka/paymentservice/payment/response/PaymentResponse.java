@@ -1,4 +1,4 @@
-package com.rsww.lydka.paymentms.payment.response;
+package com.rsww.lydka.paymentservice.payment.response;
 
 import lombok.Builder;
 import lombok.Getter;
