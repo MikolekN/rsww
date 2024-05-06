@@ -35,7 +35,7 @@ public class PaymentService {
 
         PaymentResponse paymentResponse = rabbitTemplate.convertSendAndReceiveAsType(
                 paymentQueue.getName(),
-                new PaymentRequest(uuid, paymentDto.paymentId()).toString(),
+                new PaymentRequest(uuid, paymentDto.paymentId()),
                 new ParameterizedTypeReference<>() {});
         logger.info("{} Received a payment response: {}", requestNumber, paymentResponse);
 
