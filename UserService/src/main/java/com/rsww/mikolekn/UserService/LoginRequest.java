@@ -1,54 +1,26 @@
 package com.rsww.mikolekn.UserService;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
 
-@Data
-@NoArgsConstructor
+@ToString
 @AllArgsConstructor
-@Builder
+@NoArgsConstructor
+@Getter
+@Setter
 public class LoginRequest {
+    @JsonProperty("uuid")
     private UUID uuid;
+
+    @JsonProperty("username")
     private String username;
+
+    @JsonProperty("password")
     private String password;
-
-    static Logger logger = LoggerFactory.getLogger(LoginRequest.class);
-
-    public String toJSON() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            return objectMapper.writeValueAsString(this);
-        } catch (JsonProcessingException e) {
-            logger.info("Error converting to JSON object {} with username: {}, and password: {}", this.hashCode(), this.username, this.password);
-            logger.error(e.getMessage());
-            return null;
-        }
-    }
-
-    public static LoginRequest fromJSON(String json) {
-        json = json.replace('\'', '"');
-        json = json.replaceAll("\\s+", "");
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            return objectMapper.readValue(json, LoginRequest.class);
-        } catch (JsonProcessingException e) {
-            logger.info("Error converting from JSON message {}", json);
-            logger.error(e.getMessage());
-            return null;
-        }
-    }
-
-    @Override
-    public String toString() {
-        return toJSON();
-    }
 }

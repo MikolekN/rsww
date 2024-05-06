@@ -1,11 +1,7 @@
-package com.rsww.mikolekn.UserService;
+package com.rsww.mikolekn.APIGateway.utils;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
 
@@ -14,7 +10,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Setter
-public class LoginResponse {
+public abstract class AbstractResponse {
     @JsonProperty("uuid")
     private UUID uuid;
 

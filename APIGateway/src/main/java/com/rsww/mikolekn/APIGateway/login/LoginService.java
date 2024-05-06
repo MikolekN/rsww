@@ -7,6 +7,7 @@ import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -14,36 +15,30 @@ import org.springframework.stereotype.Service;
 import java.util.Random;
 import java.util.UUID;
 
+import static com.rsww.mikolekn.APIGateway.utils.RequestUtils.prepareResponse;
+
 @Service
 public class LoginService {
     private final RabbitTemplate rabbitTemplate;
     static Logger logger = LoggerFactory.getLogger(LoginService.class);
-    private final DirectExchange exchange;
+    private final Queue loginQueue;
 
     @Autowired
-    LoginService(RabbitTemplate rabbitTemplate, DirectExchange exchange) {
+    LoginService(RabbitTemplate rabbitTemplate, Queue loginQueue) {
         this.rabbitTemplate = rabbitTemplate;
-        this.exchange = exchange;
+        this.loginQueue = loginQueue;
     }
 
     ResponseEntity<Boolean> login(LoginDto loginDto) {
         String requestNumber = "[" + Integer.toHexString(new Random().nextInt(0xFFFF)) + "]";
         UUID uuid = UUID.randomUUID();
-        logger.info("{} Started a request with uuid: {}", requestNumber, uuid);
+        logger.info("{} Started a login request with uuid: {}", requestNumber, uuid);
 
-        LoginResponse loginResponse = LoginResponse.fromJSON( (String) rabbitTemplate.convertSendAndReceive(
-                exchange.getName(),
-                "request",
-                new LoginRequest(uuid, loginDto.username(), loginDto.password()).toJSON()));
-        logger.info("{} Received a response: {}", requestNumber, loginResponse);
-        if (loginResponse != null) {
-            if (loginResponse.isResponse()) {
-                return new ResponseEntity<>(true, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(false, HttpStatus.UNAUTHORIZED);
-            }
-        } else {
-            return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        LoginResponse loginResponse = rabbitTemplate.convertSendAndReceiveAsType(
+                loginQueue.getName(),
+                new LoginRequest(uuid, loginDto.username(), loginDto.password()),
+                new ParameterizedTypeReference<>() {});
+        logger.info("{} Received a login response: {}", requestNumber, loginResponse != null && loginResponse.isResponse());
+        return prepareResponse(loginResponse);
     }
 }
