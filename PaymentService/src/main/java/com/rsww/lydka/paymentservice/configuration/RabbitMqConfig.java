@@ -1,4 +1,4 @@
-package com.rsww.lydka.paymentms.configuration;
+package com.rsww.lydka.paymentservice.configuration;
 
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.context.annotation.Configuration;
