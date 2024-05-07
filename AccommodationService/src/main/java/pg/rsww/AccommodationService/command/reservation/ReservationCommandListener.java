@@ -42,6 +42,7 @@ public class ReservationCommandListener {
         }
         return response;
     }
+
     @RabbitListener(queues = "${spring.rabbitmq.queue.reservationCancelQueue}")
     public ReservationCancelledEvent CancelReservationCommandHandler(CancelReservationCommand cancelReservationCommand) {
         log.info(String.format("Received CancelReservationCommand %s", cancelReservationCommand));
