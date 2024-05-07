@@ -10,6 +10,7 @@ import pg.rsww.AccommodationService.command.entity.command.AddNewHotelCommand;
 import pg.rsww.AccommodationService.command.entity.command.AddNewRoomCommand;
 import pg.rsww.AccommodationService.command.entity.command.CancelReservationCommand;
 import pg.rsww.AccommodationService.command.entity.command.MakeNewReservationCommand;
+import pg.rsww.AccommodationService.command.entity.response.MakeNewReservationResponse;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -45,14 +46,22 @@ public class AccommodationServiceApplication implements CommandLineRunner {
 
 		x = myObj.nextLine();
 		UUID reservationToCancelUuid = UUID.randomUUID();
-		rabbitTemplate.convertAndSend("reservation-make-queue", new MakeNewReservationCommand(reservationToCancelUuid, LocalDateTime.now(), LocalDate.now(), LocalDate.now(), "type1", 1, 2, testAddedHotelUuid));
+		MakeNewReservationResponse r = (MakeNewReservationResponse) rabbitTemplate.convertSendAndReceive("reservation-make-queue", new MakeNewReservationCommand(reservationToCancelUuid, LocalDateTime.now(), LocalDate.now(), LocalDate.now(), "type1", 1, 2, testAddedHotelUuid));
+		System.out.println(r);
 		x = myObj.nextLine();
 		// Cancelling reservation
-		rabbitTemplate.convertAndSend("reservation-cancel-queue", new CancelReservationCommand(UUID.randomUUID(), LocalDateTime.now(), reservationToCancelUuid));
+		rabbitTemplate.convertSendAndReceive("reservation-cancel-queue", new CancelReservationCommand(UUID.randomUUID(), LocalDateTime.now(), reservationToCancelUuid));
 		x = myObj.nextLine();
 		//
-		rabbitTemplate.convertAndSend("reservation-make-queue", new MakeNewReservationCommand(UUID.randomUUID(), LocalDateTime.now(), LocalDate.now(), LocalDate.now(), "type1", 1, 2, testAddedHotelUuid));
+		rabbitTemplate.convertSendAndReceive("reservation-make-queue", new MakeNewReservationCommand(UUID.randomUUID(), LocalDateTime.now(), LocalDate.now(), LocalDate.now(), "type1", 1, 2, testAddedHotelUuid));
 		x = myObj.nextLine();
-		rabbitTemplate.convertAndSend("reservation-make-queue", new MakeNewReservationCommand(UUID.randomUUID(), LocalDateTime.now(), LocalDate.of(2000,1,1), LocalDate.of(2000,1,10), "type1", 1, 2, testAddedHotelUuid));
+		rabbitTemplate.convertSendAndReceive("reservation-make-queue", new MakeNewReservationCommand(UUID.randomUUID(), LocalDateTime.now(), LocalDate.of(2000,1,1), LocalDate.of(2000,1,10), "type1", 1, 2, testAddedHotelUuid));
+		x = myObj.nextLine();
+		MakeNewReservationResponse r2 = (MakeNewReservationResponse) rabbitTemplate.convertSendAndReceive("reservation-make-queue", new MakeNewReservationCommand(UUID.randomUUID(), LocalDateTime.now(), LocalDate.of(2000,1,1), LocalDate.of(2000,1,10), "type1", 1, 2, testAddedHotelUuid));
+		System.out.println(r2);
+		x = myObj.nextLine();
+		MakeNewReservationResponse r3 = (MakeNewReservationResponse) rabbitTemplate.convertSendAndReceive("reservation-make-queue", new MakeNewReservationCommand(UUID.randomUUID(), LocalDateTime.now(), LocalDate.of(2000,1,1), LocalDate.of(2000,1,10), "type1", 1, 2, testAddedHotelUuid));
+		System.out.println(r3);
+
 	}
 }

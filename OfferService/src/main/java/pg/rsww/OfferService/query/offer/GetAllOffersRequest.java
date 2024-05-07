@@ -27,5 +27,5 @@ public class GetAllOffersRequest {
     private int numberOfAdults;
     @JsonProperty("number_of_children")
     private int numberOfChildren;
-    // TODO - maybe add 'private String whereFrom'
+    // TODO - maybe add 'private String whereFrom' <- transportation service
 }

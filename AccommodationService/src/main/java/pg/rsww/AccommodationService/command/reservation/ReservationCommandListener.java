@@ -10,6 +10,7 @@ import pg.rsww.AccommodationService.command.entity.ReservationMadeEvent;
 import pg.rsww.AccommodationService.command.entity.command.AddNewHotelCommand;
 import pg.rsww.AccommodationService.command.entity.command.CancelReservationCommand;
 import pg.rsww.AccommodationService.command.entity.command.MakeNewReservationCommand;
+import pg.rsww.AccommodationService.command.entity.response.MakeNewReservationResponse;
 import pg.rsww.AccommodationService.command.hotel.HotelCommandService;
 import pg.rsww.AccommodationService.query.hotel.HotelEventListener;
 
@@ -29,15 +30,23 @@ public class ReservationCommandListener {
     }
 
     @RabbitListener(queues = "${spring.rabbitmq.queue.reservationMakeQueue}")
-    public void MakeNewReservationCommandHandler(MakeNewReservationCommand makeNewReservationCommand) {
+    public MakeNewReservationResponse MakeNewReservationCommandHandler(MakeNewReservationCommand makeNewReservationCommand) {
         log.info(String.format("Received MakeNewReservationCommand %s", makeNewReservationCommand));
         Optional<ReservationMadeEvent> event = reservationCommandService.makeNewReservation(makeNewReservationCommand);
-        event.ifPresent(reservationEventNotifier::ReservationMadeEventNotify);
+        //event.ifPresent(reservationEventNotifier::ReservationMadeEventNotify);
+        MakeNewReservationResponse response = new MakeNewReservationResponse(false, null);
+        if(event.isPresent()) {
+            reservationEventNotifier.ReservationMadeEventNotify(event.get());
+            response.setReservationMadeEvent(event.get());
+            response.setSuccessful(true);
+        }
+        return response;
     }
     @RabbitListener(queues = "${spring.rabbitmq.queue.reservationCancelQueue}")
-    public void CancelReservationCommandHandler(CancelReservationCommand cancelReservationCommand) {
+    public ReservationCancelledEvent CancelReservationCommandHandler(CancelReservationCommand cancelReservationCommand) {
         log.info(String.format("Received CancelReservationCommand %s", cancelReservationCommand));
-        ReservationCancelledEvent event =reservationCommandService.cancelReservation(cancelReservationCommand);
+        ReservationCancelledEvent event = reservationCommandService.cancelReservation(cancelReservationCommand);
         reservationEventNotifier.ReservationCancelledEventNotify(event);
+        return event;
     }
 }

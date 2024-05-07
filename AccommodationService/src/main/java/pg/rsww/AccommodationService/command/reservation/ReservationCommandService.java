@@ -10,6 +10,7 @@ import pg.rsww.AccommodationService.command.hotel.HotelEventRepository;
 import pg.rsww.AccommodationService.command.room.RoomEventRepository;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -50,7 +51,8 @@ public class ReservationCommandService {
                 if (((RoomAddedEvent) roomEvent).getNumberOfAdults()
                         == makeNewReservationCommand.getNumberOfAdults()
                         && ((RoomAddedEvent) roomEvent).getNumberOfChildren()
-                        == makeNewReservationCommand.getNumberOfChildren()) {
+                        == makeNewReservationCommand.getNumberOfChildren()
+                        && Objects.equals(((RoomAddedEvent) roomEvent).getType(), makeNewReservationCommand.getRoomType())) {
                     // checking if the suitable room is not reserved already
                     List<ReservationMadeEvent> reservationEvents = reservationEventRepository.findAllByRoom(roomUuid);
                     if (reservationEvents.isEmpty()) {
@@ -90,10 +92,6 @@ public class ReservationCommandService {
             return Optional.empty();
         }
 
-        // FIXME GET REAL IDS OF HOTEL AND ROOM
-        // TODO - LOGIC OF MAKING RESERVATION - CHECKING WHICH ROOM FROM HOTEL IS GOOD BASED ON CHOSEN TYPE
-        // TODO - find if any room is free based on Hotel, RoomType,
-        // TODO - and StartDate, EndDate and list of Uncancelled reservations
         ReservationMadeEvent reservationMadeEvent = new ReservationMadeEvent(UUID.randomUUID(),
                 makeNewReservationCommand.getUuid(), makeNewReservationCommand.getTimeStamp(),
                 makeNewReservationCommand.getStartDate(), makeNewReservationCommand.getEndDate(),
