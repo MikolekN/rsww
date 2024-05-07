@@ -34,10 +34,11 @@ public class ReservationCommandListener {
         Optional<ReservationMadeEvent> event = reservationCommandService.makeNewReservation(makeNewReservationCommand);
         event.ifPresent(reservationEventNotifier::ReservationMadeEventNotify);
     }
+
     @RabbitListener(queues = "${spring.rabbitmq.queue.reservationCancelQueue}")
     public void CancelReservationCommandHandler(CancelReservationCommand cancelReservationCommand) {
         log.info(String.format("Received CancelReservationCommand %s", cancelReservationCommand));
-        ReservationCancelledEvent event =reservationCommandService.cancelReservation(cancelReservationCommand);
+        ReservationCancelledEvent event = reservationCommandService.cancelReservation(cancelReservationCommand);
         reservationEventNotifier.ReservationCancelledEventNotify(event);
     }
 }
