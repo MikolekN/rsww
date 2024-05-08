@@ -1,6 +1,7 @@
 package com.example.transportation.config;
 
 import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitMQConfig {
-    static final String accommodationTopic = "transport-topic";
+    static final String transportTopic = "transport-topic";
 
     @Value("${spring.rabbitmq.queue.addFlightQueue}")
     private String addFlightQueue;
@@ -49,6 +50,11 @@ public class RabbitMQConfig {
     @Bean
     public Queue reserveFlightQueue() {
         return new Queue(reserveFlightQueue, true);
+    }
+
+    @Bean
+    TopicExchange exchange() {
+        return new TopicExchange(transportTopic);
     }
 
     @Bean

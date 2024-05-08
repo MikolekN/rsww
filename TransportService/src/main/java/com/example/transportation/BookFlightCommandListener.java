@@ -18,19 +18,17 @@ public class BookFlightCommandListener {
     private final FlightReservationRepository repository;
     private final FlightRepository flightRepository;
     private final RabbitTemplate rabbitTemplate;
-    private final Queue confirmFlightReservationQueue;
 
     @Autowired
     public BookFlightCommandListener(FlightReservationRepository repository, RabbitTemplate rabbitTemplate,
-                                     Queue confirmFlightReservationQueue, FlightRepository flightRepository) {
+                                     FlightRepository flightRepository) {
         this.repository = repository;
         this.rabbitTemplate = rabbitTemplate;
-        this.confirmFlightReservationQueue = confirmFlightReservationQueue;
         this.flightRepository = flightRepository;
     }
 
     @RabbitListener(queues = "${spring.rabbitmq.queue.reserveFlightQueue}")
-    public void receiveMessage(Message<BookFlightCommand> message) {
+    public FlightReservation receiveMessage(Message<BookFlightCommand> message) {
         BookFlightCommand command = message.getPayload();
         Flight reservationFlight = flightRepository.getById(command.getFlightId());
 
@@ -41,7 +39,9 @@ public class BookFlightCommandListener {
             reservationFlight.setSitsOccupied(reservationFlight.getSitsOccupied() + 1);
             flightRepository.save(reservationFlight);
 
-            rabbitTemplate.convertAndSend(confirmFlightReservationQueue.getName(), savedReservation);
+            return savedReservation;
         }
+
+        return null;
     }
 }
