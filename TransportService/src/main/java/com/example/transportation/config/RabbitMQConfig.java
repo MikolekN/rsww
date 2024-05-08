@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitMQConfig {
+    static final String accommodationTopic = "transport-topic";
 
     @Value("${spring.rabbitmq.queue.addFlightQueue}")
     private String addFlightQueue;
@@ -19,17 +20,11 @@ public class RabbitMQConfig {
     @Value("${spring.rabbitmq.queue.addFlightDataStore}")
     private String addFlightDataStore;
 
-    @Value("${spring.rabbitmq.queue.updateFlightQueue}")
-    private String updateFlightQueue;
-
     @Value("${spring.rabbitmq.queue.reserveFlightQueue}")
     private String reserveFlightQueue;
 
-    @Value("${spring.rabbitmq.queue.cancelFlightReservationQueue}")
-    private String cancelFlightReservationQueue;
-
-    @Value("${spring.rabbitmq.queue.confirmFlightReservationQueue}")
-    private String confirmFlightReservationQueue;
+    @Value("${spring.rabbitmq.queue.findFlightQueue}")
+    private String findFlightQueue;
 
     @Bean
     public Queue addFlightQueue() {
@@ -42,30 +37,19 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Queue addFlightDataStore() {
-        return new Queue(addFlightDataStore, true);
+    public Queue findFlightQueue() {
+        return new Queue(findFlightQueue, true);
     }
 
     @Bean
-    public Queue updateFlightQueue() {
-        return new Queue(updateFlightQueue, true);
+    public Queue addFlightDataStore() {
+        return new Queue(addFlightDataStore, true);
     }
 
     @Bean
     public Queue reserveFlightQueue() {
         return new Queue(reserveFlightQueue, true);
     }
-
-    @Bean
-    public Queue cancelFlightReservationQueue() {
-        return new Queue(cancelFlightReservationQueue, true);
-    }
-
-    @Bean
-    public Queue confirmFlightReservationQueue() {
-        return new Queue(confirmFlightReservationQueue, true);
-    }
-
 
     @Bean
     public MessageConverter jsonMessageConverter() {

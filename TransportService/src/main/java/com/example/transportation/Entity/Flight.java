@@ -21,8 +21,14 @@ public class Flight {
     @Column(name = "departure_airport")
     private String departureAirport;
 
+    @Column(name = "departure_country")
+    private String departureCountry;
+
     @Column(name = "arrival_airport")
     private String arrivalAirport;
+
+    @Column(name = "arrival_country")
+    private String arrivalCountry;
 
     @Column(name = "departure_date")
     private String departureDate;
