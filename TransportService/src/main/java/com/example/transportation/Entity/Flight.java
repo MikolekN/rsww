@@ -47,12 +47,14 @@ public class Flight {
 
     private int price;
 
-    public Flight(String departureAirport, String arrivalAirport,
+    public Flight(String departureAirport, String departureCountry, String arrivalAirport, String arrivalCountry,
                   String departureDate, String arrivalDate,
                   int travelTime, int sitsCount, int price) {
         this.id = UUID.randomUUID();
         this.departureAirport = departureAirport;
+        this.departureCountry = departureCountry;
         this.arrivalAirport = arrivalAirport;
+        this.arrivalCountry = arrivalCountry;
         this.departureDate = departureDate;
         this.arrivalDate = arrivalDate;
         this.travelTime = travelTime;

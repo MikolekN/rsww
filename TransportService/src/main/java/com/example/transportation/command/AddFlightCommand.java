@@ -9,7 +9,9 @@ import java.util.UUID;
 public class AddFlightCommand {
     private UUID commandId;
     private String departureAirport;
+    private String departureCountry;
     private String arrivalAirport;
+    private String arrivalCountry;
     private String departureDate;
     private String arrivalDate;
     private int travelTime;
@@ -17,8 +19,8 @@ public class AddFlightCommand {
     private int price;
 
     public static Flight commandToEntityMapper(AddFlightCommand command) {
-        return new Flight(command.getDepartureAirport(), command.getArrivalAirport(),
-                command.getDepartureDate(), command.getArrivalDate(),
+        return new Flight(command.getDepartureAirport(), command.getDepartureCountry(), command.getArrivalAirport(),
+                command.getArrivalCountry(), command.getDepartureDate(), command.getArrivalDate(),
                 command.getTravelTime(), command.getSitsCount(), command.getPrice());
     }
 }
