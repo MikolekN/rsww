@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
-import com.rsww.lydka.TripService.Entity.Hotel;
+import com.rsww.lydka.TripService.entity.Hotel;
 import com.rsww.lydka.TripService.listener.events.accommodation.GetHotelRequest;
 import com.rsww.lydka.TripService.listener.events.accommodation.GetHotelsRequest;
 import com.rsww.lydka.TripService.listener.events.accommodation.GetHotelsResponse;
@@ -19,7 +19,6 @@ import com.rsww.lydka.TripService.listener.events.trip.reservation.PostReservati
 import com.rsww.lydka.TripService.listener.events.trip.reservation.accommodation.CancelHotelReservation;
 import com.rsww.lydka.TripService.listener.events.trip.reservation.accommodation.ReservationResponse;
 import com.rsww.lydka.TripService.listener.events.trip.reservation.accommodation.ReserveHotelRequest;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;

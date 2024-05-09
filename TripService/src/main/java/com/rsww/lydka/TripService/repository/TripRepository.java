@@ -1,7 +1,7 @@
 package com.rsww.lydka.TripService.repository;
 
 import com.rsww.lydka.TripService.storage.MongoDatabaseWrapper;
-import com.rsww.lydka.TripService.Entity.Trip;
+import com.rsww.lydka.TripService.entity.Trip;
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoWriteException;
 import org.bson.Document;
