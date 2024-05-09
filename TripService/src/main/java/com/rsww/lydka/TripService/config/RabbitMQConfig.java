@@ -46,10 +46,10 @@ public class RabbitMQConfig {
 //        return cachingConnectionFactory;
 //    }
 //
-//    @Bean
-//    public RabbitTemplate rabbitTemplate() {
-//        RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory());
-//        rabbitTemplate.setMessageConverter(jsonMessageConverter());
-//        return rabbitTemplate;
-//    }
+    @Bean
+    public RabbitTemplate rabbitTemplate() {
+        RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory());
+       rabbitTemplate.setMessageConverter(jsonMessageConverter());
+      return rabbitTemplate;
+    }
 }

@@ -1,12 +1,12 @@
 package com.rsww.lydka.TripService.service;
 
-import com.rsww.lydka.TripService.Entity.Trip;
+import com.rsww.lydka.TripService.entity.Trip;
 import com.rsww.lydka.TripService.listener.events.trip.TripsRequest;
 import com.rsww.lydka.TripService.listener.events.trip.TripsResponse;
 import com.rsww.lydka.TripService.listener.events.trip.reservation.PostReservationRequest;
 import com.rsww.lydka.TripService.repository.ReservationRepository;
 import com.rsww.lydka.TripService.repository.TripRepository;
-import com.rsww.lydka.TripService.Entity.Flight;
+import com.rsww.lydka.TripService.entity.Flight;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,7 +84,7 @@ public class TripService {
         tripRepository.delete(tripId);
     }
 
-    public void confirmReservation(UUID reservation, UUID user) {
+    public void confirmReservation(String reservation, String user) {
         reservationRepository.markAsPayed(reservation);
     }
 

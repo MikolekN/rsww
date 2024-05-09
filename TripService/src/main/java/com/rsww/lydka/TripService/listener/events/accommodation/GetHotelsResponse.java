@@ -30,9 +30,9 @@ public class GetHotelsResponse {
         private int stars;
     }
 
-    public static Function<GetHotelsResponse, List<com.rsww.lydka.TripService.Entity.Hotel>> dtoToEntityMapper() {
+    public static Function<GetHotelsResponse, List<com.rsww.lydka.TripService.entity.Hotel>> dtoToEntityMapper() {
         return response -> response.getHotels().stream()
-                .map(hotelResponse -> com.rsww.lydka.TripService.Entity.Hotel.builder()
+                .map(hotelResponse -> com.rsww.lydka.TripService.entity.Hotel.builder()
                         .hotelId(hotelResponse.getHotelId())
                         .name(hotelResponse.getName())
                         .country(hotelResponse.getCountry())

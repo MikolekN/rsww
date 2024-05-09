@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.jackson.Jacksonized;
-import com.rsww.lydka.TripService.Entity.Flight;
+import com.rsww.lydka.TripService.entity.Flight;
 
 import java.util.function.Function;
 

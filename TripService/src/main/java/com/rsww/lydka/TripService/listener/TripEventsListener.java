@@ -1,7 +1,9 @@
 package com.rsww.lydka.TripService.listener;
 
+import com.rsww.lydka.TripService.listener.events.payment.PaymentRequest;
 import com.rsww.lydka.TripService.listener.events.payment.PaymentResponse;
 import com.rsww.lydka.TripService.listener.events.trip.TripDetailsRequest;
+import com.rsww.lydka.TripService.listener.events.trip.TripDetailsResponse;
 import com.rsww.lydka.TripService.listener.events.trip.reservation.PostReservationRequest;
 import com.rsww.lydka.TripService.listener.events.trip.reservation.PostReservationResponse;
 import com.rsww.lydka.TripService.listener.events.trip.reservation.UserReservationsRequest;
@@ -17,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -42,7 +43,7 @@ public class TripEventsListener {
     }
 
     @RabbitListener(queues = "${spring.rabbitmq.queue.getTripDetails}")
-    public void getTripDetails(TripDetailsRequest request) {
+    public TripDetailsResponse getTripDetails(TripDetailsRequest request) {
         final var foundTrip = tripService.getTripById(UUID.fromString(request.getTripId()));
         if (foundTrip.isEmpty()) {
             return TripDetailsResponse.builder().build();
@@ -88,12 +89,12 @@ public class TripEventsListener {
     // TODO: dopasować do naszego payment service
     @RabbitListener(queues = "${spring.rabbitmq.queue.trips.reservations.payment}")
     public PaymentResponse payForReservation(PaymentRequest request) {
-        final var responseFromPaymentService = paymentService.paymentRequest();
-        if (responseFromPaymentService.getStatus() >= 200 && responseFromPaymentService.getStatus() < 300) {
+        final var responseFromPaymentService = paymentService.paymentRequest(request);
+        if (responseFromPaymentService.getStatus()) {
             tripService.confirmReservation(request.getReservationId(), request.getUserId());
-            return PaymentResponse.builder().status(202).build();
+            return PaymentResponse.builder().status(Boolean.TRUE).build();
         } else {
-            return PaymentResponse.builder().status(500).build();
+            return PaymentResponse.builder().status(Boolean.FALSE).build();
         }
     }
 }

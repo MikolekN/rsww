@@ -62,7 +62,7 @@ public class ReservationRepository {
         return results;
     }
 
-    public void markAsPayed(UUID reservationId) {
+    public void markAsPayed(String reservationId) {
         final var query = new BasicDBObject();
         query.put("reservationId", reservationId);
         Document update = new Document("$set", new Document("payed", true));

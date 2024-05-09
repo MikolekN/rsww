@@ -1,4 +1,4 @@
-package com.rsww.lydka.TripService.Entity;
+package com.rsww.lydka.TripService.entity;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;

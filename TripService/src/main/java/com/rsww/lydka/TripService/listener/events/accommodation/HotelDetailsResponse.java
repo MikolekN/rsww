@@ -4,11 +4,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
 import org.springframework.util.StringUtils;
-import com.rsww.lydka.TripService.Entity.Hotel;
-import com.rsww.lydka.TripService.Entity.Room;
+import com.rsww.lydka.TripService.entity.Hotel;
+import com.rsww.lydka.TripService.entity.Room;
 
 import java.util.ArrayList;
-import java.util.Set;
 import java.util.function.Function;
 
 @Data
