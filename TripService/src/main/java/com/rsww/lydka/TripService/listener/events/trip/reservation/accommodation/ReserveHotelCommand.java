@@ -7,7 +7,7 @@ import lombok.extern.jackson.Jacksonized;
 @Data
 @Builder
 @Jacksonized
-public class ReserveHotelRequest {
+public class ReserveHotelCommand {
     private String hotelId;
     private Room room;
     private String user;

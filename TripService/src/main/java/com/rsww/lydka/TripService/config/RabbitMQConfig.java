@@ -36,20 +36,20 @@ public class RabbitMQConfig {
     }
 
     // TODO: czy to zakomentowane jest potrzebne?
-//    @Bean
-//    public ConnectionFactory connectionFactory() {
-//        CachingConnectionFactory cachingConnectionFactory = new CachingConnectionFactory();
-//        cachingConnectionFactory.setHost(host);
-//        cachingConnectionFactory.setUsername(username);
-//        cachingConnectionFactory.setPassword(password);
-//        cachingConnectionFactory.setPort(Integer.parseInt(port));
-//        return cachingConnectionFactory;
-//    }
-//
+    @Bean
+    public ConnectionFactory connectionFactory() {
+        CachingConnectionFactory cachingConnectionFactory = new CachingConnectionFactory();
+        cachingConnectionFactory.setHost(host);
+        cachingConnectionFactory.setUsername(username);
+        cachingConnectionFactory.setPassword(password);
+        cachingConnectionFactory.setPort(Integer.parseInt(port));
+        return cachingConnectionFactory;
+    }
+
     @Bean
     public RabbitTemplate rabbitTemplate() {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory());
-       rabbitTemplate.setMessageConverter(jsonMessageConverter());
-      return rabbitTemplate;
+        rabbitTemplate.setMessageConverter(jsonMessageConverter());
+        return rabbitTemplate;
     }
 }

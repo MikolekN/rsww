@@ -7,6 +7,6 @@ import lombok.extern.jackson.Jacksonized;
 @Data
 @Builder
 @Jacksonized
-public class CancelHotelReservation {
+public class CancelHotelReservationCommand {
     private String reservationId;
 }

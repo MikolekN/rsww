@@ -19,7 +19,6 @@ public class Trip {
     private String hotelId;
     private String fromFlightId;
     private String toFlightId;
-    // TODO: start date i end date
     private Float tripPrice;
     private String dateStart;
     private String dateEnd;
