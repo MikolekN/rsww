@@ -1,6 +1,6 @@
 package com.rsww.lydka.TripService.listener;
 
-import com.rsww.lydka.TripService.listener.events.payment.PaymentRequest;
+import com.rsww.lydka.TripService.listener.events.payment.PayForReservationCommand;
 import com.rsww.lydka.TripService.listener.events.payment.PaymentResponse;
 import com.rsww.lydka.TripService.listener.events.trip.TripDetailsRequest;
 import com.rsww.lydka.TripService.listener.events.trip.TripDetailsResponse;
@@ -86,9 +86,8 @@ public class TripEventsListener {
                 .build();
     }
 
-    // TODO: dopasować do naszego payment service
     @RabbitListener(queues = "${spring.rabbitmq.queue.trips.reservations.payment}")
-    public PaymentResponse payForReservation(PaymentRequest request) {
+    public PaymentResponse payForReservation(PayForReservationCommand request) {
         final var responseFromPaymentService = paymentService.paymentRequest(request);
         if (responseFromPaymentService.getStatus()) {
             tripService.confirmReservation(request.getReservationId(), request.getUserId());

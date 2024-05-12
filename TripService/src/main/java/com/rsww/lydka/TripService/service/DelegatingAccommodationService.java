@@ -1,6 +1,8 @@
 package com.rsww.lydka.TripService.service;
 
 //import com.google.common.collect.ImmutableList;
+import com.rsww.lydka.TripService.listener.events.trip.reservation.accommodation.CancelHotelReservationCommand;
+import com.rsww.lydka.TripService.listener.events.trip.reservation.accommodation.ReserveHotelCommand;
 import lombok.Builder;
 import lombok.Data;
 import org.slf4j.Logger;
@@ -16,9 +18,7 @@ import com.rsww.lydka.TripService.listener.events.accommodation.GetHotelsRequest
 import com.rsww.lydka.TripService.listener.events.accommodation.GetHotelsResponse;
 import com.rsww.lydka.TripService.listener.events.accommodation.HotelDetailsResponse;
 import com.rsww.lydka.TripService.listener.events.trip.reservation.PostReservationRequest;
-import com.rsww.lydka.TripService.listener.events.trip.reservation.accommodation.CancelHotelReservation;
 import com.rsww.lydka.TripService.listener.events.trip.reservation.accommodation.ReservationResponse;
-import com.rsww.lydka.TripService.listener.events.trip.reservation.accommodation.ReserveHotelRequest;
 
 import java.util.List;
 import java.util.Optional;
@@ -92,12 +92,12 @@ public class DelegatingAccommodationService {
                                        final String startDate,
                                        final String endDate,
                                        final String user) {
-        final var request = ReserveHotelRequest.builder()
+        final var request = ReserveHotelCommand.builder()
                 .hotelId(hotel.getHotelId())
                 .startDate(startDate)
                 .endDate(endDate)
                 .user(user)
-                .room(ReserveHotelRequest.Room.builder()
+                .room(ReserveHotelCommand.Room.builder()
                         .numberOfAdults(room.getNumberOfAdults())
                         .numberOfChildren(room.getNumberOfChildren())
                         .type(room.getType())
@@ -120,7 +120,7 @@ public class DelegatingAccommodationService {
     }
 
     public boolean cancelReservation(String reservationId) {
-        final var dto = CancelHotelReservation.builder().reservationId(reservationId).build();
+        final var dto = CancelHotelReservationCommand.builder().reservationId(reservationId).build();
         rabbitTemplate.convertSendAndReceiveAsType(
                 cancelHotelReservationQueueName,
                 dto,

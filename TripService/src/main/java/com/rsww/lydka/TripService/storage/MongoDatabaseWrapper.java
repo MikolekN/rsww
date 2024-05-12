@@ -13,6 +13,7 @@ public class MongoDatabaseWrapper {
     private final MongoClient mongoClient;
     private final String databaseName;
 
+    // TODO: naprawić błąd
     public MongoDatabaseWrapper(MongoClient mongoClient, String databaseName) {
         this.mongoClient = mongoClient;
         this.databaseName = databaseName;
