@@ -1,6 +1,6 @@
 package com.example.transportation.DTO;
 
-import com.example.transportation.Entity.Flight;
+import com.example.transportation.flight.domain.Flight;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,7 +1,9 @@
 package com.example.transportation.test;
 
 import com.example.transportation.DTO.GetFlightInfoRequest;
-import com.example.transportation.Repository.FlightRepository;
+import com.example.transportation.event.domain.EventTypeFlight;
+import com.example.transportation.event.repo.EventTypeRepository;
+import com.example.transportation.flight.repo.FlightRepository;
 import com.example.transportation.command.AddFlightCommand;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -17,13 +19,16 @@ public class TestController {
     private final Queue addFlightQueue;
     private final Queue findFlightQueue;
 
+    private final EventTypeRepository eventTypeRepository;
+
     @Autowired
     public TestController(FlightRepository repository, RabbitTemplate rabbitTemplate, Queue addFlightQueue,
-                          Queue findFlightQueue) {
+                          Queue findFlightQueue, EventTypeRepository eventTypeRepository) {
         this.repository = repository;
         this.rabbitTemplate = rabbitTemplate;
         this.addFlightQueue = addFlightQueue;
         this.findFlightQueue = findFlightQueue;
+        this.eventTypeRepository = eventTypeRepository;
     }
     @PostMapping("/create-flight")
     String newEmployee(@RequestBody AddFlightCommand newFlight) {
@@ -36,4 +41,11 @@ public class TestController {
         rabbitTemplate.convertAndSend(findFlightQueue.getName(), request);
         return "Przyjęto " + request.getFlightDate();
     }
+
+    @PostMapping("/createEventType")
+    String createEventType() {
+        eventTypeRepository.save(new EventTypeFlight(1, "test"));
+        return "event added";
+    }
+
 }

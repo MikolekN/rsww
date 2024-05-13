@@ -1,6 +1,6 @@
 package com.example.transportation.command;
 
-import com.example.transportation.Entity.Flight;
+import com.example.transportation.flight.domain.Flight;
 import lombok.Getter;
 
 import java.util.UUID;

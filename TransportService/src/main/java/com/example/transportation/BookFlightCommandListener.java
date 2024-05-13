@@ -1,12 +1,10 @@
 package com.example.transportation;
 
-import com.example.transportation.Entity.Flight;
-import com.example.transportation.Entity.FlightReservation;
-import com.example.transportation.Repository.FlightRepository;
-import com.example.transportation.Repository.FlightReservationRepository;
-import com.example.transportation.command.AddFlightCommand;
+import com.example.transportation.flight.domain.Flight;
+import com.example.transportation.flight.domain.FlightReservation;
+import com.example.transportation.flight.repo.FlightRepository;
+import com.example.transportation.flight.repo.FlightReservationRepository;
 import com.example.transportation.command.BookFlightCommand;
-import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +30,7 @@ public class BookFlightCommandListener {
         BookFlightCommand command = message.getPayload();
         Flight reservationFlight = flightRepository.getById(command.getFlightId());
 
-        if (reservationFlight.hasAvailableSits(command.getNumberOfPeople())) {
+        if (reservationFlight.hasAvailableSits(command.getPeopleCount())) {
             FlightReservation reservation = BookFlightCommand.commandToEntityMapper(command, reservationFlight);
             FlightReservation savedReservation = repository.save(reservation);
 

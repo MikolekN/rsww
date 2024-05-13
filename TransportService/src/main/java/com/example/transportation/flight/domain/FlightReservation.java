@@ -1,4 +1,4 @@
-package com.example.transportation.Entity;
+package com.example.transportation.flight.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -24,13 +24,13 @@ public class FlightReservation {
     @Column(name = "user_id")
     private Long userId;
 
-    @Column(name = "number_of_people")
-    private int numberOfPeople;
+    @Column(name = "people_count")
+    private int peopleCount;
 
-    public FlightReservation(Flight flight, Long userId, int numberOfPeople) {
+    public FlightReservation(Flight flight, Long userId, int peopleCount) {
         this.id = UUID.randomUUID();
         this.flight = flight;
         this.userId = userId;
-        this.numberOfPeople = numberOfPeople;
+        this.peopleCount = peopleCount;
     }
 }

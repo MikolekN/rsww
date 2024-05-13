@@ -1,8 +1,8 @@
 package com.example.transportation;
 
 import com.example.transportation.command.AddFlightCommand;
-import com.example.transportation.Entity.Flight;
-import com.example.transportation.Repository.FlightRepository;
+import com.example.transportation.flight.domain.Flight;
+import com.example.transportation.flight.repo.FlightRepository;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
