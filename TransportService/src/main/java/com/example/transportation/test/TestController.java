@@ -2,7 +2,10 @@ package com.example.transportation.test;
 
 import com.example.transportation.DTO.GetFlightInfoRequest;
 import com.example.transportation.event.domain.EventTypeFlight;
+import com.example.transportation.event.domain.FlightAddedEvent;
 import com.example.transportation.event.repo.EventTypeRepository;
+import com.example.transportation.event.repo.FlightAddedEventRepository;
+import com.example.transportation.flight.domain.Flight;
 import com.example.transportation.flight.repo.FlightRepository;
 import com.example.transportation.command.AddFlightCommand;
 import org.springframework.amqp.core.Queue;
@@ -20,20 +23,29 @@ public class TestController {
     private final Queue findFlightQueue;
 
     private final EventTypeRepository eventTypeRepository;
+    private final FlightAddedEventRepository far;
+    private final FlightRepository flightRepo;
 
     @Autowired
     public TestController(FlightRepository repository, RabbitTemplate rabbitTemplate, Queue addFlightQueue,
-                          Queue findFlightQueue, EventTypeRepository eventTypeRepository) {
+                          Queue findFlightQueue, EventTypeRepository eventTypeRepository, FlightAddedEventRepository far,
+                          FlightRepository flightRepo) {
         this.repository = repository;
         this.rabbitTemplate = rabbitTemplate;
         this.addFlightQueue = addFlightQueue;
         this.findFlightQueue = findFlightQueue;
         this.eventTypeRepository = eventTypeRepository;
+        this.far = far;
+        this.flightRepo = flightRepo;
     }
     @PostMapping("/create-flight")
     String newEmployee(@RequestBody AddFlightCommand newFlight) {
         rabbitTemplate.convertAndSend(addFlightQueue.getName(), newFlight);
-        return "wysłano";
+
+        Flight addedFlight = flightRepo.findByPrice(newFlight.getPrice());
+
+        FlightAddedEvent flightEvent = far.findByFlightId(addedFlight.getId());
+        return flightEvent.toString();
     }
 
     @PostMapping("/getFlightByDate")

@@ -10,4 +10,6 @@ import java.util.UUID;
 @Repository
 public interface FlightRepository extends JpaRepository<Flight, UUID> {
     List<Flight> findAllByDepartureDate(String date);
+
+    Flight findByPrice(int price);
 }
