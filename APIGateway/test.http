@@ -1,0 +1,24 @@
+GET http://localhost:8095/api/offers
+Content-Type: application/json
+
+{
+  "country": "",
+  "dateFrom": "2025-01-01",
+  "dateTo": "2025-01-08",
+  "numberOfAdults": 2,
+  "numberOfChildrenUnder10": 1,
+  "numberOfChildrenUnder18": 0
+}
+###
+
+GET http://localhost:8095/api/offer
+Content-Type: application/json
+
+{
+"hotelUuid": "dc73bb56-f398-4218-b043-fff977dfb41c",
+"dateFrom": "2025-01-01",
+"dateTo": "2025-01-08",
+"numberOfAdults": 2,
+"numberOfChildrenUnder10": 1,
+"numberOfChildrenUnder18": 0
+}
