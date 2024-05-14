@@ -27,9 +27,17 @@ public class RabbitMQConfig {
     @Value("${spring.rabbitmq.queue.findFlightQueue}")
     private String findFlightQueue;
 
+    @Value("${spring.rabbitmq.queue.cancelFlightQueue")
+    private String cancelFlightQueue;
+
     @Bean
     public Queue addFlightQueue() {
         return new Queue(addFlightQueue, true);
+    }
+
+    @Bean
+    public Queue cancelFlightQueue() {
+        return new Queue(cancelFlightQueue, true);
     }
 
     @Bean

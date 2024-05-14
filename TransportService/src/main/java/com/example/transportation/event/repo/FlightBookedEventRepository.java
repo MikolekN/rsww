@@ -8,4 +8,5 @@ import java.util.UUID;
 
 @Repository
 public interface FlightBookedEventRepository extends JpaRepository<FlightBookedEvent, UUID> {
+    FlightBookedEvent findByReservationId(UUID id);
 }

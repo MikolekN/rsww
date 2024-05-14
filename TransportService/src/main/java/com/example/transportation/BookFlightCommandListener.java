@@ -53,6 +53,7 @@ public class BookFlightCommandListener {
 
             eventRepository.save(new FlightBookedEvent(
                     UUID.randomUUID(),
+                    savedReservation.getId(),
                     flightEvent,
                     savedReservation.getUserId(),
                     savedReservation.getPeopleCount()

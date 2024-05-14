@@ -19,6 +19,9 @@ public class FlightBookedEvent {
     @Id
     private UUID id;
 
+    @Column(name = "reservation_id")
+    private UUID reservationId;
+
     @ManyToOne
     @JoinColumn(name = "flight")
     private FlightAddedEvent flight;
