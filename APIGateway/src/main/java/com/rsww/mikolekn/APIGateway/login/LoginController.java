@@ -18,7 +18,7 @@ public class LoginController {
     }
 
     @PostMapping
-    public ResponseEntity<Boolean> login(@RequestBody LoginDto loginDto) {
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginDto loginDto) {
         return loginService.login(loginDto);
     }
 }

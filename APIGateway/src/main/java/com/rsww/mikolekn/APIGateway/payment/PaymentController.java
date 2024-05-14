@@ -18,7 +18,7 @@ public class PaymentController {
     }
 
     @PostMapping
-    public ResponseEntity<Boolean> payment(@RequestBody PaymentDto paymentDto) {
+    public ResponseEntity<PaymentResponse> payment(@RequestBody PaymentDto paymentDto) {
         return paymentService.payment(paymentDto);
     }
 }

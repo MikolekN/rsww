@@ -28,7 +28,7 @@ public class PaymentService {
         this.paymentQueue = paymentQueue;
     }
 
-    ResponseEntity<Boolean> payment(PaymentDto paymentDto) {
+    ResponseEntity<PaymentResponse> payment(PaymentDto paymentDto) {
         String requestNumber = "[" + Integer.toHexString(new Random().nextInt(0xFFFF)) + "]";
         UUID uuid = UUID.randomUUID();
         logger.info("{} Started a payment request with uuid: {}", requestNumber, uuid);
@@ -38,10 +38,6 @@ public class PaymentService {
                 new PaymentRequest(uuid, paymentDto.paymentId()),
                 new ParameterizedTypeReference<>() {});
         logger.info("{} Received a payment response: {}", requestNumber, paymentResponse);
-
-        if (paymentResponse != null && paymentResponse.isResponse()) {
-            // TODO: send payment confirmation to Trip microservice
-        }
 
         return prepareResponse(paymentResponse);
     }

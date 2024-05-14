@@ -29,7 +29,7 @@ public class LoginService {
         this.loginQueue = loginQueue;
     }
 
-    ResponseEntity<Boolean> login(LoginDto loginDto) {
+    ResponseEntity<LoginResponse> login(LoginDto loginDto) {
         String requestNumber = "[" + Integer.toHexString(new Random().nextInt(0xFFFF)) + "]";
         UUID uuid = UUID.randomUUID();
         logger.info("{} Started a login request with uuid: {}", requestNumber, uuid);
