@@ -11,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Component;
 import pg.rsww.AccommodationService.command.entity.HotelAddedEvent;
-import pg.rsww.AccommodationService.query.event.GetAllHotelsRequest;
-import pg.rsww.AccommodationService.query.event.GetAllHotelsResponse;
-import pg.rsww.AccommodationService.query.event.GetHotelInfoRequest;
-import pg.rsww.AccommodationService.query.event.GetHotelInfoResponse;
+import pg.rsww.AccommodationService.query.event.*;
 
 @Component
 public class HotelQueryListener {
@@ -37,6 +34,11 @@ public class HotelQueryListener {
     public GetHotelInfoResponse GetHotelInfoHandler(GetHotelInfoRequest getHotelInfoRequest) {
         log.info(String.format("Received GetHotelInfoRequest %s", getHotelInfoRequest));
         return hotelService.getHotelInfo(getHotelInfoRequest);
+    }
+    @RabbitListener(queues = "${spring.rabbitmq.queue.countryAccommodationQueue}")
+    public CountryResponse getCountriesHandler(CountryRequest countryRequest) {
+        log.info(String.format("Received CountryRequest %s", countryRequest));
+        return hotelService.getCountries(countryRequest);
     }
 
 }

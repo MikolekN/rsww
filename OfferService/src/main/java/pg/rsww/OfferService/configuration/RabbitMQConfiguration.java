@@ -32,6 +32,14 @@ public class RabbitMQConfiguration {
         return new Queue(queue);
     }
     @Bean
+    public Queue getCountryQueue(@Value("${spring.rabbitmq.queue.countryQueue}") String queue) {
+        return new Queue(queue);
+    }
+    @Bean
+    public Queue getCountryAccommodationQueue(@Value("${spring.rabbitmq.queue.countryAccommodationQueue}") String queue) {
+        return new Queue(queue);
+    }
+    @Bean
     public MessageConverter jsonMessageConverter() {
         return new Jackson2JsonMessageConverter();
     }

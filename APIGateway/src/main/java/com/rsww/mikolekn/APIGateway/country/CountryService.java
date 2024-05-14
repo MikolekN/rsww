@@ -30,12 +30,12 @@ public class CountryService {
         UUID uuid = UUID.randomUUID();
         logger.info("{} Started a country request with uuid: {}", requestNumber, uuid);
 
-        CountryResponse countryResponse = rabbitTemplate.convertSendAndReceiveAsType(
+        CountryOfferResponse countryResponse = rabbitTemplate.convertSendAndReceiveAsType(
                 countryQueue.getName(),
                 new CountryRequest(uuid),
                 new ParameterizedTypeReference<>() {});
-        logger.info("{} Received a payment response: {}", requestNumber, countryResponse);
-
-        return prepareResponse(countryResponse);
+        logger.info("{} Received a countries response: {}", requestNumber, countryResponse);
+        CountryResponse response = new CountryResponse(UUID.randomUUID(), true, countryResponse.getCountries());
+        return prepareResponse(response);
     }
 }

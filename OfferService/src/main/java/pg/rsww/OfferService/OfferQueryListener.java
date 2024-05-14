@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import pg.rsww.OfferService.query.country.CountryRequest;
+import pg.rsww.OfferService.query.country.CountryResponse;
 import pg.rsww.OfferService.query.offer.GetAllOffersRequest;
 import pg.rsww.OfferService.query.offer.GetAllOffersResponse;
 import pg.rsww.OfferService.query.offer.GetOfferInfoRequest;
@@ -32,4 +34,10 @@ public class OfferQueryListener {
         log.info(String.format("Received GetOfferInfoRequest %s", getOfferInfoRequest));
         return offerService.getOfferInfo(getOfferInfoRequest);
     }
+    @RabbitListener(queues = "${spring.rabbitmq.queue.countryQueue}")
+    public CountryResponse GetCountriesHandler(CountryRequest countryRequest) {
+        log.info(String.format("Received CountryRequest %s", countryRequest));
+        return offerService.getCountries(countryRequest);
+    }
+
 }

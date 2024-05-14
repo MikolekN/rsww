@@ -8,6 +8,8 @@ import pg.rsww.OfferService.query.accommodation.GetAllHotelsRequest;
 import pg.rsww.OfferService.query.accommodation.GetAllHotelsResponse;
 import pg.rsww.OfferService.query.accommodation.GetHotelInfoRequest;
 import pg.rsww.OfferService.query.accommodation.GetHotelInfoResponse;
+import pg.rsww.OfferService.query.country.CountryRequest;
+import pg.rsww.OfferService.query.country.CountryResponse;
 import pg.rsww.OfferService.query.offer.*;
 import pg.rsww.OfferService.query.transport.Flight;
 import pg.rsww.OfferService.query.transport.GetFlightInfoRequest;
@@ -213,6 +215,16 @@ public class OfferService {
                         .availableFlightsFrom(availableFlightsFrom)
                 .build());
         System.out.println(response);
+        return response;
+    }
+    public CountryResponse getCountries(CountryRequest countryRequest) {
+        CountryResponse response = new CountryResponse(new ArrayList<>());
+        CompletableFuture<CountryResponse> countryResponseCompletableFuture = rabbitTemplate.convertSendAndReceiveAsType("country-accommodation-queue", countryRequest, new ParameterizedTypeReference<>(){});
+        try {
+            response = countryResponseCompletableFuture.get();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         return response;
     }
 }

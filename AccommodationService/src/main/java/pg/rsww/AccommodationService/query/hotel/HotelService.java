@@ -8,10 +8,7 @@ import pg.rsww.AccommodationService.query.entity.Hotel;
 import pg.rsww.AccommodationService.command.entity.HotelAddedEvent;
 import pg.rsww.AccommodationService.query.entity.Reservation;
 import pg.rsww.AccommodationService.query.entity.Room;
-import pg.rsww.AccommodationService.query.event.GetAllHotelsRequest;
-import pg.rsww.AccommodationService.query.event.GetAllHotelsResponse;
-import pg.rsww.AccommodationService.query.event.GetHotelInfoRequest;
-import pg.rsww.AccommodationService.query.event.GetHotelInfoResponse;
+import pg.rsww.AccommodationService.query.event.*;
 import pg.rsww.AccommodationService.query.reservation.ReservationRepository;
 import pg.rsww.AccommodationService.query.room.RoomRepository;
 
@@ -177,5 +174,12 @@ public class HotelService {
                 .rooms(roomsInfoList)
                 .requestUuid(getHotelInfoRequest.getRequestUuid())
                 .build();
+    }
+
+    public CountryResponse getCountries(CountryRequest countryRequest) {
+        List<Hotel> hotels = hotelRepository.findAll();
+        Set<String> countriesSet = hotels.stream().map(Hotel::getCountry).collect(Collectors.toCollection(TreeSet::new));
+        List<String> countries = new ArrayList<>(countriesSet);
+        return new CountryResponse(countries);
     }
 }

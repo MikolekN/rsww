@@ -61,7 +61,10 @@ public class RabbitMQConfiguration {
     public Queue getHotelInfoResponseQueue(@Value("${spring.rabbitmq.queue.hotelInfoResponseQueue}") String queue) {
         return new Queue(queue);
     }
-
+    @Bean
+    public Queue getCountryAccommodationQueue(@Value("${spring.rabbitmq.queue.countryAccommodationQueue}") String queue) {
+        return new Queue(queue);
+    }
     @Bean
     TopicExchange exchange() {
         return new TopicExchange(accommodationTopic);

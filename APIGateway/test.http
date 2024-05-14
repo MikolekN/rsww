@@ -22,3 +22,7 @@ Content-Type: application/json
 "numberOfChildrenUnder10": 1,
 "numberOfChildrenUnder18": 0
 }
+###
+
+
+GET http://localhost:8095/api/countries
