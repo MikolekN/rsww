@@ -40,7 +40,7 @@ public class PaymentService {
         logger.info("{} Received a payment response: {}", requestNumber, paymentResponse);
 
         if (paymentResponse != null && paymentResponse.isResponse()) {
-            // TODO: send payment confirmation to Order microservice
+            // TODO: send payment confirmation to Trip microservice
         }
 
         return prepareResponse(paymentResponse);
