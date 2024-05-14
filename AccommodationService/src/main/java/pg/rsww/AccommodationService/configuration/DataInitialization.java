@@ -40,8 +40,26 @@ public class DataInitialization {
         System.out.println("DATA INITIALIZATION");
         //hotelRepository.save(new Hotel(UUID.randomUUID(), "Sheraton", "USA"));
         //hotelRepository.save(new Hotel(UUID.randomUUID(), "HOTEL123", "Poland"));
-
         UUID testAddedHotelUuid = UUID.randomUUID();
+        rabbitTemplate.convertAndSend("hotel-create-queue", new AddNewHotelCommand(testAddedHotelUuid, "Sheraton", "Hiszpania", 5));
+        rabbitTemplate.convertAndSend("room-create-queue", new AddNewRoomCommand(UUID.randomUUID(), 3, "type1", 240.5F, testAddedHotelUuid));
+        rabbitTemplate.convertAndSend("room-create-queue", new AddNewRoomCommand(UUID.randomUUID(), 3, "type2", 280.5F, testAddedHotelUuid));
+        rabbitTemplate.convertAndSend("room-create-queue", new AddNewRoomCommand(UUID.randomUUID(), 2, "type1", 240.5F, testAddedHotelUuid));
+        rabbitTemplate.convertAndSend("room-create-queue", new AddNewRoomCommand(UUID.randomUUID(), 1, "type2", 280.5F, testAddedHotelUuid));
+
+        testAddedHotelUuid = UUID.randomUUID();
+        rabbitTemplate.convertAndSend("hotel-create-queue", new AddNewHotelCommand(testAddedHotelUuid, "Hilton", "Niemcy", 3));
+        rabbitTemplate.convertAndSend("room-create-queue", new AddNewRoomCommand(UUID.randomUUID(), 3, "type1", 240.5F, testAddedHotelUuid));
+        rabbitTemplate.convertAndSend("room-create-queue", new AddNewRoomCommand(UUID.randomUUID(), 3, "type2", 280.5F, testAddedHotelUuid));
+        rabbitTemplate.convertAndSend("room-create-queue", new AddNewRoomCommand(UUID.randomUUID(), 2, "type1", 240.5F, testAddedHotelUuid));
+        rabbitTemplate.convertAndSend("room-create-queue", new AddNewRoomCommand(UUID.randomUUID(), 1, "type2", 280.5F, testAddedHotelUuid));
+
+        testAddedHotelUuid = UUID.randomUUID();
+        rabbitTemplate.convertAndSend("hotel-create-queue", new AddNewHotelCommand(testAddedHotelUuid, "Ibis", "Grecja", 2));
+        rabbitTemplate.convertAndSend("room-create-queue", new AddNewRoomCommand(UUID.randomUUID(), 3, "type1", 240.5F, testAddedHotelUuid));
+        rabbitTemplate.convertAndSend("room-create-queue", new AddNewRoomCommand(UUID.randomUUID(), 3, "type2", 280.5F, testAddedHotelUuid));
+        rabbitTemplate.convertAndSend("room-create-queue", new AddNewRoomCommand(UUID.randomUUID(), 2, "type1", 240.5F, testAddedHotelUuid));
+        rabbitTemplate.convertAndSend("room-create-queue", new AddNewRoomCommand(UUID.randomUUID(), 1, "type2", 280.5F, testAddedHotelUuid));
 
         System.out.println(hotelRepository.findAll());
         //rabbitTemplate.convertAndSend("accommodation-topic", "", "Hello, !");

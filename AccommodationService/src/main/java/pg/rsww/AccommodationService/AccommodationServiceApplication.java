@@ -39,7 +39,7 @@ public class AccommodationServiceApplication implements CommandLineRunner {
 		rabbitTemplate.setMessageConverter(new Jackson2JsonMessageConverter());
 		Scanner myObj = new Scanner(System.in);
 		String x = myObj.nextLine();
-		rabbitTemplate.convertAndSend("hotel-create-queue", new AddNewHotelCommand(testAddedHotelUuid, "HOTELTEST", "France", 5));
+		rabbitTemplate.convertAndSend("hotel-create-queue", new AddNewHotelCommand(testAddedHotelUuid, "HOTELTEST", "Francja", 5));
 		x = myObj.nextLine();
 		rabbitTemplate.convertAndSend("room-create-queue", new AddNewRoomCommand(UUID.randomUUID(), 3, "type1", 240.5F, testAddedHotelUuid));
 		rabbitTemplate.convertAndSend("room-create-queue", new AddNewRoomCommand(UUID.randomUUID(), 3, "type2", 280.5F, testAddedHotelUuid));
