@@ -22,7 +22,8 @@ public class HotelCommandService {
                 UUID.randomUUID(),
                 addNewHotelCommand.getUuid(),
                 addNewHotelCommand.getName(),
-                addNewHotelCommand.getCountry());
+                addNewHotelCommand.getCountry(),
+                addNewHotelCommand.getStars());
         hotelEventRepository.save(hotelAddedEvent);
         return hotelAddedEvent;
         //System.out.println(hotelEventRepository.findAll());

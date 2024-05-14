@@ -3,6 +3,7 @@ package pg.rsww.OfferService.query.offer;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @ToString
@@ -11,6 +12,8 @@ import java.util.UUID;
 @Getter
 @Setter
 public class GetOfferInfoResponse {
-    @JsonProperty("request_uuid")
-    private UUID requestUuid;
+    @JsonProperty("response")
+    private boolean response;
+    @JsonProperty("offer")
+    private OfferInfoModel offer;
 }

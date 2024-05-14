@@ -3,6 +3,7 @@ package pg.rsww.AccommodationService.query.hotel;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pg.rsww.AccommodationService.command.entity.RoomAddedEvent;
 import pg.rsww.AccommodationService.query.entity.Hotel;
 import pg.rsww.AccommodationService.command.entity.HotelAddedEvent;
 import pg.rsww.AccommodationService.query.entity.Reservation;
@@ -35,6 +36,7 @@ public class HotelService {
                         .uuid(hotelAddedEvent.getHotelUuid().toString())
                         .name(hotelAddedEvent.getName())
                         .country(hotelAddedEvent.getCountry())
+                        .stars(hotelAddedEvent.getStars())
                 .build());
     }
 
@@ -57,10 +59,9 @@ public class HotelService {
         Iterator<Hotel> it = hotels.iterator();
         while (it.hasNext()) {
             Hotel hotel = it.next();
-            List<Room> rooms = roomRepository.findAllByHotelUuidAndNumberOfAdultsAndNumberOfChildren(
+            List<Room> rooms = roomRepository.findAllByHotelUuidAndCapacity(
                     hotel.getUuid(),
-                    getAllHotelsRequest.getNumberOfAdults(),
-                    getAllHotelsRequest.getNumberOfChildren());
+                    getAllHotelsRequest.getNumberOfAdults() + getAllHotelsRequest.getNumberOfChildrenUnder10() + getAllHotelsRequest.getNumberOfChildrenUnder18());
             if(rooms.isEmpty())
                 it.remove();
             else {
@@ -115,10 +116,9 @@ public class HotelService {
                     .requestUuid(getHotelInfoRequest.getRequestUuid())
                     .build();
         }
-        List<Room> rooms = roomRepository.findAllByHotelUuidAndNumberOfAdultsAndNumberOfChildren(
+        List<Room> rooms = roomRepository.findAllByHotelUuidAndCapacity(
                 getHotelInfoRequest.getHotelUuid().toString(),
-                getHotelInfoRequest.getNumberOfAdults(),
-                getHotelInfoRequest.getNumberOfChildren());
+                getHotelInfoRequest.getNumberOfAdults() + getHotelInfoRequest.getNumberOfChildrenUnder10() + getHotelInfoRequest.getNumberOfChildrenUnder18());
         // Filtering unavailable rooms in the period from the request
         rooms = rooms.stream().filter(room -> {
             List<Reservation> reservations = reservationRepository.findAllByHotelUuidAndRoomUuid(
@@ -153,7 +153,19 @@ public class HotelService {
                     .requestUuid(getHotelInfoRequest.getRequestUuid())
                     .build();
         }
-
+        List<String> roomTypesAvailableList = new ArrayList<>(roomTypesAvailable);
+        List<GetHotelInfoResponse.RoomTypeModel> roomsInfoList = new ArrayList<>();
+        for (String roomTypeAvailable: roomTypesAvailableList) {
+            for (Room room: rooms) {
+                if (room.getType().equals(roomTypeAvailable)) {
+                    roomsInfoList.add(GetHotelInfoResponse.RoomTypeModel.builder()
+                                    .type(roomTypeAvailable)
+                                    .price(room.getBasePrice())
+                            .build());
+                    break;
+                }
+            }
+        }
         //rabbitTemplate.convertAndSend("hotel-info-response-queue", response);
         //System.out.println("RESPONSE = " + response);
         return GetHotelInfoResponse.builder()
@@ -161,7 +173,8 @@ public class HotelService {
                 .hotelUuid(UUID.fromString(hotel.getUuid()))
                 .name(hotel.getName())
                 .country(hotel.getCountry())
-                .roomTypes(new ArrayList<>(roomTypesAvailable))
+                .stars(hotel.getStars())
+                .rooms(roomsInfoList)
                 .requestUuid(getHotelInfoRequest.getRequestUuid())
                 .build();
     }

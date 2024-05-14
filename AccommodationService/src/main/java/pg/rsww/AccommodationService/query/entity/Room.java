@@ -17,18 +17,16 @@ public class Room {
     @Id
     private String id;
     private String uuid;
-    private int numberOfAdults;
-    private int numberOfChildren;
+    private int capacity;
     private String type;
-    private float price;
+    private float basePrice;
     private String hotelUuid;
     //  FIXME - może tutaj dodać listę rezerwacji, albo zostawić rezerwacje osobno i tam lista pokoji
-    public Room(String uuid, int numberOfAdults, int numberOfChildren, String type, float price, String hotelUuid) {
+    public Room(String uuid, int capacity, String type, float basePrice, String hotelUuid) {
         this.uuid = uuid;
-        this.numberOfAdults = numberOfAdults;
-        this.numberOfChildren = numberOfChildren;
+        this.capacity = capacity;
         this.type = type;
-        this.price = price;
+        this.basePrice = basePrice;
         this.hotelUuid = hotelUuid;
     }
 }

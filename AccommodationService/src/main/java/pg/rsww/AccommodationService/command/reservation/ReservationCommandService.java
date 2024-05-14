@@ -48,10 +48,8 @@ public class ReservationCommandService {
             // TODO and dont check this room anymore
             UUID roomUuid = roomEvent.getRoomUuid();
             if (roomEvent instanceof RoomAddedEvent) {
-                if (((RoomAddedEvent) roomEvent).getNumberOfAdults()
-                        == makeNewReservationCommand.getNumberOfAdults()
-                        && ((RoomAddedEvent) roomEvent).getNumberOfChildren()
-                        == makeNewReservationCommand.getNumberOfChildren()
+                if (((RoomAddedEvent) roomEvent).getCapacity()
+                        == (makeNewReservationCommand.getNumberOfAdults() + makeNewReservationCommand.getNumberOfChildrenUnder10() + makeNewReservationCommand.getNumberOfChildrenUnder18())
                         && Objects.equals(((RoomAddedEvent) roomEvent).getType(), makeNewReservationCommand.getRoomType())) {
                     // checking if the suitable room is not reserved already
                     List<ReservationMadeEvent> reservationEvents = reservationEventRepository.findAllByRoom(roomUuid);
@@ -95,7 +93,7 @@ public class ReservationCommandService {
         ReservationMadeEvent reservationMadeEvent = new ReservationMadeEvent(UUID.randomUUID(),
                 makeNewReservationCommand.getUuid(), makeNewReservationCommand.getTimeStamp(),
                 makeNewReservationCommand.getStartDate(), makeNewReservationCommand.getEndDate(),
-                makeNewReservationCommand.getNumberOfAdults(), makeNewReservationCommand.getNumberOfChildren(), hotelUuid, suitableRoomUuid);
+                makeNewReservationCommand.getNumberOfAdults(), makeNewReservationCommand.getNumberOfChildrenUnder10(), makeNewReservationCommand.getNumberOfChildrenUnder18(), hotelUuid, suitableRoomUuid);
         reservationEventRepository.save(reservationMadeEvent);
         //System.out.println(reservationEventRepository.findAll());
         return Optional.of(reservationMadeEvent);

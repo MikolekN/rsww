@@ -14,14 +14,12 @@ import java.util.UUID;
 public class AddNewRoomCommand {
     @JsonProperty("uuid")
     private UUID uuid;
-    @JsonProperty("number_of_adults")
-    private int numberOfAdults;
-    @JsonProperty("number_of_children")
-    private int numberOfChildren;
+    @JsonProperty("capacity")
+    private int capacity;
     @JsonProperty("type")
     private String type;
-    @JsonProperty("price")
-    private float price;
+    @JsonProperty("base_price")
+    private float basePrice;
     @JsonProperty("hotel_uuid")
     private UUID hotelUuid;
 }

@@ -2,7 +2,9 @@ package pg.rsww.OfferService.query.offer;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
+import pg.rsww.OfferService.query.accommodation.GetAllHotelsResponse;
 
+import java.util.List;
 import java.util.UUID;
 
 @ToString
@@ -12,6 +14,8 @@ import java.util.UUID;
 @Setter
 public class GetAllOffersResponse
 {
-    @JsonProperty("request_uuid")
-    private UUID requestUuid;
+    @JsonProperty("response")
+    private boolean response;
+    @JsonProperty("offers")
+    private List<OfferModel> offers;
 }

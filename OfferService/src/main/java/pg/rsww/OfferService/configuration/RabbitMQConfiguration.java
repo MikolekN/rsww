@@ -28,6 +28,10 @@ public class RabbitMQConfiguration {
         return new Queue(queue);
     }
     @Bean
+    public Queue getFindFlightQueue(@Value("${spring.rabbitmq.queue.findFlightQueue}") String queue) {
+        return new Queue(queue);
+    }
+    @Bean
     public MessageConverter jsonMessageConverter() {
         return new Jackson2JsonMessageConverter();
     }

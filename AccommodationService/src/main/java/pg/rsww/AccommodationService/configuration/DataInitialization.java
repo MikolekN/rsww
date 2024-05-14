@@ -38,8 +38,8 @@ public class DataInitialization {
     @PostConstruct
     private void init() {
         System.out.println("DATA INITIALIZATION");
-        hotelRepository.save(new Hotel(UUID.randomUUID(), "Sheraton", "USA"));
-        hotelRepository.save(new Hotel(UUID.randomUUID(), "HOTEL123", "Poland"));
+        //hotelRepository.save(new Hotel(UUID.randomUUID(), "Sheraton", "USA"));
+        //hotelRepository.save(new Hotel(UUID.randomUUID(), "HOTEL123", "Poland"));
 
         UUID testAddedHotelUuid = UUID.randomUUID();
 
@@ -52,7 +52,7 @@ public class DataInitialization {
         rabbitTemplate.convertAndSend("reservation-make-queue", new MakeNewReservationCommand(UUID.randomUUID(), LocalDateTime.now(), LocalDate.now(), LocalDate.now(), "type1", 1, 2, testAddedHotelUuid));
         //rabbitTemplate.convertAndSend("reservation-cancel-queue", new CancelReservationCommand(UUID.fromString("88bd961e-a6de-4f46-879b-7ba8b1128509")));*/
         //hotelEventRepository.save(new Event(UUID.randomUUID(), LocalDateTime.now()));
-        hotelEventRepository.save(new HotelEvent(UUID.randomUUID(), UUID.randomUUID()));
+        //hotelEventRepository.save(new HotelEvent(UUID.randomUUID(), UUID.randomUUID()));
         System.out.println(hotelEventRepository.findAll());
 
     }

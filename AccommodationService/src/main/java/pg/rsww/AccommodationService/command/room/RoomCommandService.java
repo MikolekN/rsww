@@ -21,10 +21,9 @@ public class RoomCommandService {
     public RoomAddedEvent addNewRoom(AddNewRoomCommand addNewRoomCommand) {
         RoomAddedEvent roomAddedEvent = new RoomAddedEvent(UUID.randomUUID(),
                 addNewRoomCommand.getUuid(),
-                addNewRoomCommand.getNumberOfAdults(),
-                addNewRoomCommand.getNumberOfChildren(),
+                addNewRoomCommand.getCapacity(),
                 addNewRoomCommand.getType(),
-                addNewRoomCommand.getPrice(),
+                addNewRoomCommand.getBasePrice(),
                 addNewRoomCommand.getHotelUuid());
         roomEventRepository.save(roomAddedEvent);
         //System.out.println(roomEventRepository.findAll());

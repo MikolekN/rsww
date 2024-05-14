@@ -14,21 +14,18 @@ import java.util.UUID;
 @Setter
 @Entity
 public class RoomAddedEvent extends RoomEvent {
-    @JsonProperty("number_of_adults")
-    private int numberOfAdults;
-    @JsonProperty("number_of_children")
-    private int numberOfChildren;
+    @JsonProperty("capacity")
+    private int capacity;
     @JsonProperty("type")
     private String type;
-    @JsonProperty("price")
-    private float price;
+    @JsonProperty("base_price")
+    private float basePrice;
 
-    public RoomAddedEvent(UUID uuid, UUID roomUuid, int numberOfAdults, int numberOfChildren, String type, float price, UUID hotelUuid) {
+    public RoomAddedEvent(UUID uuid, UUID roomUuid, int capacity, String type, float basePrice, UUID hotelUuid) {
         super(uuid, roomUuid, hotelUuid);
-        this.numberOfAdults = numberOfAdults;
-        this.numberOfChildren = numberOfChildren;
+        this.capacity = capacity;
         this.type = type;
-        this.price = price;
+        this.basePrice = basePrice;
         this.setEventType(1);
     }
 }

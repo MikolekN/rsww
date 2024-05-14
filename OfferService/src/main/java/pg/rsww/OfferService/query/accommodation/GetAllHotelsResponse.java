@@ -20,6 +20,7 @@ public class GetAllHotelsResponse {
 
     @Builder
     @ToString
+    @Getter
     public static class HotelShortModel {
         @JsonProperty("uuid")
         private UUID uuid;

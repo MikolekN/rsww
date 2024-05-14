@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface RoomRepository extends MongoRepository<Room, String> {
     List<Room> findAllByHotelUuid(String hotelUuid);
-    List<Room> findAllByHotelUuidAndNumberOfAdultsAndNumberOfChildren(String hotelUuid, int numberOfAdults, int numberOfChildren);
+    List<Room> findAllByHotelUuidAndCapacity(String hotelUuid, int capacity);
 }

@@ -24,10 +24,14 @@ public class HotelAddedEvent extends HotelEvent {
     @JsonProperty("country")
     private String country;
 
-    public HotelAddedEvent(UUID uuid, UUID hotelUuid, String name, String country) {
+    @JsonProperty("stars")
+    private int stars;
+
+    public HotelAddedEvent(UUID uuid, UUID hotelUuid, String name, String country, int stars) {
         super(uuid, hotelUuid);
         this.name = name;
         this.country = country;
+        this.stars = stars;
         this.setEventType(1);
     }
 

@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import pg.rsww.OfferService.query.offer.GetAllOffersRequest;
 import pg.rsww.OfferService.query.offer.GetOfferInfoRequest;
 
+import java.time.LocalDate;
 import java.util.Scanner;
 import java.util.UUID;
 
@@ -32,9 +33,9 @@ public class OfferServiceApplication implements CommandLineRunner {
 		System.out.println("pppp");
 		Scanner myObj = new Scanner(System.in);
 		String x = myObj.nextLine();
-		Object r = rabbitTemplate.convertSendAndReceive("offer-all-request-queue", new GetAllOffersRequest(UUID.randomUUID(), "", null, null, 1, 2));
+		Object r = rabbitTemplate.convertSendAndReceive("offer-all-request-queue", new GetAllOffersRequest(UUID.randomUUID(), "", LocalDate.of(2025, 1, 1), LocalDate.of(2025, 1, 8), 1, 2, 0));
 		x = myObj.nextLine();
-		Object r2 = rabbitTemplate.convertSendAndReceive("offer-info-request-queue", new GetOfferInfoRequest(UUID.randomUUID(), UUID.fromString(x), "", null, null, 1, 2));
+		Object r2 = rabbitTemplate.convertSendAndReceive("offer-info-request-queue", new GetOfferInfoRequest(UUID.randomUUID(), UUID.fromString(x), LocalDate.of(2025, 1, 1), LocalDate.of(2025, 1, 8), 1, 2, 0));
 		//rabbitTemplate.convertAndSend("hotel-create-queue", new AddNewHotelCommand(testAddedHotelUuid, "HOTELTEST", "Francja"));
 
 	}

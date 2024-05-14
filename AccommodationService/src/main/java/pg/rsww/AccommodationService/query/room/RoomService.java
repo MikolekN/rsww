@@ -19,10 +19,9 @@ public class RoomService {
     public void addNewRoom(RoomAddedEvent roomAddedEvent) {
         roomRepository.save(Room.builder()
                         .uuid(roomAddedEvent.getRoomUuid().toString())
-                        .numberOfAdults(roomAddedEvent.getNumberOfAdults())
-                        .numberOfChildren(roomAddedEvent.getNumberOfChildren())
+                        .capacity(roomAddedEvent.getCapacity())
                         .type(roomAddedEvent.getType())
-                        .price(roomAddedEvent.getPrice())
+                        .basePrice(roomAddedEvent.getBasePrice())
                         .hotelUuid(roomAddedEvent.getHotelUuid().toString())
                 .build());
     }

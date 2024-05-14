@@ -21,4 +21,7 @@ public class AddNewHotelCommand {
 
     @JsonProperty("country")
     private String country;
+
+    @JsonProperty("stars")
+    private int stars;
 }

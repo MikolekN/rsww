@@ -23,6 +23,8 @@ public class GetHotelInfoRequest {
     private LocalDate endDate;
     @JsonProperty("number_of_adults")
     private int numberOfAdults;
-    @JsonProperty("number_of_children")
-    private int numberOfChildren;
+    @JsonProperty("number_of_children_under_10")
+    private int numberOfChildrenUnder10;
+    @JsonProperty("number_of_children_under_18")
+    private int numberOfChildrenUnder18;
 }

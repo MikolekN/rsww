@@ -28,8 +28,9 @@ services:
     image: mariadb
     environment:
       MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: accommodationdb
       MYSQL_USER: user
       MYSQL_PASSWORD: password
     ports:
       - "3306:3306"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql

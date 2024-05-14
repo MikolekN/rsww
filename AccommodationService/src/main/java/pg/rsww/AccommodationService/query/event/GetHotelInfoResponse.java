@@ -21,8 +21,20 @@ public class GetHotelInfoResponse {
     private String name;
     @JsonProperty("country")
     private String country;
-    @JsonProperty("room_types")
-    private List<String> roomTypes;
+    @JsonProperty("stars")
+    private int stars;
+    @JsonProperty("rooms")
+    private List<RoomTypeModel> rooms;
     @JsonProperty("request_uuid")
     private UUID requestUuid;
+
+    @Builder
+    @ToString
+    @Getter
+    public static class RoomTypeModel {
+        @JsonProperty("type")
+        private String type;
+        @JsonProperty("price")
+        private float price;
+    }
 }
