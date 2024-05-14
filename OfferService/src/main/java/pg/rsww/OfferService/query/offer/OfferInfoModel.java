@@ -30,6 +30,7 @@ public class OfferInfoModel {
     @Builder
     @ToString
     @Getter
+    @Setter
     @AllArgsConstructor
     public static class RoomInOfferModel {
         @JsonProperty("type")

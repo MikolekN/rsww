@@ -179,6 +179,8 @@ public class OfferService {
         for (Flight flight: getAllFlightsToResponse.getFlights()) {
             if (flight.hasAvailableSits(getOfferInfoRequest.getNumberOfAdults() + getOfferInfoRequest.getNumberOfChildrenUnder10() + getOfferInfoRequest.getNumberOfChildrenUnder18())) {
                 if (flight.getArrivalCountry().equals(getHotelInfoResponse.getCountry()) && flight.getDepartureCountry().equals(DEPARTURE_COUNTRY)) {
+                    // calculating full price for the flight
+                    flight.setPrice(flight.getPrice() * (getOfferInfoRequest.getNumberOfAdults() + getOfferInfoRequest.getNumberOfChildrenUnder10() + getOfferInfoRequest.getNumberOfChildrenUnder18()));
                     availableFlightsTo.add(flight);
                 }
             }
@@ -186,6 +188,8 @@ public class OfferService {
         for (Flight flight: getAllFlightsFromResponse.getFlights()) {
             if (flight.hasAvailableSits(getOfferInfoRequest.getNumberOfAdults() + getOfferInfoRequest.getNumberOfChildrenUnder10() + getOfferInfoRequest.getNumberOfChildrenUnder18())) {
                 if (flight.getDepartureCountry().equals(getHotelInfoResponse.getCountry()) && flight.getArrivalCountry().equals(DEPARTURE_COUNTRY)) {
+                    // calculating full price for the flight
+                    flight.setPrice(flight.getPrice() * (getOfferInfoRequest.getNumberOfAdults() + getOfferInfoRequest.getNumberOfChildrenUnder10() + getOfferInfoRequest.getNumberOfChildrenUnder18()));
                     availableFlightsFrom.add(flight);
                 }
             }
@@ -194,12 +198,17 @@ public class OfferService {
             response.setResponse(false);
             return response;
         }
+        // calculating full price for the room
+        List<OfferInfoModel.RoomInOfferModel> rooms = getHotelInfoResponse.getRooms().stream().map(roomTypeModel -> new OfferInfoModel.RoomInOfferModel(roomTypeModel.getType(), roomTypeModel.getPrice())).toList();
+        for (OfferInfoModel.RoomInOfferModel room: rooms) {
+            room.setPrice(room.getPrice() * getOfferInfoRequest.getNumberOfAdults() + room.getPrice() * getOfferInfoRequest.getNumberOfChildrenUnder10() * 0.5f + room.getPrice() * getOfferInfoRequest.getNumberOfChildrenUnder18() * 0.7f);
+        }
         response.setResponse(true);
         response.setOffer(OfferInfoModel.builder()
                         .hotelName(getHotelInfoResponse.getName())
                         .country(getHotelInfoResponse.getCountry())
                         .stars(getHotelInfoResponse.getStars())
-                        .rooms(getHotelInfoResponse.getRooms().stream().map(roomTypeModel -> new OfferInfoModel.RoomInOfferModel(roomTypeModel.getType(), roomTypeModel.getPrice())).toList())
+                        .rooms(rooms)
                         .availableFlightsTo(availableFlightsTo)
                         .availableFlightsFrom(availableFlightsFrom)
                 .build());
