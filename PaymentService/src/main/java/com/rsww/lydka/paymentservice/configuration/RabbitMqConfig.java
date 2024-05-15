@@ -17,9 +17,6 @@ import org.springframework.context.annotation.Bean;
 @Configuration
 public class RabbitMqConfig {
 
-    @Value("${spring.rabbitmq.queue.paymentQueue}")
-    private String paymentQueue;
-
     @Value("${spring.rabbitmq.username}")
     private String username;
 
@@ -31,11 +28,6 @@ public class RabbitMqConfig {
 
     @Value("${spring.rabbitmq.port}")
     private String port;
-
-    @Bean
-    public Queue paymentQueue() {
-        return new Queue(paymentQueue, true);
-    }
 
     @Bean
     public MessageConverter jsonMessageConverter() {

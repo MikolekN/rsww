@@ -20,7 +20,7 @@ public class PaymentListener {
     private int rejectProbability;
     static Logger logger = LoggerFactory.getLogger(PaymentListener.class);
 
-    @RabbitListener(queues = "${spring.rabbitmq.queue.paymentQueue}")
+    @RabbitListener(queues = "${spring.rabbitmq.queue.requestPaymentQueue}")
     public PaymentResponse makePayment(PaymentRequest paymentRequest) {
         String requestNumber = "[" + Integer.toHexString(new Random().nextInt(0xFFFF)) + "]";
         logger.info("{} Received a payment request.", requestNumber);

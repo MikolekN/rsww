@@ -20,12 +20,10 @@ public class PaymentService {
     }
 
     public PaymentResponse paymentRequest(PayForReservationCommand payment) {
-
-        PaymentResponse response = template.convertSendAndReceiveAsType(
+        return template.convertSendAndReceiveAsType(
                 paymentQueueName,
                 payment,
                 new ParameterizedTypeReference<>() {}
         );
-        return response;
     }
 }
