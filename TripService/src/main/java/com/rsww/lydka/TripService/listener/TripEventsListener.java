@@ -55,7 +55,7 @@ public class TripEventsListener {
         ).apply(trip);
     }
 
-    @RabbitListener(queues = "${spring.rabbitmq.queue.getTripsAll}")
+    @RabbitListener(queues = "${spring.rabbitmq.queue.getTrips}")
     public TripsResponse getTrips(TripsRequest request) {
         logger.debug("Request: {}", request);
 
