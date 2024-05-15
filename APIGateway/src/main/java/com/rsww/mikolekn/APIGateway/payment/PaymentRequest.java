@@ -12,11 +12,11 @@ import java.util.UUID;
 @Getter
 @Setter
 public class PaymentRequest extends AbstractRequest {
-    @JsonProperty("paymentId")
-    private String paymentId;
+    @JsonProperty("reservationId")
+    private String reservationId;
 
-    public PaymentRequest(UUID uuid, String paymentId) {
+    public PaymentRequest(UUID uuid, String reservationId) {
         super(uuid);
-        this.paymentId = paymentId;
+        this.reservationId = reservationId;
     }
 }
