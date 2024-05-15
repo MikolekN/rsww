@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -31,10 +32,10 @@ public class Flight {
     private String arrivalCountry;
 
     @Column(name = "departure_date")
-    private String departureDate;
+    private Date departureDate;
 
     @Column(name = "arrival_date")
-    private String arrivalDate;
+    private Date arrivalDate;
 
     @Column(name = "travel_time")
     private int travelTime;
@@ -48,7 +49,7 @@ public class Flight {
     private int price;
 
     public Flight(String departureAirport, String departureCountry, String arrivalAirport, String arrivalCountry,
-                  String departureDate, String arrivalDate,
+                  Date departureDate, Date arrivalDate,
                   int travelTime, int sitsCount, int price) {
         this.id = UUID.randomUUID();
         this.departureAirport = departureAirport;

@@ -7,13 +7,19 @@ import com.example.transportation.event.repo.EventTypeRepository;
 import com.example.transportation.event.repo.FlightAddedEventRepository;
 import com.example.transportation.flight.domain.Flight;
 import com.example.transportation.flight.repo.FlightRepository;
-import com.example.transportation.command.AddFlightCommand;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.List;
 
 @RestController
 public class TestController {
@@ -38,20 +44,19 @@ public class TestController {
         this.far = far;
         this.flightRepo = flightRepo;
     }
-    @PostMapping("/create-flight")
-    String newEmployee(@RequestBody AddFlightCommand newFlight) {
-        rabbitTemplate.convertAndSend(addFlightQueue.getName(), newFlight);
-
-        Flight addedFlight = flightRepo.findByPrice(newFlight.getPrice());
-
-        FlightAddedEvent flightEvent = far.findByFlightId(addedFlight.getId());
-        return flightEvent.toString();
-    }
 
     @PostMapping("/getFlightByDate")
     String getFlight(@RequestBody GetFlightInfoRequest request) {
-        rabbitTemplate.convertAndSend(findFlightQueue.getName(), request);
-        return "Przyjęto " + request.getFlightDate();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date date = formatter.parse(request.getFlightDate());
+            List<Flight> flights = flightRepo.findAllByDepartureDateIgnoringTime(date);
+            return flights.toString();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return "";
     }
 
     @PostMapping("/createEventType")

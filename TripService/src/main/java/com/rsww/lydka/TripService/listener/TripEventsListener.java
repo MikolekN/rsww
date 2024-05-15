@@ -55,7 +55,7 @@ public class TripEventsListener {
         ).apply(trip);
     }
 
-    @RabbitListener(queues = "${spring.rabbitmq.queue.trip.get.all}")
+    @RabbitListener(queues = "${spring.rabbitmq.queue.getTripsAll}")
     public TripsResponse getTrips(TripsRequest request) {
         logger.debug("Request: {}", request);
 
@@ -70,14 +70,14 @@ public class TripEventsListener {
         return response;
     }
 
-    @RabbitListener(queues = "${spring.rabbitmq.queue.trips.reserve}")
+    @RabbitListener(queues = "${spring.rabbitmq.queue.reserveTrip}")
     public PostReservationResponse reserveTrip(PostReservationRequest request) {
         logger.debug("Request: {}", request);
         final var reservationResult = tripService.reserveTrip(UUID.fromString(request.getTripId()), request.getRoom(), request.getUser());
         return PostReservationResponse.builder().reserved(reservationResult).build();
     }
 
-    @RabbitListener(queues = "${spring.rabbitmq.queue.trips.reservations}")
+    @RabbitListener(queues = "${spring.rabbitmq.queue.getReservations}")
     public TripsResponse reservations(UserReservationsRequest request) {
         final var user = request.getUserId();
         final var trips = tripService.getReservations(Long.valueOf(user));
@@ -86,7 +86,7 @@ public class TripEventsListener {
                 .build();
     }
 
-    @RabbitListener(queues = "${spring.rabbitmq.queue.trips.reservations.payment}")
+    @RabbitListener(queues = "${spring.rabbitmq.queue.tripReservationPayment}")
     public PaymentResponse payForReservation(PayForReservationCommand request) {
         final var responseFromPaymentService = paymentService.paymentRequest(request);
         if (responseFromPaymentService == null) {
