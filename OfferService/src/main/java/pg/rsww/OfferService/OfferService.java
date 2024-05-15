@@ -26,7 +26,7 @@ import java.util.concurrent.CompletableFuture;
 @Service
 public class OfferService {
     private final AsyncRabbitTemplate rabbitTemplate;
-    private final static String DEPARTURE_COUNTRY = "Poland";
+    private final static String DEPARTURE_COUNTRY = "Polska";
 
     @Autowired
     public OfferService(AsyncRabbitTemplate rabbitTemplate) {
