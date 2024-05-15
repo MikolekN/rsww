@@ -35,7 +35,7 @@ public class DelegatingTransportService {
     @Autowired
     public DelegatingTransportService(final AsyncRabbitTemplate asyncRabbitTemplate,
                                       @Value("${spring.rabbitmq.queue.getFlightDetailsQueue}") final String flightDetailsQueue,
-                                      @Value("${spring.rabbitmq.queue.getFlightsWithParametersQueue}") final String flightsWithQueryQueue,
+                                      @Value("${spring.rabbitmq.queue.flightsWithQueryQueue}") final String flightsWithQueryQueue,
                                       @Value("${spring.rabbitmq.queue.reserveFlightQueue}") final String reserveFlight,
                                       @Value("${spring.rabbitmq.queue.confirmFlightReservationQueue}") final String confirmFlight,
                                       @Value("${spring.rabbitmq.queue.cancelFlightReservationQueue}") final String cancelFlight) {
