@@ -35,7 +35,6 @@ public class RabbitMQConfig {
         return new AsyncRabbitTemplate(rabbitTemplate);
     }
 
-    // TODO: czy to zakomentowane jest potrzebne?
     @Bean
     public ConnectionFactory connectionFactory() {
         CachingConnectionFactory cachingConnectionFactory = new CachingConnectionFactory();
