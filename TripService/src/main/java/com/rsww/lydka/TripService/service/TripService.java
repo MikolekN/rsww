@@ -84,7 +84,7 @@ public class TripService {
         tripRepository.delete(tripId);
     }
 
-    public void confirmReservation(String reservation, String user) {
+    public void confirmReservation(String reservation) {
         reservationRepository.markAsPayed(reservation);
     }
 

@@ -1,7 +1,7 @@
 package com.rsww.lydka.paymentservice.payment.listener;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rsww.lydka.paymentservice.payment.response.PaymentRequest;
 import com.rsww.lydka.paymentservice.payment.response.PaymentResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,44 +18,22 @@ import java.util.Random;
 public class PaymentListener {
     @Value("${payment.service.rejection.probability}")
     private int rejectProbability;
-
-    @Value("${payment.service.message}")
-    private String queueMessage;
-
-    private static final Logger log = LoggerFactory.getLogger(PaymentListener.class);
-
-
-    private final RabbitTemplate rabbitTemplate;
-    private final Queue requestPaymentQueue;
-    private final Queue responsePaymentQueue;
-
-    @Autowired
-    public PaymentListener(RabbitTemplate rabbitTemplate, Queue requestPaymentQueue, Queue responsePaymentQueue) {
-        this.rabbitTemplate = rabbitTemplate;
-        this.requestPaymentQueue = requestPaymentQueue;
-        this.responsePaymentQueue = responsePaymentQueue;
-    }
+    static Logger logger = LoggerFactory.getLogger(PaymentListener.class);
 
     @RabbitListener(queues = "${spring.rabbitmq.queue.requestPaymentQueue}")
-    public void makePayment(String message) {
-        log.info("Received a payment message: {}", message);
+    public PaymentResponse makePayment(PaymentRequest paymentRequest) {
+        String requestNumber = "[" + Integer.toHexString(new Random().nextInt(0xFFFF)) + "]";
+        logger.info("{} Received a payment request.", requestNumber);
 
-        // TODO walidacja typu wiadomości
-
-        try {
+        if (paymentRequest != null) {
             Random r = new Random();
             boolean status = r.nextInt(101) >= rejectProbability;
-            PaymentResponse paymentResponse = new PaymentResponse(queueMessage, status);
-            ObjectMapper mapper = new ObjectMapper();
-            String answer = mapper.writeValueAsString(paymentResponse);
-            rabbitTemplate.convertAndSend(responsePaymentQueue.getName(), answer);
-        } catch (JsonProcessingException e) {
-            log.warn(e.getMessage());
+            logger.info("{} {} payment.", requestNumber, (status ? "Successful" : "Unsuccessful"));
+            return new PaymentResponse(paymentRequest.getUuid(), status, paymentRequest.getReservationId());
         }
-    }
-
-    @RabbitListener(queues = "${spring.rabbitmq.queue.responsePaymentQueue}")
-    public void responsePayment(String message) {
-        log.info("Response message: {}", message);
+        else {
+            logger.info("{} Could not deserialize the received message.", requestNumber);
+            return new PaymentResponse(null, false, null);
+        }
     }
 }

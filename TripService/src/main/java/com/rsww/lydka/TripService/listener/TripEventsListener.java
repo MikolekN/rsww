@@ -89,11 +89,12 @@ public class TripEventsListener {
     @RabbitListener(queues = "${spring.rabbitmq.queue.trips.reservations.payment}")
     public PaymentResponse payForReservation(PayForReservationCommand request) {
         final var responseFromPaymentService = paymentService.paymentRequest(request);
-        if (responseFromPaymentService.getStatus()) {
-            tripService.confirmReservation(request.getReservationId(), request.getUserId());
-            return PaymentResponse.builder().status(Boolean.TRUE).build();
-        } else {
-            return PaymentResponse.builder().status(Boolean.FALSE).build();
+        if (responseFromPaymentService == null) {
+            return new PaymentResponse(request.getUuid(), false, request.getReservationId());
         }
+        if (responseFromPaymentService.isResponse()) {
+            tripService.confirmReservation(request.getReservationId());
+        }
+        return responseFromPaymentService;
     }
 }
