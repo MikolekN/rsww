@@ -1,0 +1,45 @@
+version: '3.9'
+
+services:
+
+  rabbitmq:
+    container_name: 'rabbitmq'
+    image: rabbitmq:3.13-management-alpine
+    ports:
+      - "5672:5672"
+
+  frontend:
+    container_name: 'frontend'
+    build:
+      context: ../Frontend/
+      dockerfile: Dockerfile
+    ports:
+      - "4200:4200"
+
+  apigateway:
+    build:
+      context: ../APIGateway/
+      dockerfile: Dockerfile
+    container_name: 'api-gateway'
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - RABBIT_HOST=rabbitmq
+      - RABBIT_PORT=5672
+      - RABBIT_USR=guest
+      - RABBIT_PWD=guest
+#      - TIMEOUT=3
+
+  userservice:
+    build:
+      context: ../UserService/
+      dockerfile: Dockerfile
+    container_name: 'user-service'
+    restart: always
+    environment:
+      - RABBIT_HOST=rabbitmq
+      - RABBIT_PORT=5672
+      - RABBIT_USR=guest
+      - RABBIT_PWD=guest
+      #- TIMEOUT=3
