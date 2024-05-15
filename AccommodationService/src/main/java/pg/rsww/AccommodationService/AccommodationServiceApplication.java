@@ -35,7 +35,6 @@ public class AccommodationServiceApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		UUID testAddedHotelUuid = UUID.randomUUID();
-
 		rabbitTemplate.setMessageConverter(new Jackson2JsonMessageConverter());
 		Scanner myObj = new Scanner(System.in);
 		String x = myObj.nextLine();

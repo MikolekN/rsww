@@ -34,3 +34,16 @@ services:
       - "3306:3306"
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+  postgres:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=user
+      - POSTGRES_DB=accommodationdb
+
+  adminer:
+    image: adminer
+    ports:
+      - "8082:8080"
