@@ -17,6 +17,6 @@ public class PaymentResponse {
     @JsonProperty("response")
     private boolean response = false;
 
-    @JsonProperty("paymentId")
-    private String paymentId;
+    @JsonProperty("reservationId")
+    private String reservationId;
 }
