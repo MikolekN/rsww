@@ -1,7 +1,10 @@
-package com.rsww.mikolekn.APIGateway.offer;
+package com.rsww.mikolekn.APIGateway.offer.DTO;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -10,8 +13,10 @@ import java.util.UUID;
 @AllArgsConstructor
 @Getter
 @Setter
-@Builder
-public class OfferModel {
+public class GetAllOffersRequest {
+
+    @JsonProperty("request_uuid")
+    private UUID requestUuid;
     @JsonProperty("country")
     private String country;
     @JsonProperty("start_date")
@@ -24,8 +29,5 @@ public class OfferModel {
     private int numberOfChildrenUnder10;
     @JsonProperty("number_of_children_under_18")
     private int numberOfChildrenUnder18;
-    @JsonProperty("hotel_name")
-    private String hotelName;
-    @JsonProperty("hotel_uuid")
-    private UUID hotelUuid;
+    // TODO - maybe add 'private String whereFrom' <- transportation service
 }

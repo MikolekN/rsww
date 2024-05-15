@@ -1,4 +1,4 @@
-package com.rsww.mikolekn.APIGateway.offer;
+package com.rsww.mikolekn.APIGateway.offer.DTO;
 
 public record OfferDto (String hotelUuid,
                         String dateFrom,
