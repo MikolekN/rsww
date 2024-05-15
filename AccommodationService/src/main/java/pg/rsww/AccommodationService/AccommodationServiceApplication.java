@@ -36,7 +36,7 @@ public class AccommodationServiceApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		UUID testAddedHotelUuid = UUID.randomUUID();
 		rabbitTemplate.setMessageConverter(new Jackson2JsonMessageConverter());
-		Scanner myObj = new Scanner(System.in);
+		/*Scanner myObj = new Scanner(System.in);
 		String x = myObj.nextLine();
 		rabbitTemplate.convertAndSend("hotel-create-queue", new AddNewHotelCommand(testAddedHotelUuid, "HOTELTEST", "Francja", 5));
 		x = myObj.nextLine();
@@ -61,6 +61,6 @@ public class AccommodationServiceApplication implements CommandLineRunner {
 		x = myObj.nextLine();
 		MakeNewReservationResponse r3 = (MakeNewReservationResponse) rabbitTemplate.convertSendAndReceive("reservation-make-queue", new MakeNewReservationCommand(UUID.randomUUID(), LocalDateTime.now(), LocalDate.of(2000,1,1), LocalDate.of(2000,1,10), "type1", 1, 2, 0, testAddedHotelUuid));
 		System.out.println(r3);
-
+		*/
 	}
 }
