@@ -1,14 +1,19 @@
 package com.rsww.lydka.paymentservice.payment.response;
 
-import lombok.Builder;
-import lombok.Getter;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.*;
 
-@Builder
+import java.util.UUID;
+
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
+@Setter
 public class PaymentRequest {
-    private String message;
+    @JsonProperty("uuid")
+    private UUID uuid;
 
-    public PaymentRequest(String message) {
-        this.message = message;
-    }
+    @JsonProperty("reservationId")
+    private String reservationId;
 }
