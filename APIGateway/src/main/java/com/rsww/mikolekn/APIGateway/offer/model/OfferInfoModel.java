@@ -1,4 +1,4 @@
-package com.rsww.mikolekn.APIGateway.offer;
+package com.rsww.mikolekn.APIGateway.offer.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
