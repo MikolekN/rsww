@@ -98,7 +98,7 @@ public class TripEventsListener {
         }
         logger.info("{} {} payment.", requestNumber, (responseFromPaymentService.isResponse() ? "Successful" : "Unsuccessful"));
         if (responseFromPaymentService.isResponse()) {
-            tripService.confirmReservation(request.getReservationId());
+            tripService.confirmReservation(UUID.fromString(request.getReservationId()));
         }
         return responseFromPaymentService;
     }

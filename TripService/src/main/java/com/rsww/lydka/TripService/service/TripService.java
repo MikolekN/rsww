@@ -45,7 +45,7 @@ public class TripService {
         int adults = request.getAdults() == null ? 0 : request.getAdults();
 
         int requiredSits = people3To9 + people10To17 + adults;
-        final var trips = tripRepository.findAllTrips();
+        final var trips = tripRepository.findAll();
         final var hotels = accommodationService.getHotels(DelegatingAccommodationService.SearchParams.builder()
                 .adults(request.getAdults())
                 .destination(request.getDestination())
@@ -73,7 +73,7 @@ public class TripService {
     }
 
     public Optional<Trip> getTripById(UUID tripId) {
-        return tripRepository.findTripById(tripId);
+        return tripRepository.findById(tripId.toString());
     }
 
     public Trip addTrip(Trip trip) {
@@ -81,11 +81,16 @@ public class TripService {
     }
 
     public void removeTrip(UUID tripId) {
-        tripRepository.delete(tripId);
+        Optional<Trip> trip = tripRepository.findById(tripId.toString());
+        trip.ifPresent(tripRepository::delete);
     }
 
-    public void confirmReservation(String reservation) {
-        reservationRepository.markAsPayed(reservation);
+    public void confirmReservation(UUID reservationId) {
+        Optional<ReservationRepository.Reservation> reservation = reservationRepository.findById(reservationId);
+        if (reservation.isPresent()) {
+            reservation.get().setPayed(true);
+            reservationRepository.save(reservation.get());
+        }
     }
 
     public boolean reserveTrip(final UUID tripId, final PostReservationRequest.Room room,
@@ -117,7 +122,7 @@ public class TripService {
         final var reservation = ReservationRepository.Reservation.builder()
                 .startFlightReservation(String.valueOf(startFlightReserved.get()))
                 .endFlightReservation(String.valueOf(endFlightReserved.get()))
-                .userId(user)
+                .userId(Long.parseLong(user))
                 .hotelId(hotel.getHotelId())
                 .hotelReservation(hotelReserved.getReservationId())
                 .reserved(LocalDateTime.now().plusMinutes(1))
@@ -132,8 +137,8 @@ public class TripService {
     }
 
     public List<TripsResponse.Trip> getReservations(Long userId) {
-        final var reservations = reservationRepository.getUserReservations(userId);
-        final var trips = tripRepository.findTrips(reservations.stream().map(ReservationRepository.Reservation::getTripId).collect(Collectors.toSet()));
+        final var reservations = reservationRepository.findAllByUserId(userId);
+        final var trips = tripRepository.findAllByUuidIn(reservations.stream().map(ReservationRepository.Reservation::getTripId).collect(Collectors.toSet()));
         return reservations.stream().map(reservation -> {
             final var maybeTrip = trips.parallelStream().filter(t -> t.getTripId().equals(reservation.getTripId())).findFirst();
             if (maybeTrip.isEmpty()) {
