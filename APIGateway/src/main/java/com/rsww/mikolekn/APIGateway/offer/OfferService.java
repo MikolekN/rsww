@@ -28,6 +28,7 @@ public class OfferService {
         this.rabbitTemplate = rabbitTemplate;
         this.offersQueue = offersQueue;
         this.offerQueue = offerQueue;
+        this.rabbitTemplate.setReplyTimeout(10000);
     }
 
     public ResponseEntity<GetAllOffersResponse> offers(OffersDto offersDto) {
@@ -46,7 +47,6 @@ public class OfferService {
         } catch (DateTimeException e) {
             dateTo = null;
         }
-        rabbitTemplate.setReplyTimeout(10000);
 
         GetAllOffersResponse response = rabbitTemplate.convertSendAndReceiveAsType(
                 offersQueue.getName(),

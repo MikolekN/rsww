@@ -24,6 +24,7 @@ public class CountryService {
     CountryService(RabbitTemplate rabbitTemplate, Queue countryQueue) {
         this.rabbitTemplate = rabbitTemplate;
         this.countryQueue = countryQueue;
+        this.rabbitTemplate.setReplyTimeout(10000);
     }
     public ResponseEntity<CountryResponse> country() {
         String requestNumber = "[" + Integer.toHexString(new Random().nextInt(0xFFFF)) + "]";
