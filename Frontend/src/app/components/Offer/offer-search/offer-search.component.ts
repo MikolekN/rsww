@@ -21,16 +21,18 @@ import {NgIf} from "@angular/common";
   styleUrl: './offer-search.component.css'
 })
 export class OfferSearchComponent {
-  searchTerm: string = '';
-  @Output() searchEvent = new EventEmitter<string>();
+  formData = {
+    country: '',
+    dateFrom: '',
+    dateTo: '',
+    numberOfAdults: '',
+    numberofChildrenUnder10: '',
+    numberofChildrenUnder18: ''
+  };
 
-  search() {
-    this.searchEvent.emit(this.searchTerm);
-  }
-
-  clearSearch() {
-    this.searchTerm = '';
-    this.search();
+  onSubmit() {
+    // Do something with the form data, like submitting it to a server
+    console.log(this.formData);
   }
 
 }

@@ -1,10 +1,35 @@
-<mat-form-field appearance="fill">
-  <mat-label>Search offers</mat-label>
-  <input matInput type="text" [(ngModel)]="searchTerm" (input)="search()">
-  <button mat-button *ngIf="searchTerm" matSuffix aria-label="Clear" (click)="clearSearch()">
-    <mat-icon>close</mat-icon>
-  </button>
-  <button mat-button matSuffix aria-label="Search offers">
-    <mat-icon>search</mat-icon>
-  </button>
-</mat-form-field>
+<form (ngSubmit)="onSubmit()">
+  <mat-form-field class="example-full-width">
+    <mat-label>Country</mat-label>
+    <input matInput placeholder="Country" name="country" [(ngModel)]="formData.country" required>
+  </mat-form-field>
+
+  <mat-form-field class="example-full-width">
+    <mat-label>Date From</mat-label>
+    <input matInput type="date" placeholder="Date From" name="dateFrom" [(ngModel)]="formData.dateFrom" required>
+  </mat-form-field>
+
+  <mat-form-field class="example-full-width">
+    <mat-label>Date To</mat-label>
+    <input matInput type="date" placeholder="Date To" name="dateTo" [(ngModel)]="formData.dateTo" required>
+  </mat-form-field>
+
+  <mat-form-field class="example-full-width">
+    <mat-label>Adults</mat-label>
+    <input matInput type="number" placeholder="Number of Adults" name="numberOfAdults" [(ngModel)]="formData.numberOfAdults" required>
+  </mat-form-field>
+
+  <mat-form-field class="example-full-width">
+    <mat-label>Children <10</mat-label>
+    <input matInput type="number" placeholder="Number of Children Under 10" name="numberofChildrenUnder10" [(ngModel)]="formData.numberofChildrenUnder10" required>
+  </mat-form-field>
+
+  <mat-form-field class="example-full-width">
+    <mat-label>Children <18</mat-label>
+    <input matInput type="number" placeholder="Number of Children Under 18" name="numberofChildrenUnder18" [(ngModel)]="formData.numberofChildrenUnder18" required>
+  </mat-form-field>
+
+  <button mat-raised-button color="primary" type="submit">Submit</button>
+</form>
+
+
