@@ -21,7 +21,6 @@ services:
       context: ../APIGateway/
       dockerfile: Dockerfile
     container_name: 'api-gateway'
-    restart: always
     ports:
       - "8080:8080"
     environment:
@@ -36,7 +35,6 @@ services:
       context: ../UserService/
       dockerfile: Dockerfile
     container_name: 'user-service'
-    restart: always
     depends_on:
       - rabbitmq
     environment:
@@ -51,7 +49,6 @@ services:
       context: ../PaymentService/
       dockerfile: Dockerfile
     container_name: 'payment-service'
-    restart: always
     depends_on:
       - rabbitmq
     environment:
@@ -65,7 +62,6 @@ services:
       context: ../TripService/
       dockerfile: Dockerfile
     container_name: 'trip-service'
-    restart: always
     depends_on:
       - rabbitmq
     environment:
@@ -82,7 +78,6 @@ services:
   mongo-db:
     image: mongo
     container_name: 'mongo-db'
-    restart: always
     ports:
       - "27017:27017"
     environment:
@@ -95,7 +90,6 @@ services:
       context: ../AccommodationService/
       dockerfile: Dockerfile
     container_name: 'accommodation-service'
-    restart: always
     depends_on:
       - rabbitmq
     environment:
@@ -114,7 +108,6 @@ services:
       context: ../OfferService/
       dockerfile: Dockerfile
     container_name: 'offer-service'
-    restart: always
     depends_on:
       - rabbitmq
     environment:
@@ -128,7 +121,6 @@ services:
       context: ../TransportService/
       dockerfile: Dockerfile
     container_name: 'transport-service'
-    restart: always
     depends_on:
       - rabbitmq
     environment:
@@ -144,7 +136,6 @@ services:
 
   mongo-express:
     image: mongo-express
-    restart: always
     ports:
       - "8081:8081"
     environment:
@@ -162,6 +153,8 @@ services:
       - POSTGRES_PASSWORD=password
       - POSTGRES_USER=user
       - POSTGRES_DB=rsww
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
   adminer:
     image: adminer
