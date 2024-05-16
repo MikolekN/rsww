@@ -5,6 +5,8 @@ import {MatCard, MatCardContent, MatCardSubtitle, MatCardTitle} from "@angular/m
 import {FullOffer} from "../../types/fullOffer";
 import {FullOfferRequest} from "../../../DTO/request/fullOfferRequest";
 import {FullOfferResponse} from "../../../DTO/response/fullOfferResponse";
+import {NgForOf} from "@angular/common";
+import {SingleOfferComponent} from "../single-offer/single-offer.component";
 
 @Component({
   selector: 'app-selected-offer',
@@ -13,7 +15,9 @@ import {FullOfferResponse} from "../../../DTO/response/fullOfferResponse";
     MatCard,
     MatCardContent,
     MatCardTitle,
-    MatCardSubtitle
+    MatCardSubtitle,
+    NgForOf,
+    SingleOfferComponent
   ],
   templateUrl: './selected-offer.component.html',
   styleUrl: './selected-offer.component.css'
