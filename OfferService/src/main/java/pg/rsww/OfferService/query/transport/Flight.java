@@ -2,6 +2,7 @@ package pg.rsww.OfferService.query.transport;
 
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Setter
@@ -21,9 +22,9 @@ public class Flight {
 
     private String arrivalCountry;
 
-    private String departureDate;
+    private LocalDate departureDate;
 
-    private String arrivalDate;
+    private LocalDate arrivalDate;
 
     private int travelTime;
 
@@ -34,7 +35,7 @@ public class Flight {
     private int price;
 
     public Flight(String departureAirport, String departureCountry, String arrivalAirport, String arrivalCountry,
-                  String departureDate, String arrivalDate,
+                  LocalDate departureDate, LocalDate arrivalDate,
                   int travelTime, int sitsCount, int price) {
         this.id = UUID.randomUUID();
         this.departureAirport = departureAirport;
