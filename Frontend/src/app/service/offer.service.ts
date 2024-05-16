@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import {UserLoginResponse} from "../DTO/response/UserLoginResponse";
 import {environment} from "../config/environment";
-import {HttpClient, HttpParams} from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Router} from "@angular/router";
 import {OfferRequest} from "../DTO/request/offerRequest";
@@ -14,28 +13,10 @@ import {Observable} from "rxjs";
 })
 export class OfferService {
 
-  constructor(private http: HttpClient,
-              private snackbar: MatSnackBar,
-              private router: Router) { }
+  constructor(private http: HttpClient) { }
 
   public getOffers(requestBody: OfferRequest): Observable<OfferResponseRaw> {
-    // Wykonaj zapytanie HTTP GET z przekazanymi parametrami
-    return this.http.get<OfferResponseRaw>(environment.API_URL + "/api/offers");
-  }
-
-  public convertOfferResponseToOffer(offerResponse: OfferResponse): Offer {
-    const offer: Offer = {
-      country: offerResponse.country,
-      start_date: offerResponse.start_date[0] + "-" + offerResponse.start_date[1] + "-" + offerResponse.start_date[2],
-      end_date: offerResponse.end_date[0] + "-" + offerResponse.end_date[1] + "-" + offerResponse.end_date[2],
-      number_of_adults: offerResponse.number_of_adults,
-      number_of_children_under_10: offerResponse.number_of_children_under_10,
-      number_of_children_under_18: offerResponse.number_of_children_under_18,
-      hotel_name: offerResponse.hotel_name,
-      hotel_uuid: offerResponse.hotel_uuid
-    }
-
-    return offer
+    return this.http.post<OfferResponseRaw>(environment.API_URL + "/api/offers", requestBody);
   }
 
   public saveOfferData(offer: Offer) {
@@ -49,6 +30,23 @@ export class OfferService {
 
   public clearOfferData() {
     sessionStorage.removeItem('offerData');
+  }
+
+  public convertArrayToOfferArray(offerResponses: OfferResponse[]): Offer[] {
+    return offerResponses.map(offerResponse => this.convertToOffer(offerResponse));
+  }
+
+  public convertToOffer(offerResponse: OfferResponse): Offer {
+    return {
+      country: offerResponse.country,
+      start_date: offerResponse.start_date[0] + "-" + offerResponse.start_date[1] + "-" +offerResponse.start_date[2],
+      end_date: offerResponse.end_date[0] + "-" + offerResponse.end_date[1] + "-" +offerResponse.end_date[2],
+      number_of_adults: offerResponse.number_of_adults,
+      number_of_children_under_10: offerResponse.number_of_children_under_10,
+      number_of_children_under_18: offerResponse.number_of_children_under_18,
+      hotel_name: offerResponse.hotel_name,
+      hotel_uuid: offerResponse.hotel_uuid
+    };
   }
 
 }
