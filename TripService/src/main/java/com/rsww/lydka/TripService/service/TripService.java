@@ -5,14 +5,11 @@ import com.rsww.lydka.TripService.entity.Trip;
 import com.rsww.lydka.TripService.listener.events.accommodation.MakeNewReservationResponse;
 import com.rsww.lydka.TripService.listener.events.orders.GetAllOrdersRequest;
 import com.rsww.lydka.TripService.listener.events.orders.GetAllOrdersResponse;
-import com.rsww.lydka.TripService.listener.events.trip.TripsRequest;
-import com.rsww.lydka.TripService.listener.events.trip.TripsResponse;
 import com.rsww.lydka.TripService.listener.events.trip.reservation.PostReservationRequest;
 import com.rsww.lydka.TripService.listener.events.trip.reservation.PostReservationResponse;
+import com.rsww.lydka.TripService.listener.events.trip.reservation.transport.FlightReservation;
 import com.rsww.lydka.TripService.repository.ReservationRepository;
 import com.rsww.lydka.TripService.repository.TripRepository;
-import com.rsww.lydka.TripService.entity.Flight;
-import lombok.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,61 +18,21 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class TripService {
     private final Logger logger = LoggerFactory.getLogger(TripService.class);
-    private final TripRepository tripRepository;
     private final DelegatingAccommodationService accommodationService;
-    private final DelegatingTransportService transportService;
-    private final PaymentService paymentService;
+    private final TransportService transportService;
     private final ReservationRepository reservationRepository;
 
     @Autowired
-    public TripService(final TripRepository tripRepository,
-                       final DelegatingAccommodationService accommodationService,
-                       final DelegatingTransportService transportService,
-                       final PaymentService paymentService,
+    public TripService(final DelegatingAccommodationService accommodationService,
+                       final TransportService transportService,
                        final ReservationRepository reservationRepository) {
-        this.tripRepository = tripRepository;
         this.accommodationService = accommodationService;
         this.transportService = transportService;
-        this.paymentService = paymentService;
         this.reservationRepository = reservationRepository;
-    }
-
-    public List<Trip> getTrips(TripsRequest request) {
-        int people3To9 = request.getPeople3To9() == null ? 0 : request.getPeople3To9();
-        int people10To17 = request.getPeople10To17() == null ? 0 : request.getPeople10To17();
-        int adults = request.getAdults() == null ? 0 : request.getAdults();
-
-        int requiredSits = people3To9 + people10To17 + adults;
-        final var trips = tripRepository.findAll();
-        final var hotels = accommodationService.getHotels(DelegatingAccommodationService.SearchParams.builder()
-                .adults(request.getAdults())
-                .destination(request.getDestination())
-                .people3To9(request.getPeople3To9())
-                .people10To17(request.getPeople10To17())
-                .build())
-                .stream()
-                .map(hotel -> hotel.getHotelId())
-                .collect(Collectors.toSet());
-
-        final var transports = transportService.getTransports(request.getDeparture(),
-                        "",
-                        request.getStartDate(),
-                        "")
-                .stream()
-                .filter(transport -> transport.getSitsCount() - transport.getSitsOccupied() >= requiredSits)
-                .map(Flight::getFlightId)
-                .collect(Collectors.toSet());
-
-        return trips.stream()
-                .filter(trip -> hotels.contains(trip.getHotelId()))
-                .filter(trip -> transports.contains(trip.getFromFlightId()))
-                .collect(Collectors.toList());
-
     }
 
     public void confirmReservation(UUID reservationId) {
@@ -100,7 +57,6 @@ public class TripService {
 
         PostReservationResponse response = new PostReservationResponse(request.getUuid(), false, reservationId);
 
-        // TODO: reserve accommodation
         MakeNewReservationResponse hotelReservation = accommodationService.reserve(reservationId,
                 reservationTime.toString(),
                 request.getHotelUuid(),
@@ -110,21 +66,33 @@ public class TripService {
                 request.getNumberOfAdults(),
                 request.getNumberOfChildrenUnder10(),
                 request.getNumberOfChildrenUnder18());
-        logger.info("{} {} hotel reservation.", requestNumber, true ? "Successful" : "Unsuccessful");
-        // TODO: if unsuccessful cancel reservation
-        // if unsuccessful cancel reservation
+        logger.info("{} {} hotel reservation.", requestNumber, hotelReservation.isSuccessful() ? "Successful" : "Unsuccessful");
         if (hotelReservation == null || !hotelReservation.isSuccessful()) {
-            // TODO CANCEL RESERVATION
+            response.setReservationId(null);
+            return response;
         }
         reservation.setHotelId(hotelReservation.getReservationMadeEvent().getHotel().toString());
         //  reservation.setRoomId
 
 
-        // TODO: reserve flights
-        logger.info("{} {} flights reservation.", requestNumber, true ? "Successful" : "Unsuccessful");
-        // TODO: if unsuccessful cancel accommodation and reservation
-        reservation.setStartFlightId(startFlightReservation.getStartFlightId());
-        reservation.setEndFlightId(endFlightReservation.getEndFlightId());
+        String people_count = String.valueOf(Integer.parseInt(request.getNumberOfAdults()) + Integer.parseInt(request.getNumberOfChildrenUnder10()) + Integer.parseInt(request.getNumberOfChildrenUnder18()));
+        FlightReservation startFlightReservation = transportService.reserve(request.getFlightToUuid(), request.getUsername(), people_count);
+        logger.info("{} {} start flight reservation.", requestNumber, startFlightReservation.isSuccessfullyReserved() ? "Successful" : "Unsuccessful");
+        if (!startFlightReservation.isSuccessfullyReserved()) {
+            accommodationService.cancel(hotelReservation);
+            response.setReservationId(null);
+            return response;
+        }
+        reservation.setStartFlightId(startFlightReservation.getId());
+
+        FlightReservation endFlightReservation = transportService.reserve(request.getFlightFromUuid(), request.getUsername(), people_count);
+        logger.info("{} {} flights reservation.", requestNumber, endFlightReservation.isSuccessfullyReserved() ? "Successful" : "Unsuccessful");
+        if (!endFlightReservation.isSuccessfullyReserved()) {
+            transportService.cancel(startFlightReservation.getId());
+            accommodationService.cancel(hotelReservation);
+            return response;
+        }
+        reservation.setEndFlightId(endFlightReservation.getId());
 
         // if unsuccessful
         if (false) {
@@ -141,33 +109,6 @@ public class TripService {
         return response;
     }
 
-    public List<TripsResponse.Trip> getReservations(Long userId) {
-//        final var reservations = reservationRepository.findAllByUserId(userId);
-//        final var trips = tripRepository.findAllByUuidIn(reservations.stream().map(ReservationRepository.Reservation::getTripId).collect(Collectors.toSet()));
-//        return reservations.stream().map(reservation -> {
-//            final var maybeTrip = trips.parallelStream().filter(t -> t.getTripId().equals(reservation.getTripId())).findFirst();
-//            if (maybeTrip.isEmpty()) {
-//                return null;
-//            }
-//            final var trip = maybeTrip.get();
-//            final var hotel = accommodationService.getHotel(trip.getHotelId()).get();
-//            final var startFlight = transportService.getTransport(trip.getFromFlightId()).get();
-//            final var endFlight = transportService.getTransport(trip.getToFlightId()).get();
-//            return TripsResponse.Trip.builder()
-//                    .tripId(reservation.getReservationId())
-//                    .tripPrice(reservation.getPrice())
-//                    .dateStart(startFlight.getDepartureDate())
-//                    .dateEnd(endFlight.getDepartureDate())
-//                    .hotel(TripsResponse.Hotel.builder()
-//                            .hotelId(hotel.getHotelId())
-//                            .name(hotel.getName())
-//                            .stars(hotel.getStars())
-//                            .country(hotel.getCountry())
-//                            .build())
-//                    .build();
-//        }).collect(Collectors.toList());
-        return new ArrayList<>();
-    }
     public GetAllOrdersResponse getAllOrders(GetAllOrdersRequest request) {
         List<ReservationRepository.Reservation> reservations = reservationRepository.findAllByUser(request.getUsername());
         return new GetAllOrdersResponse(reservations);
