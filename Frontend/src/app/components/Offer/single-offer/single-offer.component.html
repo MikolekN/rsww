@@ -3,6 +3,6 @@
     <h2>Dostępna oferta:</h2>
     <h3>Kraj: {{ offer?.country }}</h3>
     <p>Hotel: {{ offer?.hotel_name }}</p>
-    <button mat-raised-button class="btn btn-dark">Wybieram</button>
+    <button mat-raised-button class="btn btn-dark" (click)="selectOffer()">Wybieram</button>
   </mat-card-content>
 </mat-card>

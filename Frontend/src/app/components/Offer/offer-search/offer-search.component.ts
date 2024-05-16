@@ -38,6 +38,7 @@ export class OfferSearchComponent {
   };
 
   public offers: Offer[] = []
+  public loadingText: string = ""
 
   constructor(private offerService: OfferService) {}
 
@@ -55,16 +56,19 @@ export class OfferSearchComponent {
 
     console.log(offerRequest)
 
+    this.loadingText = "Wczytywanie ofert..."
+
     this.offerService.getOffers(offerRequest).subscribe(
       {
         next: (value: OfferResponseRaw) => {
           if (value.response) {
             console.log(value)
             this.offers = this.offerService.convertArrayToOfferArray(value.offers)
+            this.loadingText = "Wczytano oferty:"
           }
         },
         error: () => {
-          console.log("error")
+          this.loadingText = "Wystąpił błąd przy wczytywaniu ofert."
         }
       })
   }

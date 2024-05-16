@@ -7,6 +7,8 @@ import {OfferRequest} from "../DTO/request/offerRequest";
 import {OfferResponse, OfferResponseRaw} from "../DTO/response/offerResponse";
 import {Offer} from "../components/types/Offer";
 import {Observable} from "rxjs";
+import {FullOfferRequest} from "../DTO/request/fullOfferRequest";
+import {FullOfferResponse} from "../DTO/response/fullOfferResponse";
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +21,13 @@ export class OfferService {
     return this.http.post<OfferResponseRaw>(environment.API_URL + "/api/offers", requestBody);
   }
 
+  public getSelectedOffer(requestBody: FullOfferRequest): Observable<FullOfferResponse> {
+    return this.http.post<FullOfferResponse>(environment.API_URL + "/api/offer", requestBody);
+  }
+
   public saveOfferData(offer: Offer) {
+    console.log("Zapisywanie do json")
+    console.log(offer)
     sessionStorage.setItem('offerData', JSON.stringify(offer));
   }
 
@@ -39,14 +47,22 @@ export class OfferService {
   public convertToOffer(offerResponse: OfferResponse): Offer {
     return {
       country: offerResponse.country,
-      start_date: offerResponse.start_date[0] + "-" + offerResponse.start_date[1] + "-" +offerResponse.start_date[2],
-      end_date: offerResponse.end_date[0] + "-" + offerResponse.end_date[1] + "-" +offerResponse.end_date[2],
+      start_date: this.parseDF(offerResponse.start_date[0]) + "-" + this.parseDF(offerResponse.start_date[1]) + "-" + this.parseDF(offerResponse.start_date[2]),
+      end_date: this.parseDF(offerResponse.end_date[0]) + "-" + this.parseDF(offerResponse.end_date[1]) + "-" + this.parseDF(offerResponse.end_date[2]),
       number_of_adults: offerResponse.number_of_adults,
       number_of_children_under_10: offerResponse.number_of_children_under_10,
       number_of_children_under_18: offerResponse.number_of_children_under_18,
       hotel_name: offerResponse.hotel_name,
       hotel_uuid: offerResponse.hotel_uuid
     };
+  }
+
+  private parseDF(data: string): string {
+    if (data.toString().length == 1) {
+      console.log("TESTS " + data)
+      return "0" + data;
+    }
+    return data;
   }
 
 }

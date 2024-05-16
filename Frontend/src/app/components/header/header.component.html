@@ -11,7 +11,7 @@
         <a href="#" class="nav-item nav-link pe-auto" (click)="logOutUser()">Log out</a>
       </ng-template>
 
-      <a class="nav-item nav-link" href="/offers">Offers</a>
+      <a *ngIf="isUserLoggedIn()" class="nav-item nav-link" href="/offers">Offers</a>
     </div>
   </div>
 </nav>
