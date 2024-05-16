@@ -2,6 +2,7 @@ package com.rsww.lydka.TripService.service;
 
 //import com.google.common.collect.ImmutableList;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.rsww.lydka.TripService.listener.events.accommodation.*;
 import com.rsww.lydka.TripService.listener.events.trip.reservation.accommodation.CancelHotelReservationCommand;
 import com.rsww.lydka.TripService.listener.events.trip.reservation.accommodation.ReserveHotelCommand;
 import lombok.AllArgsConstructor;
@@ -15,10 +16,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 import com.rsww.lydka.TripService.entity.Hotel;
-import com.rsww.lydka.TripService.listener.events.accommodation.GetHotelRequest;
-import com.rsww.lydka.TripService.listener.events.accommodation.GetHotelsRequest;
-import com.rsww.lydka.TripService.listener.events.accommodation.GetHotelsResponse;
-import com.rsww.lydka.TripService.listener.events.accommodation.HotelDetailsResponse;
 import com.rsww.lydka.TripService.listener.events.trip.reservation.PostReservationRequest;
 import com.rsww.lydka.TripService.listener.events.trip.reservation.accommodation.ReservationResponse;
 
@@ -92,7 +89,7 @@ public class DelegatingAccommodationService {
         return Optional.empty();
     }
 
-    public ReservationResponse reserve(String reservationId,
+    public MakeNewReservationResponse reserve(String reservationId,
                                        String timestamp,
                                        String hotelId,
                                        String roomType,
@@ -100,58 +97,51 @@ public class DelegatingAccommodationService {
                                        final String endDate,
                                        final String numberOfAdults,
                                        final String numberOfChildrenUnder10,
-                                       final String numberOfChildrenUnder18,
-                                       String requestNumber) {
+                                       final String numberOfChildrenUnder18) {
 
-        @AllArgsConstructor
-        class Request {
-            @JsonProperty("reservationId")
-            private String reservationId;
-            @JsonProperty("timestamp")
-            private String timeStamp;
-            @JsonProperty("hotelId")
-            private String hotelId;
-            @JsonProperty("room")
-            private String roomType;
-            @JsonProperty("start_date")
-            private String startDate;
-            @JsonProperty("end_date")
-            private String endDate;
-            @JsonProperty("number_of_adults")
-            private String numberOfAdults;
-            @JsonProperty("number_of_children_under_10")
-            private String numberOfChildrenUnder10;
-            @JsonProperty("number_of_children_under_18")
-            private String numberOfChildrenUnder18;
-        }
-
-        Request request = new Request(reservationId,
-                timestamp,
-                hotelId,
+        MakeNewReservationCommand request = new MakeNewReservationCommand(UUID.fromString(reservationId),
+                LocalDateTime.parse(timestamp),
+                LocalDate.parse(startDate),
+                LocalDate.parse(endDate),
                 roomType,
-                startDate,
-                endDate,
-                numberOfAdults,
-                numberOfChildrenUnder10,
-                numberOfChildrenUnder18);
+                Integer.parseInt(numberOfAdults),
+                Integer.parseInt(numberOfChildrenUnder10),
+                Integer.parseInt(numberOfChildrenUnder18),
+                UUID.fromString(hotelId));
 
-        return rabbitTemplate.convertSendAndReceiveAsType(
-                queue.getName(),
+        MakeNewReservationResponse response = null;
+
+        CompletableFuture<MakeNewReservationResponse> responseCompletableFuture = rabbitTemplate.convertSendAndReceiveAsType(
+                reserveHotelQueueName,
                 request,
                 new ParameterizedTypeReference<>() {}
         );
+        try {
+            response = responseCompletableFuture.get();
+        } catch (Exception e) {
+            logger.warn("MakeNewReservationRequest got timeout");
+        }
+        return response;
     }
 
-    public boolean cancelReservation(String reservationId) {
-        final var dto = CancelHotelReservationCommand.builder().reservationId(reservationId).build();
-        rabbitTemplate.convertSendAndReceiveAsType(
+    public ReservationCancelledEvent cancelReservation(String uuid,
+                                              String timestamp,
+                                              String reservationId) {
+        ReservationCancelledEvent response = null;
+        CancelReservationCommand request = new CancelReservationCommand(UUID.fromString(uuid), LocalDateTime.parse(timestamp), UUID.fromString(reservationId));
+        CompletableFuture<ReservationCancelledEvent> responseCompletableFuture = rabbitTemplate.convertSendAndReceiveAsType(
                 cancelHotelReservationQueueName,
-                dto,
-                new ParameterizedTypeReference<>() {
-                }
+                request,
+                new ParameterizedTypeReference<>() {}
         );
-        return true;
+        try {
+            response = responseCompletableFuture.get();
+        } catch (Exception e) {
+            logger.warn("CancelReservationRequest got timeout");
+        }
+        return response;
     }
+
 
     @Data
     @Builder

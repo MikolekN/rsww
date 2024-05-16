@@ -2,6 +2,7 @@ package com.rsww.lydka.TripService.service;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.rsww.lydka.TripService.entity.Trip;
+import com.rsww.lydka.TripService.listener.events.accommodation.MakeNewReservationResponse;
 import com.rsww.lydka.TripService.listener.events.orders.GetAllOrdersRequest;
 import com.rsww.lydka.TripService.listener.events.orders.GetAllOrdersResponse;
 import com.rsww.lydka.TripService.listener.events.trip.TripsRequest;
@@ -100,7 +101,7 @@ public class TripService {
         PostReservationResponse response = new PostReservationResponse(request.getUuid(), false, reservationId);
 
         // TODO: reserve accommodation
-        var hotelReservation = accommodationService.reserve(reservationId,
+        MakeNewReservationResponse hotelReservation = accommodationService.reserve(reservationId,
                 reservationTime.toString(),
                 request.getHotelUuid(),
                 request.getRoomType(),
@@ -111,13 +112,25 @@ public class TripService {
                 request.getNumberOfChildrenUnder18());
         logger.info("{} {} hotel reservation.", requestNumber, true ? "Successful" : "Unsuccessful");
         // TODO: if unsuccessful cancel reservation
-        reservation.setHotelId(hotelReservation.getHotelId());
+        // if unsuccessful cancel reservation
+        if (hotelReservation == null || !hotelReservation.isSuccessful()) {
+            // TODO CANCEL RESERVATION
+        }
+        reservation.setHotelId(hotelReservation.getReservationMadeEvent().getHotel().toString());
+        //  reservation.setRoomId
+
 
         // TODO: reserve flights
         logger.info("{} {} flights reservation.", requestNumber, true ? "Successful" : "Unsuccessful");
         // TODO: if unsuccessful cancel accommodation and reservation
         reservation.setStartFlightId(startFlightReservation.getStartFlightId());
         reservation.setEndFlightId(endFlightReservation.getEndFlightId());
+
+        // if unsuccessful
+        if (false) {
+            String cancellationTime = LocalDateTime.now().toString();
+            accommodationService.cancelReservation(UUID.randomUUID().toString(), cancellationTime, reservationId);
+        }
 
         // TODO: calculate price?
         reservation.setPrice(price);
@@ -129,33 +142,34 @@ public class TripService {
     }
 
     public List<TripsResponse.Trip> getReservations(Long userId) {
-        final var reservations = reservationRepository.findAllByUserId(userId);
-        final var trips = tripRepository.findAllByUuidIn(reservations.stream().map(ReservationRepository.Reservation::getTripId).collect(Collectors.toSet()));
-        return reservations.stream().map(reservation -> {
-            final var maybeTrip = trips.parallelStream().filter(t -> t.getTripId().equals(reservation.getTripId())).findFirst();
-            if (maybeTrip.isEmpty()) {
-                return null;
-            }
-            final var trip = maybeTrip.get();
-            final var hotel = accommodationService.getHotel(trip.getHotelId()).get();
-            final var startFlight = transportService.getTransport(trip.getFromFlightId()).get();
-            final var endFlight = transportService.getTransport(trip.getToFlightId()).get();
-            return TripsResponse.Trip.builder()
-                    .tripId(reservation.getReservationId())
-                    .tripPrice(reservation.getPrice())
-                    .dateStart(startFlight.getDepartureDate())
-                    .dateEnd(endFlight.getDepartureDate())
-                    .hotel(TripsResponse.Hotel.builder()
-                            .hotelId(hotel.getHotelId())
-                            .name(hotel.getName())
-                            .stars(hotel.getStars())
-                            .country(hotel.getCountry())
-                            .build())
-                    .build();
-        }).collect(Collectors.toList());
+//        final var reservations = reservationRepository.findAllByUserId(userId);
+//        final var trips = tripRepository.findAllByUuidIn(reservations.stream().map(ReservationRepository.Reservation::getTripId).collect(Collectors.toSet()));
+//        return reservations.stream().map(reservation -> {
+//            final var maybeTrip = trips.parallelStream().filter(t -> t.getTripId().equals(reservation.getTripId())).findFirst();
+//            if (maybeTrip.isEmpty()) {
+//                return null;
+//            }
+//            final var trip = maybeTrip.get();
+//            final var hotel = accommodationService.getHotel(trip.getHotelId()).get();
+//            final var startFlight = transportService.getTransport(trip.getFromFlightId()).get();
+//            final var endFlight = transportService.getTransport(trip.getToFlightId()).get();
+//            return TripsResponse.Trip.builder()
+//                    .tripId(reservation.getReservationId())
+//                    .tripPrice(reservation.getPrice())
+//                    .dateStart(startFlight.getDepartureDate())
+//                    .dateEnd(endFlight.getDepartureDate())
+//                    .hotel(TripsResponse.Hotel.builder()
+//                            .hotelId(hotel.getHotelId())
+//                            .name(hotel.getName())
+//                            .stars(hotel.getStars())
+//                            .country(hotel.getCountry())
+//                            .build())
+//                    .build();
+//        }).collect(Collectors.toList());
+        return new ArrayList<>();
     }
     public GetAllOrdersResponse getAllOrders(GetAllOrdersRequest request) {
-        //List<ReservationRepository.Reservation> reservations = reservationRepository.findAllByUserId(request.getUsername());
-        return new GetAllOrdersResponse(new ArrayList<>());
+        List<ReservationRepository.Reservation> reservations = reservationRepository.findAllByUser(request.getUsername());
+        return new GetAllOrdersResponse(reservations);
     }
 }

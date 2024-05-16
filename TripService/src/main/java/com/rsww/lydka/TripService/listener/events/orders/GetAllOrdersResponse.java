@@ -1,6 +1,7 @@
 package com.rsww.lydka.TripService.listener.events.orders;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.rsww.lydka.TripService.repository.ReservationRepository;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,6 +15,6 @@ import java.util.List;
 @Setter
 public class GetAllOrdersResponse {
     @JsonProperty("orders")
-    List<String> orders;
+    List<ReservationRepository.Reservation> orders;
 
 }
