@@ -38,6 +38,7 @@ public class ReservationCommandService {
         // Checking if any of the rooms is suitable
         List<RoomEvent> roomEvents = roomEventRepository.findAllByHotelUuid(hotelUuid);
         UUID suitableRoomUuid = null; // FIXME
+        float roomPrice = 0;
         if (roomEvents.isEmpty()) {
             //System.out.println("NO ROOMS");
             return Optional.empty();
@@ -81,7 +82,10 @@ public class ReservationCommandService {
                     }
                     // room is suitable despite other reservations that don't overlap this one
                     if (suitable)
+                    {
                         suitableRoomUuid = roomUuid;
+                        roomPrice = ((RoomAddedEvent) roomEvent).getBasePrice();
+                    }
                 }
             }
         }
@@ -93,7 +97,7 @@ public class ReservationCommandService {
         ReservationMadeEvent reservationMadeEvent = new ReservationMadeEvent(UUID.randomUUID(),
                 makeNewReservationCommand.getUuid(), makeNewReservationCommand.getTimeStamp(),
                 makeNewReservationCommand.getStartDate(), makeNewReservationCommand.getEndDate(),
-                makeNewReservationCommand.getNumberOfAdults(), makeNewReservationCommand.getNumberOfChildrenUnder10(), makeNewReservationCommand.getNumberOfChildrenUnder18(), hotelUuid, suitableRoomUuid);
+                makeNewReservationCommand.getNumberOfAdults(), makeNewReservationCommand.getNumberOfChildrenUnder10(), makeNewReservationCommand.getNumberOfChildrenUnder18(), hotelUuid, suitableRoomUuid, roomPrice);
         reservationEventRepository.save(reservationMadeEvent);
         //System.out.println(reservationEventRepository.findAll());
         return Optional.of(reservationMadeEvent);

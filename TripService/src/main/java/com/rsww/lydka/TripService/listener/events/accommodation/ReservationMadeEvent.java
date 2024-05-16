@@ -30,11 +30,13 @@ public class ReservationMadeEvent extends ReservationEvent {
     private UUID hotel;
     @JsonProperty("room")
     private UUID room;
+    @JsonProperty("room_price")
+    private float roomPrice;
     public ReservationMadeEvent(UUID uuid, UUID reservationUuid,
                                 LocalDateTime timeStamp,
                                 LocalDate startDate, LocalDate endDate,
                                 int numberOfAdults, int numberOfChildrenUnder10, int numberOfChildrenUnder18,
-                                UUID hotel, UUID room
+                                UUID hotel, UUID room, float roomPrice
     ) {
         super(uuid, reservationUuid);
         this.timeStamp = timeStamp;
@@ -45,6 +47,7 @@ public class ReservationMadeEvent extends ReservationEvent {
         this.numberOfChildrenUnder18 = numberOfChildrenUnder18;
         this.hotel = hotel;
         this.room = room;
+        this.roomPrice = roomPrice;
         this.setEventType(1);
     }
 }
