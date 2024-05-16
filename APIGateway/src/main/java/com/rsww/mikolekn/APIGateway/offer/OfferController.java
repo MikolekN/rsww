@@ -21,7 +21,7 @@ public class OfferController {
         return offerService.offers(offersDto);
     }
 
-    @GetMapping("/offer")
+    @PostMapping("/offer")
     public ResponseEntity<GetOfferInfoResponse> offer(@RequestBody OfferDto offerDto) {
         return offerService.offer(offerDto);
     }
