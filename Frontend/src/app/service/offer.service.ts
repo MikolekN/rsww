@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import {environment} from "../config/environment";
 import {HttpClient} from "@angular/common/http";
-import {MatSnackBar} from "@angular/material/snack-bar";
-import {Router} from "@angular/router";
 import {OfferRequest} from "../DTO/request/offerRequest";
 import {OfferResponse, OfferResponseRaw} from "../DTO/response/offerResponse";
 import {Offer} from "../components/types/Offer";

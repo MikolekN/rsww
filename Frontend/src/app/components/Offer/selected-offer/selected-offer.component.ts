@@ -7,6 +7,12 @@ import {FullOfferRequest} from "../../../DTO/request/fullOfferRequest";
 import {FullOfferResponse} from "../../../DTO/response/fullOfferResponse";
 import {NgForOf} from "@angular/common";
 import {SingleOfferComponent} from "../single-offer/single-offer.component";
+import {FormsModule} from "@angular/forms";
+
+class FlightSelectionForm {
+  departureFlightId: string | null = null
+  returnFlightId: string | null = null
+}
 
 @Component({
   selector: 'app-selected-offer',
@@ -17,13 +23,16 @@ import {SingleOfferComponent} from "../single-offer/single-offer.component";
     MatCardTitle,
     MatCardSubtitle,
     NgForOf,
-    SingleOfferComponent
+    SingleOfferComponent,
+    FormsModule
   ],
   templateUrl: './selected-offer.component.html',
   styleUrl: './selected-offer.component.css'
 })
 export class SelectedOfferComponent implements OnInit {
   public offer: FullOffer | null = null
+  public formData: FlightSelectionForm = new FlightSelectionForm()
+
   constructor(private offerService: OfferService) {
   }
 
