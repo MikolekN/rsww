@@ -79,7 +79,8 @@ public class TripService {
         FlightReservation startFlightReservation = transportService.reserve(request.getFlightToUuid(), request.getUsername(), people_count);
         logger.info("{} {} start flight reservation.", requestNumber, startFlightReservation.isSuccessfullyReserved() ? "Successful" : "Unsuccessful");
         if (!startFlightReservation.isSuccessfullyReserved()) {
-            accommodationService.cancel(hotelReservation);
+            String cancellationTime = LocalDateTime.now().toString();
+            accommodationService.cancelReservation(UUID.randomUUID().toString(), cancellationTime, reservationId);
             response.setReservationId(null);
             return response;
         }
@@ -89,19 +90,22 @@ public class TripService {
         logger.info("{} {} flights reservation.", requestNumber, endFlightReservation.isSuccessfullyReserved() ? "Successful" : "Unsuccessful");
         if (!endFlightReservation.isSuccessfullyReserved()) {
             transportService.cancel(startFlightReservation.getId());
-            accommodationService.cancel(hotelReservation);
+            String cancellationTime = LocalDateTime.now().toString();
+            accommodationService.cancelReservation(UUID.randomUUID().toString(), cancellationTime, reservationId);
             return response;
         }
         reservation.setEndFlightId(endFlightReservation.getId());
 
-        // if unsuccessful
-        if (false) {
-            String cancellationTime = LocalDateTime.now().toString();
-            accommodationService.cancelReservation(UUID.randomUUID().toString(), cancellationTime, reservationId);
-        }
+        // calculating price
+        int numberOfAdults = Integer.parseInt(request.getNumberOfAdults());
+        int numberOfChildrenUnder10 = Integer.parseInt(request.getNumberOfChildrenUnder10());
+        int numberOfChildrenUnder18 = Integer.parseInt(request.getNumberOfChildrenUnder18());
 
-        // TODO: calculate price?
-        reservation.setPrice(price);
+        float roomPrice = hotelReservation.getReservationMadeEvent().getRoomPrice();
+        float fullHotelPrice = (roomPrice * numberOfAdults) + (roomPrice * numberOfChildrenUnder10 * 0.5f) + (roomPrice * numberOfChildrenUnder18 * 0.7f);
+        float flightsPrice = (numberOfAdults + numberOfChildrenUnder18 + numberOfChildrenUnder10) * (Float.parseFloat(startFlightReservation.getFlight().getPrice()) + Float.parseFloat(endFlightReservation.getFlight().getPrice()));
+        float price = fullHotelPrice + flightsPrice;
+        reservation.setPrice((double) price);
 
         reservationRepository.save(reservation);
 
