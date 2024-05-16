@@ -13,7 +13,7 @@ import java.util.UUID;
 @Setter
 public class PostReservationResponse {
     @JsonProperty("uuid")
-    private UUID uuid;
+    private String uuid;
     @JsonProperty("response")
     private boolean response;
     @JsonProperty("reservationId")

@@ -76,7 +76,7 @@ public class TripEventsListener {
         String requestNumber = "[" + Integer.toHexString(new Random().nextInt(0xFFFF)) + "]";
         logger.info("{} Received a reservation request.", requestNumber);
 
-        final var reservationResult = tripService.reserveTrip(request);
+        final var reservationResult = tripService.reserveTrip(request, requestNumber);
         if (reservationResult == null) {
             return new PostReservationResponse(null, false, null);
         }

@@ -26,14 +26,14 @@ public interface ReservationRepository extends MongoRepository<ReservationReposi
         private String reservationId;
         private String user;
         private Boolean payed;
-        private LocalDateTime reserved;
+        private LocalDateTime reservationTime;
 
         private String startFlightReservation;
         private String endFlightReservation;
         private String startFlightId;
         private String endFlightId;
         private String hotelReservation;
-        private String tripId;
+        private String tripId; // Czy to jest potrzebne?
         private String hotelId;
         private Double price;
     }
