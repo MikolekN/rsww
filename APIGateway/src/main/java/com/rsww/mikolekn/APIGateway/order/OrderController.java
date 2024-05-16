@@ -19,8 +19,8 @@ public class OrderController {
         return orderService.orderTrip(orderDto);
     }
 
-    @GetMapping("/orders")
-    public ResponseEntity<OrdersResponse> getOrders(@RequestBody OrdersDto ordersDto) {
+    @PostMapping("/orders")
+    public ResponseEntity<GetAllOrdersResponse> getOrders(@RequestBody OrdersDto ordersDto) {
         return orderService.getOrders(ordersDto);
     }
 

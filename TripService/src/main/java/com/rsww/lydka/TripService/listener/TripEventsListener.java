@@ -1,5 +1,7 @@
 package com.rsww.lydka.TripService.listener;
 
+import com.rsww.lydka.TripService.listener.events.orders.GetAllOrdersRequest;
+import com.rsww.lydka.TripService.listener.events.orders.GetAllOrdersResponse;
 import com.rsww.lydka.TripService.listener.events.payment.PayForReservationCommand;
 import com.rsww.lydka.TripService.listener.events.payment.PaymentResponse;
 import com.rsww.lydka.TripService.listener.events.trip.TripDetailsRequest;
@@ -101,5 +103,13 @@ public class TripEventsListener {
             tripService.confirmReservation(UUID.fromString(request.getReservationId()));
         }
         return responseFromPaymentService;
+    }
+
+    @RabbitListener(queues = "${spring.rabbitmq.queue.ordersQueue}")
+    public GetAllOrdersResponse getAllOrders(GetAllOrdersRequest request) {
+        logger.info("Received a GetAllOrdersRequest {}", request);
+        GetAllOrdersResponse response = tripService.getAllOrders(request);
+        logger.info("Received a GetAllOrdersResponse {}", response);
+        return response;
     }
 }

@@ -1,5 +1,6 @@
 package com.rsww.lydka.TripService.config;
 
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -23,6 +24,22 @@ public class RabbitMQConfig {
 
     @Value("${spring.rabbitmq.port}")
     private String port;
+
+    @Value("${spring.rabbitmq.queue.ordersQueue}")
+    private String ordersQueue;
+
+    @Value("${spring.rabbitmq.queue.orderQueue}")
+    private String orderQueue;
+
+    @Bean
+    public Queue ordersQueue() {
+        return new Queue(ordersQueue);
+    }
+
+    @Bean
+    public Queue orderQueue() {
+        return new Queue(orderQueue);
+    }
 
     @Bean
     public MessageConverter jsonMessageConverter() {

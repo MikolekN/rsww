@@ -1,6 +1,8 @@
 package com.rsww.lydka.TripService.service;
 
 import com.rsww.lydka.TripService.entity.Trip;
+import com.rsww.lydka.TripService.listener.events.orders.GetAllOrdersRequest;
+import com.rsww.lydka.TripService.listener.events.orders.GetAllOrdersResponse;
 import com.rsww.lydka.TripService.listener.events.trip.TripsRequest;
 import com.rsww.lydka.TripService.listener.events.trip.TripsResponse;
 import com.rsww.lydka.TripService.listener.events.trip.reservation.PostReservationRequest;
@@ -161,5 +163,9 @@ public class TripService {
                             .build())
                     .build();
         }).collect(Collectors.toList());
+    }
+    public GetAllOrdersResponse getAllOrders(GetAllOrdersRequest request) {
+        //List<ReservationRepository.Reservation> reservations = reservationRepository.findAllByUserId(request.getUsername());
+        return new GetAllOrdersResponse(new ArrayList<>());
     }
 }
