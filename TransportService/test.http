@@ -1,0 +1,7 @@
+### GET request with a header
+POST http://localhost:8080/getFlightByDate
+Content-Type: application/json
+
+{
+  "flightDate": "2024-08-24"
+}

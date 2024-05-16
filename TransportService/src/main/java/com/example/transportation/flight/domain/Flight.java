@@ -1,11 +1,9 @@
 package com.example.transportation.flight.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.UUID;
 
@@ -14,6 +12,7 @@ import java.util.UUID;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class Flight {
 
     @Id
@@ -32,10 +31,10 @@ public class Flight {
     private String arrivalCountry;
 
     @Column(name = "departure_date")
-    private Date departureDate;
+    private LocalDate departureDate;
 
     @Column(name = "arrival_date")
-    private Date arrivalDate;
+    private LocalDate arrivalDate;
 
     @Column(name = "travel_time")
     private int travelTime;
@@ -49,7 +48,7 @@ public class Flight {
     private int price;
 
     public Flight(String departureAirport, String departureCountry, String arrivalAirport, String arrivalCountry,
-                  Date departureDate, Date arrivalDate,
+                  LocalDate departureDate, LocalDate arrivalDate,
                   int travelTime, int sitsCount, int price) {
         this.id = UUID.randomUUID();
         this.departureAirport = departureAirport;
