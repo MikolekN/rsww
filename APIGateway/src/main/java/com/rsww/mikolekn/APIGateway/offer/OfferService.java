@@ -37,7 +37,7 @@ public class OfferService {
         UUID uuid = UUID.randomUUID();
         LocalDate dateFrom;
         try {
-            dateFrom = LocalDate.parse(offersDto.dateTo());
+            dateFrom = LocalDate.parse(offersDto.dateFrom());
         } catch (DateTimeException e) {
             dateFrom = null;
         }
@@ -66,7 +66,7 @@ public class OfferService {
         UUID uuid = UUID.randomUUID();
         LocalDate dateFrom;
         try {
-            dateFrom = LocalDate.parse(offerDto.dateTo());
+            dateFrom = LocalDate.parse(offerDto.dateFrom());
         } catch (DateTimeException e) {
             dateFrom = null;
         }
