@@ -34,7 +34,7 @@ public class HotelReservationResponseInfo {
                                 int numberOfAdults, int numberOfChildrenUnder10, int numberOfChildrenUnder18,
                                 UUID hotel, UUID room
     ) {
-        super(uuid, reservationUuid);
+        //super(uuid, reservationUuid);
         this.timeStamp = timeStamp;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -43,6 +43,6 @@ public class HotelReservationResponseInfo {
         this.numberOfChildrenUnder18 = numberOfChildrenUnder18;
         this.hotel = hotel;
         this.room = room;
-        this.setEventType(1);
+        //this.setEventType(1);
     }
 }
