@@ -21,7 +21,6 @@ services:
       context: ../APIGateway/
       dockerfile: Dockerfile
     container_name: 'api-gateway'
-    restart: always
     ports:
       - "8080:8080"
     environment:
@@ -36,7 +35,6 @@ services:
       context: ../UserService/
       dockerfile: Dockerfile
     container_name: 'user-service'
-    restart: always
     depends_on:
       - rabbitmq
     environment:
@@ -51,7 +49,6 @@ services:
       context: ../PaymentService/
       dockerfile: Dockerfile
     container_name: 'payment-service'
-    restart: always
     depends_on:
       - rabbitmq
     environment:
@@ -65,7 +62,6 @@ services:
       context: ../TripService/
       dockerfile: Dockerfile
     container_name: 'trip-service'
-    restart: always
     depends_on:
       - rabbitmq
     environment:
@@ -73,16 +69,15 @@ services:
       - RABBIT_PORT=5672
       - RABBIT_USR=guest
       - RABBIT_PWD=guest
-      - MONGO_USER=root
-      - MONGO_PWD=example
-      - MONGO_HOST=mongo-db
-      - MONGO_DATABASE=trip_service_db
-      - MONGO_PORT=27017
+#      - MONGO_USER=root
+#      - MONGO_PWD=example
+#      - MONGO_HOST=mongo-db
+#      - MONGO_DATABASE=trip_service_db
+#      - MONGO_PORT=27017
 
   mongo-db:
     image: mongo
     container_name: 'mongo-db'
-    restart: always
     ports:
       - "27017:27017"
     environment:
@@ -90,9 +85,57 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: example
       MONGO_INITDB_DATABASE: rsww
 
+  accommodationservice:
+    build:
+      context: ../AccommodationService/
+      dockerfile: Dockerfile
+    container_name: 'accommodation-service'
+    depends_on:
+      - rabbitmq
+    environment:
+      - RABBIT_HOST=rabbitmq
+      - RABBIT_PORT=5672
+      - RABBIT_USR=guest
+      - RABBIT_PWD=guest
+      - POSTGRES_USR=admin
+      - POSTGRES_PWD=admin
+      - POSTGRES_HOST=postgres
+      - POSTGRES_DATABASE=accommodation
+      - POSTGRES_PORT=5432
+
+  offerservice:
+    build:
+      context: ../OfferService/
+      dockerfile: Dockerfile
+    container_name: 'offer-service'
+    depends_on:
+      - rabbitmq
+    environment:
+      - RABBIT_HOST=rabbitmq
+      - RABBIT_PORT=5672
+      - RABBIT_USR=guest
+      - RABBIT_PWD=guest
+
+  transportservice:
+    build:
+      context: ../TransportService/
+      dockerfile: Dockerfile
+    container_name: 'transport-service'
+    depends_on:
+      - rabbitmq
+    environment:
+      - RABBIT_HOST=rabbitmq
+      - RABBIT_PORT=5672
+      - RABBIT_USR=guest
+      - RABBIT_PWD=guest
+      - POSTGRES_USR=admin
+      - POSTGRES_PWD=admin
+      - POSTGRES_HOST=postgres
+      - POSTGRES_DATABASE=transport
+      - POSTGRES_PORT=5432
+
   mongo-express:
     image: mongo-express
-    restart: always
     ports:
       - "8081:8081"
     environment:
@@ -109,7 +152,9 @@ services:
     environment:
       - POSTGRES_PASSWORD=password
       - POSTGRES_USER=user
-      - POSTGRES_DB=accommodationdb
+      - POSTGRES_DB=rsww
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
   adminer:
     image: adminer
