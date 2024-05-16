@@ -73,9 +73,15 @@ public class TripEventsListener {
 
     @RabbitListener(queues = "${spring.rabbitmq.queue.reserveTrip}")
     public PostReservationResponse reserveTrip(PostReservationRequest request) {
-        logger.debug("Request: {}", request);
-        final var reservationResult = tripService.reserveTrip(UUID.fromString(request.getTripId()), request.getRoom(), request.getUser());
-        return PostReservationResponse.builder().reserved(reservationResult).build();
+        String requestNumber = "[" + Integer.toHexString(new Random().nextInt(0xFFFF)) + "]";
+        logger.info("{} Received a reservation request.", requestNumber);
+
+        final var reservationResult = tripService.reserveTrip(request);
+        if (reservationResult == null) {
+            return new PostReservationResponse(null, false, null);
+        }
+        logger.info("{} {} reservation.", requestNumber, (reservationResult.isResponse() ? "Successful" : "Unsuccessful"));
+        return reservationResult;
     }
 
     @RabbitListener(queues = "${spring.rabbitmq.queue.getReservations}")

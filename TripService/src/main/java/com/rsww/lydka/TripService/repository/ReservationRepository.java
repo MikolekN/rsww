@@ -16,7 +16,7 @@ import java.util.UUID;
 @Repository
 public interface ReservationRepository extends MongoRepository<ReservationRepository.Reservation, UUID> {
     List<Reservation> findReservationsByReservationId(String reservationId);
-    List<Reservation> findAllByUserId(Long userId);
+    List<Reservation> findAllByUser(String user);
     @Data
     @Builder
     @Jacksonized
@@ -24,16 +24,17 @@ public interface ReservationRepository extends MongoRepository<ReservationReposi
     @NoArgsConstructor
     public static class Reservation {
         private String reservationId;
+        private String user;
+        private Boolean payed;
+        private LocalDateTime reserved;
+
         private String startFlightReservation;
         private String endFlightReservation;
         private String startFlightId;
         private String endFlightId;
-        private Long userId;
         private String hotelReservation;
         private String tripId;
         private String hotelId;
-        private Boolean payed;
-        private LocalDateTime reserved;
         private Double price;
     }
 }

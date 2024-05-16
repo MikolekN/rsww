@@ -4,6 +4,7 @@ import com.rsww.lydka.TripService.entity.Trip;
 import com.rsww.lydka.TripService.listener.events.trip.TripsRequest;
 import com.rsww.lydka.TripService.listener.events.trip.TripsResponse;
 import com.rsww.lydka.TripService.listener.events.trip.reservation.PostReservationRequest;
+import com.rsww.lydka.TripService.listener.events.trip.reservation.PostReservationResponse;
 import com.rsww.lydka.TripService.repository.ReservationRepository;
 import com.rsww.lydka.TripService.repository.TripRepository;
 import com.rsww.lydka.TripService.entity.Flight;
@@ -72,19 +73,6 @@ public class TripService {
 
     }
 
-    public Optional<Trip> getTripById(UUID tripId) {
-        return tripRepository.findById(tripId.toString());
-    }
-
-    public Trip addTrip(Trip trip) {
-        return tripRepository.save(trip);
-    }
-
-    public void removeTrip(UUID tripId) {
-        Optional<Trip> trip = tripRepository.findById(tripId.toString());
-        trip.ifPresent(tripRepository::delete);
-    }
-
     public void confirmReservation(UUID reservationId) {
         Optional<ReservationRepository.Reservation> reservation = reservationRepository.findById(reservationId);
         if (reservation.isPresent()) {
@@ -93,12 +81,11 @@ public class TripService {
         }
     }
 
-    public boolean reserveTrip(final UUID tripId, final PostReservationRequest.Room room,
-                               final String user) {
-        final var trip = getTripById(tripId);
-        final var hotel = accommodationService.getHotel(trip.get().getHotelId()).get();
-        final var startFlight = transportService.getTransport(trip.get().getFromFlightId()).get();
-        final var endFlight = transportService.getTransport(trip.get().getToFlightId()).get();
+    public PostReservationResponse reserveTrip(final PostReservationRequest request) {
+        ReservationRepository.Reservation reservation = new ReservationRepository.Reservation();
+        reservation.setReservationId(UUID.randomUUID().toString());
+        reservation.setPayed(false);
+        reservation.setUser(request.getUsername());
 
         final var hotelReserved = accommodationService.reserve(hotel, room, startFlight.getDepartureDate(),
                 endFlight.getDepartureDate(), user);
@@ -122,7 +109,7 @@ public class TripService {
         final var reservation = ReservationRepository.Reservation.builder()
                 .startFlightReservation(String.valueOf(startFlightReserved.get()))
                 .endFlightReservation(String.valueOf(endFlightReserved.get()))
-                .userId(Long.parseLong(user))
+                .user(user)
                 .hotelId(hotel.getHotelId())
                 .hotelReservation(hotelReserved.getReservationId())
                 .reserved(LocalDateTime.now().plusMinutes(1))
