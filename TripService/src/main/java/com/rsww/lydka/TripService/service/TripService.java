@@ -1,7 +1,5 @@
 package com.rsww.lydka.TripService.service;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.rsww.lydka.TripService.entity.Trip;
 import com.rsww.lydka.TripService.listener.events.accommodation.MakeNewReservationResponse;
 import com.rsww.lydka.TripService.listener.events.orders.GetAllOrdersRequest;
 import com.rsww.lydka.TripService.listener.events.orders.GetAllOrdersResponse;
@@ -9,7 +7,6 @@ import com.rsww.lydka.TripService.listener.events.trip.reservation.PostReservati
 import com.rsww.lydka.TripService.listener.events.trip.reservation.PostReservationResponse;
 import com.rsww.lydka.TripService.listener.events.trip.reservation.transport.FlightReservation;
 import com.rsww.lydka.TripService.repository.ReservationRepository;
-import com.rsww.lydka.TripService.repository.TripRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,7 +69,7 @@ public class TripService {
             return response;
         }
         reservation.setHotelId(hotelReservation.getReservationMadeEvent().getHotel().toString());
-        //  reservation.setRoomId
+        // TODO: reservation.setRoomId
 
 
         String people_count = String.valueOf(Integer.parseInt(request.getNumberOfAdults()) + Integer.parseInt(request.getNumberOfChildrenUnder10()) + Integer.parseInt(request.getNumberOfChildrenUnder18()));
@@ -96,7 +93,6 @@ public class TripService {
         }
         reservation.setEndFlightId(endFlightReservation.getId());
 
-        // calculating price
         int numberOfAdults = Integer.parseInt(request.getNumberOfAdults());
         int numberOfChildrenUnder10 = Integer.parseInt(request.getNumberOfChildrenUnder10());
         int numberOfChildrenUnder18 = Integer.parseInt(request.getNumberOfChildrenUnder18());

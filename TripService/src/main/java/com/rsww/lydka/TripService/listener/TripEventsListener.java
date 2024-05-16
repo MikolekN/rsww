@@ -6,10 +6,8 @@ import com.rsww.lydka.TripService.listener.events.payment.PayForReservationComma
 import com.rsww.lydka.TripService.listener.events.payment.PaymentResponse;
 import com.rsww.lydka.TripService.listener.events.trip.reservation.PostReservationRequest;
 import com.rsww.lydka.TripService.listener.events.trip.reservation.PostReservationResponse;
-import com.rsww.lydka.TripService.listener.events.trip.reservation.UserReservationsRequest;
 import com.rsww.lydka.TripService.service.PaymentService;
 import com.rsww.lydka.TripService.service.TripService;
-import com.rsww.lydka.TripService.listener.events.trip.TripsResponse;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
