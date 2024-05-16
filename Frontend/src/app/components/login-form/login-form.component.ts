@@ -5,7 +5,7 @@ import {MatFormField} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
 import {MatButton} from "@angular/material/button";
 import {AuthService} from "../../service/auth.service";
-import {LoginRequest} from "../../DTO/loginRequest";
+import {LoginRequest} from "../../DTO/request/loginRequest";
 
 @Component({
   selector: 'app-login-form',

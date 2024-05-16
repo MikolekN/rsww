@@ -1,7 +1,7 @@
 <form (ngSubmit)="onSubmit()">
   <mat-form-field class="example-full-width">
     <mat-label>Country</mat-label>
-    <input matInput placeholder="Country" name="country" [(ngModel)]="formData.country" required>
+    <input matInput placeholder="Country" name="country" [(ngModel)]="formData.country">
   </mat-form-field>
 
   <mat-form-field class="example-full-width">
@@ -31,5 +31,4 @@
 
   <button mat-raised-button color="primary" type="submit">Submit</button>
 </form>
-
 
