@@ -8,6 +8,7 @@ import java.util.List;
 
 @ToString
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 public class GetAllOrdersResponse extends AbstractResponse {
