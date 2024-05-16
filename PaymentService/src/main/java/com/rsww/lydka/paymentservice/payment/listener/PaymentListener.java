@@ -1,14 +1,10 @@
 package com.rsww.lydka.paymentservice.payment.listener;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rsww.lydka.paymentservice.payment.response.PaymentRequest;
 import com.rsww.lydka.paymentservice.payment.response.PaymentResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

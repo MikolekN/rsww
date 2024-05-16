@@ -1,3 +1,3 @@
 package com.rsww.mikolekn.APIGateway.payment;
 
-public record PaymentDto(String paymentId) { }
+public record PaymentDto(String reservationId) { }

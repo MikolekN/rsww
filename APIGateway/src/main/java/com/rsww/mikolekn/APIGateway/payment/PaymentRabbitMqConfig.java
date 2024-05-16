@@ -8,11 +8,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class PaymentRabbitMqConfig {
 
-    @Value("${spring.rabbitmq.queue.trips.reservations.payment}")
-    private String reservationPayment;
+    @Value("${spring.rabbitmq.queue.tripReservationPayment}")
+    private String tripReservationPayment;
 
     @Bean
-    public Queue reservationPayment() {
-        return new Queue(reservationPayment);
+    public Queue tripReservationPayment() {
+        return new Queue(tripReservationPayment);
     }
 }

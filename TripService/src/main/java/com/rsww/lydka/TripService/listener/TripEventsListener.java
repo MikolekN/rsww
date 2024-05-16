@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 
 import org.slf4j.Logger;
 
+import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -88,10 +89,14 @@ public class TripEventsListener {
 
     @RabbitListener(queues = "${spring.rabbitmq.queue.tripReservationPayment}")
     public PaymentResponse payForReservation(PayForReservationCommand request) {
+        String requestNumber = "[" + Integer.toHexString(new Random().nextInt(0xFFFF)) + "]";
+        logger.info("{} Received a payment request.", requestNumber);
+
         final var responseFromPaymentService = paymentService.paymentRequest(request);
         if (responseFromPaymentService == null) {
             return new PaymentResponse(request.getUuid(), false, request.getReservationId());
         }
+        logger.info("{} {} payment.", requestNumber, (responseFromPaymentService.isResponse() ? "Successful" : "Unsuccessful"));
         if (responseFromPaymentService.isResponse()) {
             tripService.confirmReservation(request.getReservationId());
         }

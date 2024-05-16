@@ -20,12 +20,12 @@ import static com.rsww.mikolekn.APIGateway.utils.RequestUtils.prepareResponse;
 public class PaymentService {
     private final RabbitTemplate rabbitTemplate;
     static Logger logger = LoggerFactory.getLogger(PaymentService.class);
-    private final Queue reservationPayment;
+    private final Queue tripReservationPayment;
 
     @Autowired
-    PaymentService(RabbitTemplate rabbitTemplate, Queue reservationPayment) {
+    PaymentService(RabbitTemplate rabbitTemplate, Queue tripReservationPayment) {
         this.rabbitTemplate = rabbitTemplate;
-        this.reservationPayment = reservationPayment;
+        this.tripReservationPayment = tripReservationPayment;
     }
 
     ResponseEntity<PaymentResponse> payment(PaymentDto paymentDto) {
@@ -34,8 +34,8 @@ public class PaymentService {
         logger.info("{} Started a payment request with uuid: {}", requestNumber, uuid);
 
         PaymentResponse paymentResponse = rabbitTemplate.convertSendAndReceiveAsType(
-                reservationPayment.getName(),
-                new PaymentRequest(uuid, paymentDto.paymentId()),
+                tripReservationPayment.getName(),
+                new PaymentRequest(uuid, paymentDto.reservationId()),
                 new ParameterizedTypeReference<>() {});
         logger.info("{} Received a payment response: {}", requestNumber, paymentResponse);
 
