@@ -95,4 +95,9 @@ public class ListeningQueuesConfig {
     public Queue tripReservationPayment(@Value("${spring.rabbitmq.queue.tripReservationPayment}") final String name) {
         return new Queue(name, true);
     }
+
+    @Bean(name = "requestPaymentQueue")
+    public Queue requestPaymentQueue(@Value("${spring.rabbitmq.queue.requestPaymentQueue}") final String name) {
+        return new Queue(name, true);
+    }
 }
