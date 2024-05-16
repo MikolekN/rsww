@@ -32,21 +32,12 @@ public class OrderService {
     private final RabbitTemplate rabbitTemplate;
     static Logger logger = LoggerFactory.getLogger(PaymentService.class);
     private final Queue reserveTrip;
-
-    @Autowired
-    OrderService(RabbitTemplate rabbitTemplate, Queue reserveTrip) {
-        this.rabbitTemplate = rabbitTemplate;
-        this.reserveTrip = reserveTrip;
-    }
-
-    private final RabbitTemplate rabbitTemplate;
     private final Queue ordersQueue;
 
-    static Logger logger = LoggerFactory.getLogger(OrderService.class);
-
     @Autowired
-    public OrderService(RabbitTemplate rabbitTemplate, Queue ordersQueue) {
+    OrderService(RabbitTemplate rabbitTemplate, Queue reserveTrip, Queue ordersQueue) {
         this.rabbitTemplate = rabbitTemplate;
+        this.reserveTrip = reserveTrip;
         this.ordersQueue = ordersQueue;
     }
 

@@ -9,9 +9,16 @@ import org.springframework.context.annotation.Configuration;
 public class OrderRabbitMqConfig {
     @Value("${spring.rabbitmq.queue.reserveTrip}")
     private String reserveTrip;
+    @Value("${spring.rabbitmq.queue.ordersQueue}")
+    private String ordersQueue;
 
     @Bean
     public Queue reserveTrip() {
         return new Queue(reserveTrip);
+    }
+
+    @Bean
+    public Queue ordersQueue() {
+        return new Queue(ordersQueue);
     }
 }

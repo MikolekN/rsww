@@ -12,6 +12,6 @@ import java.util.List;
 @Setter
 public class GetAllOrdersResponse extends AbstractResponse {
     @JsonProperty("orders")
-    List<String> orders;
+    List<Reservation> orders;
 
 }
