@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {LoginRequest} from "../DTO/loginRequest";
+import {LoginRequest} from "../DTO/request/loginRequest";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Router} from "@angular/router";
-import {UserLoginResponse} from "../DTO/UserLoginResponse";
+import {UserLoginResponse} from "../DTO/response/UserLoginResponse";
 import {environment} from "../config/environment";
 
 @Injectable({
@@ -22,7 +22,7 @@ export class AuthService {
   public logIn(requestBody : LoginRequest) {
     this.http.post<UserLoginResponse>(environment.API_URL + "/api/login", requestBody).subscribe({
       next: (value: UserLoginResponse) => {
-        if (value.response === true) {
+        if (value.response) {
           this.snackbar.open(requestBody.username + ' logged in successfully!', 'Close');
           this.saveUserInSession(requestBody.username)
           this.router.navigate(['']);

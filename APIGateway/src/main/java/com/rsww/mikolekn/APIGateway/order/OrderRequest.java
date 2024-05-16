@@ -1,8 +1,8 @@
-package com.rsww.lydka.TripService.listener.events.trip.reservation;
+package com.rsww.mikolekn.APIGateway.order;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.rsww.mikolekn.APIGateway.utils.AbstractRequest;
 import lombok.*;
-import lombok.extern.jackson.Jacksonized;
 
 import java.util.UUID;
 
@@ -10,10 +10,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Setter
-public class PostReservationRequest {
-    @JsonProperty("uuid")
-    private String uuid;
-
+public class OrderRequest extends AbstractRequest {
     @JsonProperty("username")
     private String username;
 
@@ -44,9 +41,8 @@ public class PostReservationRequest {
     @JsonProperty("numberOfChildrenUnder18")
     private String numberOfChildrenUnder18;
 
-
-    public PostReservationRequest (String uuid, String username, String flightToUuid, String flightFromUuid, String hotelUuid, String roomType, String dateFrom, String dateTo, String numberOfAdults, String numberOfChildrenUnder10, String numberOfChildrenUnder18) {
-        this.uuid = uuid;
+    public OrderRequest (UUID uuid, String username, String flightToUuid, String flightFromUuid, String hotelUuid,String roomType, String dateFrom, String dateTo, String numberOfAdults, String numberOfChildrenUnder10, String numberOfChildrenUnder18) {
+        super(uuid);
         this.username = username;
         this.flightToUuid = flightToUuid;
         this.flightFromUuid = flightFromUuid;

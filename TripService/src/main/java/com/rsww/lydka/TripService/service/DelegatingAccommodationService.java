@@ -1,8 +1,10 @@
 package com.rsww.lydka.TripService.service;
 
 //import com.google.common.collect.ImmutableList;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.rsww.lydka.TripService.listener.events.trip.reservation.accommodation.CancelHotelReservationCommand;
 import com.rsww.lydka.TripService.listener.events.trip.reservation.accommodation.ReserveHotelCommand;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import org.slf4j.Logger;
@@ -20,8 +22,11 @@ import com.rsww.lydka.TripService.listener.events.accommodation.HotelDetailsResp
 import com.rsww.lydka.TripService.listener.events.trip.reservation.PostReservationRequest;
 import com.rsww.lydka.TripService.listener.events.trip.reservation.accommodation.ReservationResponse;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
@@ -87,36 +92,54 @@ public class DelegatingAccommodationService {
         return Optional.empty();
     }
 
-    public ReservationResponse reserve(Hotel hotel,
-                                       PostReservationRequest.Room room,
+    public ReservationResponse reserve(String reservationId,
+                                       String timestamp,
+                                       String hotelId,
+                                       String roomType,
                                        final String startDate,
                                        final String endDate,
-                                       final String user) {
-        final var request = ReserveHotelCommand.builder()
-                .hotelId(hotel.getHotelId())
-                .startDate(startDate)
-                .endDate(endDate)
-                .user(user)
-                .room(ReserveHotelCommand.Room.builder()
-                        .numberOfAdults(room.getNumberOfAdults())
-                        .numberOfChildren(room.getNumberOfChildren())
-                        .type(room.getType())
-                        .build())
-                .build();
-        final CompletableFuture<ReservationResponse> completableRequest = rabbitTemplate.convertSendAndReceiveAsType(
-                reserveHotelQueueName,
-                request,
-                new ParameterizedTypeReference<>() {
-                }
-        );
-        try {
-            final var response = completableRequest.get();
-            logger.debug("Reservation response {}", response);
-            return response;
-        } catch (ExecutionException | InterruptedException e) {
-            logger.error("Error when reserving hotel {}\nRoom: {}.", hotel, room, e);
+                                       final String numberOfAdults,
+                                       final String numberOfChildrenUnder10,
+                                       final String numberOfChildrenUnder18,
+                                       String requestNumber) {
+
+        @AllArgsConstructor
+        class Request {
+            @JsonProperty("reservationId")
+            private String reservationId;
+            @JsonProperty("timestamp")
+            private String timeStamp;
+            @JsonProperty("hotelId")
+            private String hotelId;
+            @JsonProperty("room")
+            private String roomType;
+            @JsonProperty("start_date")
+            private String startDate;
+            @JsonProperty("end_date")
+            private String endDate;
+            @JsonProperty("number_of_adults")
+            private String numberOfAdults;
+            @JsonProperty("number_of_children_under_10")
+            private String numberOfChildrenUnder10;
+            @JsonProperty("number_of_children_under_18")
+            private String numberOfChildrenUnder18;
         }
-        return ReservationResponse.builder().success(false).build();
+
+        Request request = new Request(reservationId,
+                timestamp,
+                hotelId,
+                roomType,
+                startDate,
+                endDate,
+                numberOfAdults,
+                numberOfChildrenUnder10,
+                numberOfChildrenUnder18);
+
+        return rabbitTemplate.convertSendAndReceiveAsType(
+                queue.getName(),
+                request,
+                new ParameterizedTypeReference<>() {}
+        );
     }
 
     public boolean cancelReservation(String reservationId) {

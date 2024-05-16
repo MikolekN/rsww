@@ -1,7 +1,7 @@
 <form (ngSubmit)="onSubmit()">
   <mat-form-field class="example-full-width">
     <mat-label>Country</mat-label>
-    <input matInput placeholder="Country" name="country" [(ngModel)]="formData.country" required>
+    <input matInput placeholder="Country" name="country" [(ngModel)]="formData.country">
   </mat-form-field>
 
   <mat-form-field class="example-full-width">
@@ -29,7 +29,10 @@
     <input matInput type="number" placeholder="Number of Children Under 18" name="numberofChildrenUnder18" [(ngModel)]="formData.numberofChildrenUnder18" required>
   </mat-form-field>
 
-  <button mat-raised-button color="primary" type="submit">Submit</button>
+  <button mat-raised-button color="primary" class="btn btn-dark" type="submit">Submit</button>
 </form>
 
+<div *ngFor="let offer of offers">
+  <app-single-offer [offer]="offer"></app-single-offer>
+</div>
 

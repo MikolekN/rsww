@@ -1,13 +1,17 @@
 package com.rsww.lydka.TripService.listener.events.trip.reservation;
 
-import lombok.Builder;
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.*;
 import lombok.extern.jackson.Jacksonized;
 
-@Data
-@Builder
-@Jacksonized
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class HotelReservationResponse {
-    private Boolean success;
-    private Long reservationId;
+    @JsonProperty("is_successful")
+    private boolean isSuccessful;
+    @JsonProperty("reservation_made_event")
+    private HotelReservationResponseInfo reservationMadeEvent;
 }

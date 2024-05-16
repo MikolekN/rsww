@@ -1,14 +1,17 @@
 package com.rsww.lydka.TripService.service;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.rsww.lydka.TripService.entity.Trip;
 import com.rsww.lydka.TripService.listener.events.orders.GetAllOrdersRequest;
 import com.rsww.lydka.TripService.listener.events.orders.GetAllOrdersResponse;
 import com.rsww.lydka.TripService.listener.events.trip.TripsRequest;
 import com.rsww.lydka.TripService.listener.events.trip.TripsResponse;
 import com.rsww.lydka.TripService.listener.events.trip.reservation.PostReservationRequest;
+import com.rsww.lydka.TripService.listener.events.trip.reservation.PostReservationResponse;
 import com.rsww.lydka.TripService.repository.ReservationRepository;
 import com.rsww.lydka.TripService.repository.TripRepository;
 import com.rsww.lydka.TripService.entity.Flight;
+import lombok.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +24,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class TripService {
-    private final Logger log = LoggerFactory.getLogger(TripService.class);
+    private final Logger logger = LoggerFactory.getLogger(TripService.class);
     private final TripRepository tripRepository;
     private final DelegatingAccommodationService accommodationService;
     private final DelegatingTransportService transportService;
@@ -74,19 +77,6 @@ public class TripService {
 
     }
 
-    public Optional<Trip> getTripById(UUID tripId) {
-        return tripRepository.findById(tripId.toString());
-    }
-
-    public Trip addTrip(Trip trip) {
-        return tripRepository.save(trip);
-    }
-
-    public void removeTrip(UUID tripId) {
-        Optional<Trip> trip = tripRepository.findById(tripId.toString());
-        trip.ifPresent(tripRepository::delete);
-    }
-
     public void confirmReservation(UUID reservationId) {
         Optional<ReservationRepository.Reservation> reservation = reservationRepository.findById(reservationId);
         if (reservation.isPresent()) {
@@ -95,47 +85,47 @@ public class TripService {
         }
     }
 
-    public boolean reserveTrip(final UUID tripId, final PostReservationRequest.Room room,
-                               final String user) {
-        final var trip = getTripById(tripId);
-        final var hotel = accommodationService.getHotel(trip.get().getHotelId()).get();
-        final var startFlight = transportService.getTransport(trip.get().getFromFlightId()).get();
-        final var endFlight = transportService.getTransport(trip.get().getToFlightId()).get();
+    public PostReservationResponse reserveTrip(final PostReservationRequest request, String requestNumber) {
+        logger.info("{} Started reservation.", requestNumber);
 
-        final var hotelReserved = accommodationService.reserve(hotel, room, startFlight.getDepartureDate(),
-                endFlight.getDepartureDate(), user);
-        if (!hotelReserved.getSuccess()) {
-            return false;
-        }
+        String reservationId = UUID.randomUUID().toString();
+        LocalDateTime reservationTime = LocalDateTime.now();
 
-        final Optional<Long> startFlightReserved = transportService.reserve(startFlight.getFlightId(), user, 1);
-        if (startFlightReserved.isEmpty()) {
-            accommodationService.cancelReservation(hotelReserved.getReservationId());
-            return false;
-        }
+        ReservationRepository.Reservation reservation = new ReservationRepository.Reservation();
+        reservation.setReservationId(reservationId);
+        reservation.setUser(request.getUsername());
+        reservation.setPayed(false);
+        reservation.setReservationTime(reservationTime);
 
-        final Optional<Long> endFlightReserved = transportService.reserve(endFlight.getFlightId(), user, 1);
-        if (endFlightReserved.isEmpty()) {
-            accommodationService.cancelReservation(hotelReserved.getReservationId());
-            transportService.cancelReservation(startFlightReserved.get());
-            return false;
-        }
+        PostReservationResponse response = new PostReservationResponse(request.getUuid(), false, reservationId);
 
-        final var reservation = ReservationRepository.Reservation.builder()
-                .startFlightReservation(String.valueOf(startFlightReserved.get()))
-                .endFlightReservation(String.valueOf(endFlightReserved.get()))
-                .userId(Long.parseLong(user))
-                .hotelId(hotel.getHotelId())
-                .hotelReservation(hotelReserved.getReservationId())
-                .reserved(LocalDateTime.now().plusMinutes(1))
-                .startFlightId(startFlight.getFlightId())
-                .endFlightId(endFlight.getFlightId())
-                .payed(false)
-                .tripId(String.valueOf(tripId))
-                .price(hotelReserved.getPrice() + startFlight.getPrice() + endFlight.getPrice())
-                .build();
+        // TODO: reserve accommodation
+        var hotelReservation = accommodationService.reserve(reservationId,
+                reservationTime.toString(),
+                request.getHotelUuid(),
+                request.getRoomType(),
+                request.getDateFrom(),
+                request.getDateTo(),
+                request.getNumberOfAdults(),
+                request.getNumberOfChildrenUnder10(),
+                request.getNumberOfChildrenUnder18());
+        logger.info("{} {} hotel reservation.", requestNumber, true ? "Successful" : "Unsuccessful");
+        // TODO: if unsuccessful cancel reservation
+        reservation.setHotelId(hotelReservation.getHotelId());
+
+        // TODO: reserve flights
+        logger.info("{} {} flights reservation.", requestNumber, true ? "Successful" : "Unsuccessful");
+        // TODO: if unsuccessful cancel accommodation and reservation
+        reservation.setStartFlightId(startFlightReservation.getStartFlightId());
+        reservation.setEndFlightId(endFlightReservation.getEndFlightId());
+
+        // TODO: calculate price?
+        reservation.setPrice(price);
+
         reservationRepository.save(reservation);
-        return true;
+
+        response.setResponse(true);
+        return response;
     }
 
     public List<TripsResponse.Trip> getReservations(Long userId) {
