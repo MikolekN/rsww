@@ -100,4 +100,14 @@ public class ListeningQueuesConfig {
     public Queue requestPaymentQueue(@Value("${spring.rabbitmq.queue.requestPaymentQueue}") final String name) {
         return new Queue(name, true);
     }
+
+    @Bean(name = "ReserveFlightQueue")
+    Queue ReserveFlightQueue(@Value("${spring.rabbitmq.queue.reserveFlightQueue}") final String ReserveFlightQueue) {
+        return new Queue(ReserveFlightQueue, true);
+    }
+
+    @Bean(name = "CancelFlightReservationQueue")
+    Queue CancelFlightReservationQueue(@Value("${spring.rabbitmq.queue.cancelFlightQueue}") final String CancelFlightReservationQueue) {
+        return new Queue(CancelFlightReservationQueue, true);
+    }
 }
