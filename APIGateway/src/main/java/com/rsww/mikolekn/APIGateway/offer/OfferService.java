@@ -46,6 +46,8 @@ public class OfferService {
         } catch (DateTimeException e) {
             dateTo = null;
         }
+        rabbitTemplate.setReplyTimeout(10000);
+
         GetAllOffersResponse response = rabbitTemplate.convertSendAndReceiveAsType(
                 offersQueue.getName(),
                 new GetAllOffersRequest(uuid, offersDto.country(), dateFrom, dateTo, Integer.parseInt(offersDto.numberOfAdults()), Integer.parseInt(offersDto.numberOfChildrenUnder10()), Integer.parseInt(offersDto.numberOfChildrenUnder18())),

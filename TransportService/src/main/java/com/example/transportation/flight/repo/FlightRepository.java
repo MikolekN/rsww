@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -15,5 +16,6 @@ public interface FlightRepository extends JpaRepository<Flight, UUID> {
     @Query("SELECT f FROM Flight f WHERE DATE(f.departureDate) = DATE(:date)")
     List<Flight> findAllByDepartureDateIgnoringTime(@Param("date") Date date);
 
+    List<Flight> findAllByDepartureDate(LocalDate date);
     Flight findByPrice(int price);
 }
