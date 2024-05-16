@@ -5,10 +5,7 @@ import com.rsww.mikolekn.APIGateway.offer.DTO.GetOfferInfoResponse;
 import com.rsww.mikolekn.APIGateway.offer.DTO.OfferDto;
 import com.rsww.mikolekn.APIGateway.offer.DTO.OffersDto;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
@@ -19,7 +16,7 @@ public class OfferController {
         this.offerService = offerService;
     }
 
-    @GetMapping("/offers")
+    @PostMapping("/offers")
     public ResponseEntity<GetAllOffersResponse> offers(@RequestBody OffersDto offersDto) {
         return offerService.offers(offersDto);
     }
