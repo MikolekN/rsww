@@ -37,7 +37,7 @@ public class DataInitialization {
 
     @PostConstruct
     private void init() {
-        System.out.println("DATA INITIALIZATION");
+        //System.out.println("DATA INITIALIZATION");
         //hotelRepository.save(new Hotel(UUID.randomUUID(), "Sheraton", "USA"));
         //hotelRepository.save(new Hotel(UUID.randomUUID(), "HOTEL123", "Poland"));
         /*UUID testAddedHotelUuid = UUID.randomUUID();
@@ -61,7 +61,7 @@ public class DataInitialization {
         rabbitTemplate.convertAndSend("room-create-queue", new AddNewRoomCommand(UUID.randomUUID(), 2, "type1", 240.5F, testAddedHotelUuid));
         rabbitTemplate.convertAndSend("room-create-queue", new AddNewRoomCommand(UUID.randomUUID(), 1, "type2", 280.5F, testAddedHotelUuid));
 */
-        System.out.println(hotelRepository.findAll());
+        //System.out.println(hotelRepository.findAll());
         //rabbitTemplate.convertAndSend("accommodation-topic", "", "Hello, !");
         rabbitTemplate.setMessageConverter(new Jackson2JsonMessageConverter());
         //rabbitTemplate.convertAndSend("accommodation-queue-2", new HotelAddedEvent(UUID.randomUUID(),"fr", "Polska"));
@@ -71,7 +71,7 @@ public class DataInitialization {
         //rabbitTemplate.convertAndSend("reservation-cancel-queue", new CancelReservationCommand(UUID.fromString("88bd961e-a6de-4f46-879b-7ba8b1128509")));*/
         //hotelEventRepository.save(new Event(UUID.randomUUID(), LocalDateTime.now()));
         //hotelEventRepository.save(new HotelEvent(UUID.randomUUID(), UUID.randomUUID()));
-        System.out.println(hotelEventRepository.findAll());
+        //System.out.println(hotelEventRepository.findAll());
 
     }
 

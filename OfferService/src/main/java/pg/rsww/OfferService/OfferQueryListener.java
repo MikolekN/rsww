@@ -26,18 +26,24 @@ public class OfferQueryListener {
     //@SendTo("#{environment['spring.rabbitmq.queue.hotelAllResponseQueue']}")
     public GetAllOffersResponse GetAllOffersHandler(GetAllOffersRequest getAllOffersRequest) {
         log.info(String.format("Received GetAllOffersRequest %s", getAllOffersRequest));
-        return offerService.getAllOffers(getAllOffersRequest);
+        GetAllOffersResponse response = offerService.getAllOffers(getAllOffersRequest);
+        log.info(String.format("Responding with GetAllOffersResponse %s", response));
+        return response;
     }
     @RabbitListener(queues = "${spring.rabbitmq.queue.offerInfoRequestQueue}")
     //@SendTo("#{environment['spring.rabbitmq.queue.hotelInfoResponseQueue']}")
     public GetOfferInfoResponse GetOfferInfoHandler(GetOfferInfoRequest getOfferInfoRequest) {
         log.info(String.format("Received GetOfferInfoRequest %s", getOfferInfoRequest));
-        return offerService.getOfferInfo(getOfferInfoRequest);
+        GetOfferInfoResponse response = offerService.getOfferInfo(getOfferInfoRequest);
+        log.info(String.format("Responding with GetOfferInfoResponse %s", response));
+        return response;
     }
     @RabbitListener(queues = "${spring.rabbitmq.queue.countryQueue}")
     public CountryResponse GetCountriesHandler(CountryRequest countryRequest) {
         log.info(String.format("Received CountryRequest %s", countryRequest));
-        return offerService.getCountries(countryRequest);
+        CountryResponse response = offerService.getCountries(countryRequest);
+        log.info(String.format("Responding with CountryResponse %s", response));
+        return response;
     }
 
 }

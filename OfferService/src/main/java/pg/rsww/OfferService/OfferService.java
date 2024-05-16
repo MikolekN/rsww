@@ -1,5 +1,7 @@
 package pg.rsww.OfferService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.AsyncRabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
@@ -28,6 +30,8 @@ public class OfferService {
     private final AsyncRabbitTemplate rabbitTemplate;
     private final static String DEPARTURE_COUNTRY = "Polska";
 
+    private final static Logger log = LoggerFactory.getLogger(OfferService.class);
+
     @Autowired
     public OfferService(AsyncRabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
@@ -51,28 +55,27 @@ public class OfferService {
         try {
             getAllHotelsResponse = hotelsResponse.get();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.warn("GetAllHotelsRequest got timeout");
         }
-        System.out.println(getAllHotelsResponse);
+        log.info(String.format("Received getAllHotelsResponse %s", getAllHotelsResponse));
 
         CompletableFuture<GetFlightsInfoResponse> getFlightsToInfoResponse = rabbitTemplate.convertSendAndReceiveAsType("FindFlightQueue", new GetFlightInfoRequest(startDate.toString()), new ParameterizedTypeReference<>(){});
         try {
             getAllFlightsToResponse = getFlightsToInfoResponse.get();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.warn("GetFlightsToInfoRequest got timeout");
         }
-        System.out.println(getAllFlightsToResponse);
+        log.info(String.format("Received getAllFlightsToResponse %s", getAllFlightsToResponse));
 
         CompletableFuture<GetFlightsInfoResponse> getFlightsFromInfoResponse = rabbitTemplate.convertSendAndReceiveAsType("FindFlightQueue", new GetFlightInfoRequest(endDate.toString()), new ParameterizedTypeReference<>(){});
         try {
             getAllFlightsFromResponse = getFlightsFromInfoResponse.get();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.warn("GetFlightsFromInfoRequest got timeout");
         }
-        System.out.println(getAllFlightsFromResponse);
-        // TODO - Dla każdego hotelu sprawdzamy, czy istnieją 2 loty:
-        // TODO - - lot dnia początkowego do kraju, w którym jest hotel
-        // TODO - - lot dnia końcowego z kraju, w którym jest hotel
+        log.info(String.format("Received getAllFlightsFromResponse %s", getAllFlightsFromResponse));
+
+
         GetAllOffersResponse  response = new GetAllOffersResponse();
         response.setOffers(new ArrayList<>());
         if(getAllHotelsResponse == null || getAllHotelsResponse.getHotelsList().isEmpty()) {
@@ -120,7 +123,6 @@ public class OfferService {
                 }
             }
         }
-        System.out.println(response);
         return response;
     }
 
@@ -142,25 +144,25 @@ public class OfferService {
         try {
             getHotelInfoResponse = hotelResponse.get();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.warn("GetHotelInfoRequest got timeout");
         }
-        System.out.println(getHotelInfoResponse);
+        log.info(String.format("Received getHotelInfoResponse %s", getHotelInfoResponse));
 
         CompletableFuture<GetFlightsInfoResponse> getFlightsToInfoResponse = rabbitTemplate.convertSendAndReceiveAsType("FindFlightQueue", new GetFlightInfoRequest(startDate.toString()), new ParameterizedTypeReference<>(){});
         try {
             getAllFlightsToResponse = getFlightsToInfoResponse.get();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.warn("GetFlightsToInfoRequest got timeout");
         }
-        System.out.println(getAllFlightsToResponse);
+        log.info(String.format("Received getAllFlightsToResponse %s", getAllFlightsToResponse));
 
         CompletableFuture<GetFlightsInfoResponse> getFlightsFromInfoResponse = rabbitTemplate.convertSendAndReceiveAsType("FindFlightQueue", new GetFlightInfoRequest(endDate.toString()), new ParameterizedTypeReference<>(){});
         try {
             getAllFlightsFromResponse = getFlightsFromInfoResponse.get();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.warn("GetFlightsFromInfoRequest got timeout");
         }
-        System.out.println(getAllFlightsFromResponse);
+        log.info(String.format("Received getAllFlightsFromResponse %s", getAllFlightsFromResponse));
 
         GetOfferInfoResponse response = new GetOfferInfoResponse();
         if(getHotelInfoResponse == null || !getHotelInfoResponse.isResultFound()) {
@@ -214,7 +216,6 @@ public class OfferService {
                         .availableFlightsTo(availableFlightsTo)
                         .availableFlightsFrom(availableFlightsFrom)
                 .build());
-        System.out.println(response);
         return response;
     }
     public CountryResponse getCountries(CountryRequest countryRequest) {
@@ -223,7 +224,7 @@ public class OfferService {
         try {
             response = countryResponseCompletableFuture.get();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.warn("CountryRequest got timeout");
         }
         return response;
     }

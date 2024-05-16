@@ -30,13 +30,13 @@ public class OfferServiceApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		rabbitTemplate.setMessageConverter(new Jackson2JsonMessageConverter());
-		System.out.println("pppp");
-		Scanner myObj = new Scanner(System.in);
-		String x = myObj.nextLine();
-		Object r = rabbitTemplate.convertSendAndReceive("offer-all-request-queue", new GetAllOffersRequest(UUID.randomUUID(), "", LocalDate.of(2025, 1, 1), LocalDate.of(2025, 1, 8), 1, 2, 0));
-		x = myObj.nextLine();
-		Object r2 = rabbitTemplate.convertSendAndReceive("offer-info-request-queue", new GetOfferInfoRequest(UUID.randomUUID(), UUID.fromString(x), LocalDate.of(2025, 1, 1), LocalDate.of(2025, 1, 8), 1, 2, 0));
-		//rabbitTemplate.convertAndSend("hotel-create-queue", new AddNewHotelCommand(testAddedHotelUuid, "HOTELTEST", "Francja"));
+//		System.out.println("pppp");
+//		Scanner myObj = new Scanner(System.in);
+//		String x = myObj.nextLine();
+//		Object r = rabbitTemplate.convertSendAndReceive("offer-all-request-queue", new GetAllOffersRequest(UUID.randomUUID(), "", LocalDate.of(2025, 1, 1), LocalDate.of(2025, 1, 8), 1, 2, 0));
+//		x = myObj.nextLine();
+//		Object r2 = rabbitTemplate.convertSendAndReceive("offer-info-request-queue", new GetOfferInfoRequest(UUID.randomUUID(), UUID.fromString(x), LocalDate.of(2025, 1, 1), LocalDate.of(2025, 1, 8), 1, 2, 0));
+//		//rabbitTemplate.convertAndSend("hotel-create-queue", new AddNewHotelCommand(testAddedHotelUuid, "HOTELTEST", "Francja"));
 
 	}
 }

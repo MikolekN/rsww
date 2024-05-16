@@ -31,7 +31,7 @@ public class ReservationCommandService {
         // Checking if hotel with uuid from request exists
         List<HotelEvent> hotelEvents = hotelEventRepository.findAllByHotelUuid(hotelUuid);
         if (hotelEvents.isEmpty()) {
-            System.out.println("WRONG HOTEL");
+            //System.out.println("WRONG HOTEL");
             return Optional.empty();
             // TODO if we add HotelRemoveEvent - then we would need to check if this event came and return Optional.empty() as well
         }
