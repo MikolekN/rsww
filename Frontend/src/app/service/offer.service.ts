@@ -7,6 +7,7 @@ import {Offer} from "../components/types/Offer";
 import {Observable} from "rxjs";
 import {FullOfferRequest} from "../DTO/request/fullOfferRequest";
 import {FullOfferResponse} from "../DTO/response/fullOfferResponse";
+import {Order} from "../components/types/order";
 
 @Injectable({
   providedIn: 'root'
@@ -23,9 +24,20 @@ export class OfferService {
     return this.http.post<FullOfferResponse>(environment.API_URL + "/api/offer", requestBody);
   }
 
+  public makeReservation(requestBody: Order) {
+    return this.http.post(environment.API_URL + "/api/order", requestBody);
+  }
+
+  public saveOrderData(order: Order) {
+    sessionStorage.setItem('orderData', JSON.stringify(order));
+  }
+
+  public getOrderData() {
+    const orderData = sessionStorage.getItem('orderData');
+    return orderData ? JSON.parse(orderData) : null;
+  }
+
   public saveOfferData(offer: Offer) {
-    console.log("Zapisywanie do json")
-    console.log(offer)
     sessionStorage.setItem('offerData', JSON.stringify(offer));
   }
 
@@ -57,7 +69,6 @@ export class OfferService {
 
   private parseDF(data: string): string {
     if (data.toString().length == 1) {
-      console.log("TESTS " + data)
       return "0" + data;
     }
     return data;

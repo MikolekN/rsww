@@ -1,0 +1,48 @@
+import { Component } from '@angular/core';
+import {PaymentService} from "../../../service/payment.service";
+import {OfferService} from "../../../service/offer.service";
+import {PaymentDataRequest} from "../../../DTO/request/PaymentDataRequest";
+import {FullOfferResponse} from "../../../DTO/response/fullOfferResponse";
+import {PaymentResponse} from "../../../DTO/response/PaymentResponse";
+
+@Component({
+  selector: 'app-payment',
+  standalone: true,
+  imports: [],
+  templateUrl: './payment.component.html',
+  styleUrl: './payment.component.css'
+})
+export class PaymentComponent {
+
+  public paymentStatus: string = ""
+
+  constructor(private payService: PaymentService,
+              private offerService: OfferService) {
+  }
+
+  public pay() {
+    this.paymentStatus = "Płatność w toku..."
+
+    const offerData = this.offerService.getOfferData()
+
+    if (offerData !== null) {
+      const request: PaymentDataRequest = {
+        reservationId: offerData.hotel_uuid
+      }
+
+      this.payService.payForOffer(request).subscribe({
+        next: (value: PaymentResponse) => {
+          if (value.response) {
+            this.paymentStatus = "Płatność udana! Id płatności: " + value.uuid
+          }
+          else {
+            this.paymentStatus = "Płatność się nie powiodła. Id płatności: " + value.uuid
+          }
+        },
+        error: () => {
+          this.paymentStatus = "Płatność się nie powiodła."
+        }
+      })
+    }
+  }
+}

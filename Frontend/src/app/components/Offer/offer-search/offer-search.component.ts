@@ -62,7 +62,6 @@ export class OfferSearchComponent {
       {
         next: (value: OfferResponseRaw) => {
           if (value.response) {
-            console.log(value)
             this.offers = this.offerService.convertArrayToOfferArray(value.offers)
             this.loadingText = "Wczytano oferty:"
           }

@@ -8,10 +8,14 @@ import {FullOfferResponse} from "../../../DTO/response/fullOfferResponse";
 import {NgForOf} from "@angular/common";
 import {SingleOfferComponent} from "../single-offer/single-offer.component";
 import {FormsModule} from "@angular/forms";
+import {Router} from "@angular/router";
+import {OffersComponent} from "../offers/offers.component";
+import {Order} from "../../types/order";
 
 class FlightSelectionForm {
   departureFlightId: string | null = null
   returnFlightId: string | null = null
+  roomType: string | null = null
 }
 
 @Component({
@@ -33,20 +37,23 @@ export class SelectedOfferComponent implements OnInit {
   public offer: FullOffer | null = null
   public formData: FlightSelectionForm = new FlightSelectionForm()
 
-  constructor(private offerService: OfferService) {
+  private selectedOffer: Offer | null = null
+
+  constructor(private offerService: OfferService,
+              private router: Router) {
   }
 
   ngOnInit(): void {
-    const selectedOffer: Offer | null = this.offerService.getOfferData()
+    this.selectedOffer = this.offerService.getOfferData()
 
-    if (selectedOffer !== null) {
+    if (this.selectedOffer !== null) {
       const request: FullOfferRequest = {
-        hotelUuid: selectedOffer.hotel_uuid,
-        dateFrom: selectedOffer.start_date,
-        dateTo: selectedOffer.end_date,
-        numberOfAdults: selectedOffer.number_of_adults,
-        numberOfChildrenUnder10: selectedOffer.number_of_children_under_10,
-        numberOfChildrenUnder18: selectedOffer.number_of_children_under_18
+        hotelUuid: this.selectedOffer.hotel_uuid,
+        dateFrom: this.selectedOffer.start_date,
+        dateTo: this.selectedOffer.end_date,
+        numberOfAdults: this.selectedOffer.number_of_adults,
+        numberOfChildrenUnder10: this.selectedOffer.number_of_children_under_10,
+        numberOfChildrenUnder18: this.selectedOffer.number_of_children_under_18
       }
 
       this.offerService.getSelectedOffer(request).subscribe({
@@ -59,6 +66,39 @@ export class SelectedOfferComponent implements OnInit {
         error: () => {
         }
       })
+    }
+  }
+
+  public goToPayment() {
+    if (this.offer !== null && this.selectedOffer !== null && this.formData.departureFlightId !== null
+    && this.formData.returnFlightId !== null && this.formData.roomType !== null) {
+      const orderData: Order = {
+          flightToUuid: this.formData.departureFlightId,
+          flightFromUuid: this.formData.returnFlightId,
+          hotelUuid: this.selectedOffer.hotel_uuid,
+          roomType: this.formData.roomType,
+          dateFrom: this.selectedOffer.start_date,
+          dateTo: this.selectedOffer.end_date,
+          numberOfAdults: this.selectedOffer.number_of_adults,
+          numberOfChildrenUnder10: this.selectedOffer.number_of_children_under_10,
+          numberOfChildrenUnder18: this.selectedOffer.number_of_children_under_18
+      }
+
+      this.offerService.makeReservation(orderData).subscribe({
+              next: (value) => {
+                  console.log("otrzymano dane")
+                  console.log(value)
+              },
+              error: (err) => {
+                console.log(err)
+              }
+      })
+
+      this.router.navigate(['pay']);
+    }
+    else {
+      console.log("Offer jest null")
+        console.log(this.formData)
     }
   }
 
