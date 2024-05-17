@@ -15,7 +15,7 @@ public class FlightReservation {
     private UUID id;
 
     @Column (name = "successfully_reserved")
-    private boolean successfullyReserved = false;
+    private boolean successfullyReserved = true;
 
     @ManyToOne
     @JoinColumn(name = "flight")

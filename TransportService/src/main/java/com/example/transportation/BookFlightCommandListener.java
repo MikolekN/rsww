@@ -9,12 +9,15 @@ import com.example.transportation.flight.domain.FlightReservation;
 import com.example.transportation.flight.repo.FlightRepository;
 import com.example.transportation.flight.repo.FlightReservationRepository;
 import com.example.transportation.command.BookFlightCommand;
+import jakarta.persistence.Column;
+import jakarta.persistence.Id;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Component
@@ -40,28 +43,29 @@ public class BookFlightCommandListener {
     @RabbitListener(queues = "${spring.rabbitmq.queue.reserveFlightQueue}")
     public FlightReservation receiveMessage(Message<BookFlightCommand> message) {
         BookFlightCommand command = message.getPayload();
-        Flight reservationFlight = flightRepository.getById(command.getFlightId());
+        return new FlightReservation(null, 0L, 0);
+        // Flight reservationFlight = flightRepository.getById(command.getFlightId());
 
-        if (reservationFlight.hasAvailableSits(command.getPeopleCount())) {
-            FlightReservation reservation = BookFlightCommand.commandToEntityMapper(command, reservationFlight);
-            FlightReservation savedReservation = repository.save(reservation);
-
-            reservationFlight.setSitsOccupied(reservationFlight.getSitsOccupied() + 1);
-            flightRepository.save(reservationFlight);
-
-            FlightAddedEvent flightEvent = addedFlightsRepository.findByFlightId(reservationFlight.getId());
-
-            eventRepository.save(new FlightBookedEvent(
-                    UUID.randomUUID(),
-                    savedReservation.getId(),
-                    flightEvent,
-                    savedReservation.getUserId(),
-                    savedReservation.getPeopleCount()
-            ));
-
-            return savedReservation;
-        }
-
-        return null;
+//        if (reservationFlight.hasAvailableSits(command.getPeopleCount())) {
+//            FlightReservation reservation = BookFlightCommand.commandToEntityMapper(command, reservationFlight);
+//            FlightReservation savedReservation = repository.save(reservation);
+//
+//            reservationFlight.setSitsOccupied(reservationFlight.getSitsOccupied() + 1);
+//            flightRepository.save(reservationFlight);
+//
+//            FlightAddedEvent flightEvent = addedFlightsRepository.findByFlightId(reservationFlight.getId());
+//
+//            eventRepository.save(new FlightBookedEvent(
+//                    UUID.randomUUID(),
+//                    savedReservation.getId(),
+//                    flightEvent,
+//                    savedReservation.getUserId(),
+//                    savedReservation.getPeopleCount()
+//            ));
+//
+//            return savedReservation;
+//        }
+//
+//        return null;
     }
 }
