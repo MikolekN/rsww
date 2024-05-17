@@ -27,7 +27,7 @@ public class TransportService {
     }
 
     public FlightReservation reserve(String flightId, String userId, String numberOfPeople) {
-        ReserveFlight reserveFlight = new ReserveFlight(flightId, userId, numberOfPeople);
+        ReserveFlight reserveFlight = new ReserveFlight(flightId, Long.parseLong(userId), Integer.parseInt(numberOfPeople));
 
         FlightReservation reservation = template.convertSendAndReceiveAsType(
                 ReserveFlightQueue.getName(),

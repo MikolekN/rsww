@@ -73,7 +73,7 @@ public class TripService {
 
 
         String people_count = String.valueOf(Integer.parseInt(request.getNumberOfAdults()) + Integer.parseInt(request.getNumberOfChildrenUnder10()) + Integer.parseInt(request.getNumberOfChildrenUnder18()));
-        FlightReservation startFlightReservation = transportService.reserve(request.getFlightToUuid(), request.getUsername(), people_count);
+        FlightReservation startFlightReservation = transportService.reserve(request.getFlightToUuid(), "0", people_count);
         logger.info("{} {} start flight reservation.", requestNumber, startFlightReservation.isSuccessfullyReserved() ? "Successful" : "Unsuccessful");
         if (!startFlightReservation.isSuccessfullyReserved()) {
             String cancellationTime = LocalDateTime.now().toString();
@@ -83,7 +83,7 @@ public class TripService {
         }
         reservation.setStartFlightId(startFlightReservation.getId());
 
-        FlightReservation endFlightReservation = transportService.reserve(request.getFlightFromUuid(), request.getUsername(), people_count);
+        FlightReservation endFlightReservation = transportService.reserve(request.getFlightFromUuid(), "0", people_count);
         logger.info("{} {} flights reservation.", requestNumber, endFlightReservation.isSuccessfullyReserved() ? "Successful" : "Unsuccessful");
         if (!endFlightReservation.isSuccessfullyReserved()) {
             transportService.cancel(startFlightReservation.getId());

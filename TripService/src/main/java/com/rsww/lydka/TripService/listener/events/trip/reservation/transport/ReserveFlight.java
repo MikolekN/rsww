@@ -14,7 +14,7 @@ public class ReserveFlight {
     @JsonProperty("flightId")
     private String flightId;
     @JsonProperty("userId")
-    private String userId;
+    private long userId;
     @JsonProperty("peopleCount")
-    private String peopleCount;
+    private int peopleCount;
 }
