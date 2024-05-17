@@ -4,6 +4,8 @@ import {OfferService} from "../../../service/offer.service";
 import {PaymentDataRequest} from "../../../DTO/request/PaymentDataRequest";
 import {FullOfferResponse} from "../../../DTO/response/fullOfferResponse";
 import {PaymentResponse} from "../../../DTO/response/PaymentResponse";
+import {Router} from "@angular/router";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-payment',
@@ -17,7 +19,9 @@ export class PaymentComponent {
   public paymentStatus: string = ""
 
   constructor(private payService: PaymentService,
-              private offerService: OfferService) {
+              private offerService: OfferService,
+              private router: Router,
+              private snackbar: MatSnackBar) {
   }
 
   public pay() {
@@ -44,5 +48,10 @@ export class PaymentComponent {
         }
       })
     }
+  }
+
+  public cancel() {
+    this.snackbar.open('Rezerwacja anulowana', 'Close');
+    this.router.navigate(['offers']);
   }
 }
