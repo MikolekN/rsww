@@ -1,12 +1,20 @@
 <form (ngSubmit)="onSubmit()">
+  <mat-form-field appearance="fill">
+    <mat-label>Kraj</mat-label>
+    <mat-select [(value)]="formData.country" [(ngModel)]="formData.country">
+      <mat-option *ngFor="let country of countries" [value]="country">
+        {{ country }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
   <mat-form-field class="example-full-width">
     <mat-label>Date From</mat-label>
-    <input matInput type="date" placeholder="Date From" name="dateFrom" [(ngModel)]="formData.dateFrom" required>
+    <input matInput type="date" placeholder="Date From" name="dateFrom" [(ngModel)]="formData.dateFrom">
   </mat-form-field>
 
   <mat-form-field class="example-full-width">
     <mat-label>Date To</mat-label>
-    <input matInput type="date" placeholder="Date To" name="dateTo" [(ngModel)]="formData.dateTo" required>
+    <input matInput type="date" placeholder="Date To" name="dateTo" [(ngModel)]="formData.dateTo">
   </mat-form-field>
 
   <mat-form-field class="example-full-width">
@@ -16,12 +24,12 @@
 
   <mat-form-field class="example-full-width">
     <mat-label>Children <10</mat-label>
-    <input matInput type="number" placeholder="Number of Children Under 10" name="numberofChildrenUnder10" [(ngModel)]="formData.numberofChildrenUnder10" required>
+    <input matInput type="number" placeholder="Number of Children Under 10" name="numberofChildrenUnder10" [(ngModel)]="formData.numberofChildrenUnder10">
   </mat-form-field>
 
   <mat-form-field class="example-full-width">
     <mat-label>Children <18</mat-label>
-    <input matInput type="number" placeholder="Number of Children Under 18" name="numberofChildrenUnder18" [(ngModel)]="formData.numberofChildrenUnder18" required>
+    <input matInput type="number" placeholder="Number of Children Under 18" name="numberofChildrenUnder18" [(ngModel)]="formData.numberofChildrenUnder18">
   </mat-form-field>
 
   <button class="btn btn-dark rounded-0" type="submit">Submit</button>

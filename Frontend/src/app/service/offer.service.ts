@@ -4,7 +4,7 @@ import {HttpClient} from "@angular/common/http";
 import {OfferRequest} from "../DTO/request/offerRequest";
 import {OfferResponse, OfferResponseRaw} from "../DTO/response/offerResponse";
 import {Offer} from "../components/types/Offer";
-import {Observable} from "rxjs";
+import {map, Observable} from "rxjs";
 import {FullOfferRequest} from "../DTO/request/fullOfferRequest";
 import {FullOfferResponse} from "../DTO/response/fullOfferResponse";
 import {Order} from "../components/types/order";
@@ -26,6 +26,12 @@ export class OfferService {
 
   public makeReservation(requestBody: Order) {
     return this.http.post(environment.API_URL + "/api/order", requestBody);
+  }
+
+  public getCountries(): Observable<string[]> {
+    return this.http.get<any>(environment.API_URL + "/api/countries").pipe(
+      map(response => response.body.countries)
+    );
   }
 
   public saveOrderData(order: Order) {
