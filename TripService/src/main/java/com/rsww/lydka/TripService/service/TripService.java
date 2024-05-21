@@ -81,17 +81,17 @@ public class TripService {
             response.setReservationId(null);
             return response;
         }
-        reservation.setStartFlightId(startFlightReservation.getId());
+        reservation.setStartFlightId(startFlightReservation.getId().toString());
 
         FlightReservation endFlightReservation = transportService.reserve(request.getFlightFromUuid(), "0", people_count);
         logger.info("{} {} flights reservation.", requestNumber, endFlightReservation.isSuccessfullyReserved() ? "Successful" : "Unsuccessful");
         if (!endFlightReservation.isSuccessfullyReserved()) {
-            transportService.cancel(startFlightReservation.getId());
+            transportService.cancel(startFlightReservation.getId().toString(), startFlightReservation.getPeopleCount());
             String cancellationTime = LocalDateTime.now().toString();
             accommodationService.cancelReservation(UUID.randomUUID().toString(), cancellationTime, reservationId);
             return response;
         }
-        reservation.setEndFlightId(endFlightReservation.getId());
+        reservation.setEndFlightId(endFlightReservation.getId().toString());
 
         int numberOfAdults = Integer.parseInt(request.getNumberOfAdults());
         int numberOfChildrenUnder10 = Integer.parseInt(request.getNumberOfChildrenUnder10());
@@ -99,7 +99,7 @@ public class TripService {
 
         float roomPrice = hotelReservation.getReservationMadeEvent().getRoomPrice();
         float fullHotelPrice = (roomPrice * numberOfAdults) + (roomPrice * numberOfChildrenUnder10 * 0.5f) + (roomPrice * numberOfChildrenUnder18 * 0.7f);
-        float flightsPrice = (numberOfAdults + numberOfChildrenUnder18 + numberOfChildrenUnder10) * (Float.parseFloat(startFlightReservation.getFlight().getPrice()) + Float.parseFloat(endFlightReservation.getFlight().getPrice()));
+        float flightsPrice = (numberOfAdults + numberOfChildrenUnder18 + numberOfChildrenUnder10) * ((startFlightReservation.getFlight().getPrice()) + (endFlightReservation.getFlight().getPrice()));
         float price = fullHotelPrice + flightsPrice;
         reservation.setPrice((double) price);
 

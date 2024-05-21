@@ -13,4 +13,6 @@ import lombok.Setter;
 public class CancelFlight {
     @JsonProperty("reservationId")
     String reservationId;
+    @JsonProperty("peopleCount")
+    int peopleCount;
 }

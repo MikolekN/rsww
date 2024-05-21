@@ -1,4 +1,5 @@
 package com.rsww.lydka.TripService.listener.events.trip.reservation.transport;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,9 +11,14 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 public class FlightReservation {
-    private String id;
+    @JsonProperty("id")
+    private UUID id;
+    @JsonProperty("successfully_reserved")
     private boolean successfullyReserved;
+    @JsonProperty("flight")
     private Flight flight;
-    private String userId;
-    private String peopleCount;
+    @JsonProperty("user_id")
+    private Long userId;
+    @JsonProperty("people_count")
+    private int peopleCount;
 }

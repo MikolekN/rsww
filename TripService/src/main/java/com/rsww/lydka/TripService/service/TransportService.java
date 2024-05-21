@@ -38,8 +38,8 @@ public class TransportService {
         return reservation;
     }
 
-    public void cancel(String reservationId) {
-        CancelFlight cancelFlight = new CancelFlight(reservationId);
+    public void cancel(String reservationId, int peopleCount) {
+        CancelFlight cancelFlight = new CancelFlight(reservationId, peopleCount);
 
         String cancellation = template.convertSendAndReceiveAsType(
                 CancelFlightReservationQueue.getName(),
