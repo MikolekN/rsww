@@ -11,6 +11,8 @@ public class OrderRabbitMqConfig {
     private String reserveTrip;
     @Value("${spring.rabbitmq.queue.ordersQueue}")
     private String ordersQueue;
+    @Value("${spring.rabbitmq.queue.orderInfoQueue}")
+    private String orderInfoQueue;
 
     @Bean
     public Queue reserveTrip() {
@@ -20,5 +22,10 @@ public class OrderRabbitMqConfig {
     @Bean
     public Queue ordersQueue() {
         return new Queue(ordersQueue);
+    }
+
+    @Bean
+    public Queue orderInfoQueue() {
+        return new Queue(orderInfoQueue);
     }
 }

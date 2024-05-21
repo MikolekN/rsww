@@ -1,8 +1,7 @@
 package com.rsww.lydka.TripService.service;
 
 import com.rsww.lydka.TripService.listener.events.accommodation.MakeNewReservationResponse;
-import com.rsww.lydka.TripService.listener.events.orders.GetAllOrdersRequest;
-import com.rsww.lydka.TripService.listener.events.orders.GetAllOrdersResponse;
+import com.rsww.lydka.TripService.listener.events.orders.*;
 import com.rsww.lydka.TripService.listener.events.trip.reservation.PostReservationRequest;
 import com.rsww.lydka.TripService.listener.events.trip.reservation.PostReservationResponse;
 import com.rsww.lydka.TripService.listener.events.trip.reservation.transport.FlightReservation;
@@ -112,5 +111,10 @@ public class TripService {
     public GetAllOrdersResponse getAllOrders(GetAllOrdersRequest request) {
         List<ReservationRepository.Reservation> reservations = reservationRepository.findAllByUser(request.getUsername());
         return new GetAllOrdersResponse(reservations);
+    }
+
+    public OrderInfoResponse reservationInfo(OrderInfoRequest request) {
+        Optional<ReservationRepository.Reservation> reservation = reservationRepository.findById(UUID.fromString(request.getReservationId()));
+        return reservation.map(OrderInfoResponse::new).orElseGet(() -> new OrderInfoResponse(null));
     }
 }
