@@ -6,13 +6,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 public class CancelFlight {
-    @JsonProperty("reservationId")
-    String reservationId;
+    @JsonProperty("reservationID")
+    UUID reservationID;
     @JsonProperty("peopleCount")
     int peopleCount;
 }

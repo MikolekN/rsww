@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
 public class TransportService {
     private final Logger logger = LoggerFactory.getLogger(TransportService.class);
@@ -39,7 +41,7 @@ public class TransportService {
     }
 
     public void cancel(String reservationId, int peopleCount) {
-        CancelFlight cancelFlight = new CancelFlight(reservationId, peopleCount);
+        CancelFlight cancelFlight = new CancelFlight(UUID.fromString(reservationId), peopleCount);
 
         String cancellation = template.convertSendAndReceiveAsType(
                 CancelFlightReservationQueue.getName(),
