@@ -28,10 +28,11 @@ export class PaymentComponent {
     this.paymentStatus = "Płatność w toku..."
 
     const offerData = this.offerService.getOfferData()
+    const reservationId = this.offerService.getReservationId()
 
-    if (offerData !== null) {
+    if (offerData !== null && reservationId !== null) {
       const request: PaymentDataRequest = {
-        reservationId: offerData.hotel_uuid
+        reservationId: reservationId
       }
 
       this.payService.payForOffer(request).subscribe({
@@ -47,6 +48,9 @@ export class PaymentComponent {
           this.paymentStatus = "Płatność się nie powiodła."
         }
       })
+    }
+    else {
+      this.paymentStatus = "Rezerwacja nie udała się."
     }
   }
 

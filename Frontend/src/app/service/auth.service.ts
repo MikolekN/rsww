@@ -43,7 +43,7 @@ export class AuthService {
       sessionStorage.setItem('username', username);
   }
 
-  private getUsername(){
+  public getUsername(){
     return sessionStorage.getItem('username');
   }
 

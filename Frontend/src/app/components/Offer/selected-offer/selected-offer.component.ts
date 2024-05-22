@@ -11,6 +11,8 @@ import {FormsModule} from "@angular/forms";
 import {Router} from "@angular/router";
 import {OffersComponent} from "../offers/offers.component";
 import {Order} from "../../types/order";
+import {AuthService} from "../../../service/auth.service";
+import {OrderResponse} from "../../../DTO/response/orderResponse";
 
 class FlightSelectionForm {
   departureFlightId: string | null = null
@@ -39,8 +41,11 @@ export class SelectedOfferComponent implements OnInit {
 
   private selectedOffer: Offer | null = null
 
+  public offerInfo = ""
+
   constructor(private offerService: OfferService,
-              private router: Router) {
+              private router: Router,
+              private authService: AuthService) {
   }
 
   ngOnInit(): void {
@@ -70,9 +75,12 @@ export class SelectedOfferComponent implements OnInit {
   }
 
   public goToPayment() {
+    const username = this.authService.getUsername()
+
     if (this.offer !== null && this.selectedOffer !== null && this.formData.departureFlightId !== null
-    && this.formData.returnFlightId !== null && this.formData.roomType !== null) {
+    && this.formData.returnFlightId !== null && this.formData.roomType !== null && username !== null) {
       const orderData: Order = {
+          username: username,
           flightToUuid: this.formData.departureFlightId,
           flightFromUuid: this.formData.returnFlightId,
           hotelUuid: this.selectedOffer.hotel_uuid,
@@ -84,17 +92,25 @@ export class SelectedOfferComponent implements OnInit {
           numberOfChildrenUnder18: this.selectedOffer.number_of_children_under_18
       }
 
+      this.offerInfo = "Przetwarzanie..."
+
       this.offerService.makeReservation(orderData).subscribe({
-              next: (value) => {
-                  console.log("otrzymano dane")
-                  console.log(value)
+              next: (value: OrderResponse) => {
+                console.log(value)
+
+                if (value.response) {
+                  this.offerService.saveReservationId(value.reservationId)
+                  this.router.navigate(['pay']);
+                }
+                else {
+                  this.offerInfo = "Przepraszamy, oferta już nie jest dostępna."
+                }
               },
               error: (err) => {
+                this.offerInfo = "Wystąpił błąd."
                 console.log(err)
               }
       })
-
-      this.router.navigate(['pay']);
     }
     else {
       console.log("Offer jest null")

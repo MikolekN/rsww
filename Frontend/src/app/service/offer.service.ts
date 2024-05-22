@@ -8,6 +8,7 @@ import {map, Observable} from "rxjs";
 import {FullOfferRequest} from "../DTO/request/fullOfferRequest";
 import {FullOfferResponse} from "../DTO/response/fullOfferResponse";
 import {Order} from "../components/types/order";
+import {OrderResponse} from "../DTO/response/orderResponse";
 
 @Injectable({
   providedIn: 'root'
@@ -24,8 +25,8 @@ export class OfferService {
     return this.http.post<FullOfferResponse>(environment.API_URL + "/api/offer", requestBody);
   }
 
-  public makeReservation(requestBody: Order) {
-    return this.http.post(environment.API_URL + "/api/order", requestBody);
+  public makeReservation(requestBody: Order): Observable<OrderResponse> {
+    return this.http.post<OrderResponse>(environment.API_URL + "/api/order", requestBody);
   }
 
   public getCountries(): Observable<string[]> {
@@ -34,13 +35,16 @@ export class OfferService {
     );
   }
 
-  public saveOrderData(order: Order) {
-    sessionStorage.setItem('orderData', JSON.stringify(order));
+  public saveReservationId(reservationId: string) {
+    sessionStorage.setItem('reservationId', reservationId)
   }
 
-  public getOrderData() {
-    const orderData = sessionStorage.getItem('orderData');
-    return orderData ? JSON.parse(orderData) : null;
+  public getReservationId() {
+    return sessionStorage.getItem('reservationId')
+  }
+
+  public clearReservationId() {
+    sessionStorage.removeItem('reservationId');
   }
 
   public saveOfferData(offer: Offer) {

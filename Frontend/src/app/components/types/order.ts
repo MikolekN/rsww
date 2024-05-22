@@ -1,4 +1,5 @@
 export interface Order {
+  username: string
   flightToUuid: string
   flightFromUuid: string
   hotelUuid: string
