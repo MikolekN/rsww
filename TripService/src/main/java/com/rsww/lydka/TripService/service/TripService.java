@@ -146,7 +146,11 @@ public class TripService {
     }
 
     public OrderInfoResponse reservationInfo(OrderInfoRequest request) {
-        Optional<ReservationRepository.Reservation> reservation = reservationRepository.findById(UUID.fromString(request.getReservationId()));
-        return reservation.map(OrderInfoResponse::new).orElseGet(() -> new OrderInfoResponse(null));
+        List<ReservationRepository.Reservation> reservations = reservationRepository.findReservationsByReservationId(request.getReservationId());
+        if (reservations.isEmpty()) {
+            return new OrderInfoResponse(null);
+        }
+        ReservationRepository.Reservation reservation = reservations.get(0);
+        return new OrderInfoResponse(reservation);
     }
 }
