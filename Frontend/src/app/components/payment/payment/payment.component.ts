@@ -52,6 +52,7 @@ export class PaymentComponent implements OnInit, OnDestroy {
             }
             else if (value.order.payed === true) {
               this.reservationStatus = "Rezerwacja pomyślnie opłacona."
+              this.paymentButtonDisabled = true
             }
             else {
               this.reservationStatus = "Rezerwacja w toku."
