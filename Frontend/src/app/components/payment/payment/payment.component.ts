@@ -49,6 +49,7 @@ export class PaymentComponent implements OnInit, OnDestroy {
           next: (value) => {
             if (value.order.tripId !== null) {
               this.reservationStatus = "Czas na rezerwację minął (1 min)."
+              this.paymentButtonDisabled = true
             }
             else if (value.order.payed === true) {
               this.reservationStatus = "Rezerwacja pomyślnie opłacona."
