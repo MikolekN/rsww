@@ -34,18 +34,22 @@ public class CancellingService {
             return;
         }
         List<ReservationRepository.Reservation> res = reservationRepository.findReservationsByReservationId(reservation.getReservationId());
+
         if(res.isEmpty())
             return;
         ReservationRepository.Reservation reservationToCheck = res.get(0);
+
         if(reservationToCheck.getPayed())
             return;
         logger.info("Reservation {} was cancelled, because it wasn't paid.", reservation.getReservationId());
         transportService.cancel(reservationToCheck.getStartFlightId(), numberOfPeople);
         transportService.cancel(reservationToCheck.getEndFlightId(), numberOfPeople);
         String cancellationTime = LocalDateTime.now().toString();
+
         accommodationService.cancelReservation(UUID.randomUUID().toString(), cancellationTime, reservationToCheck.getReservationId());
-        reservation.setTripId("Cancelled");
-        reservationRepository.save(reservation);
+
+        reservationToCheck.setTripId("Cancelled");
+        reservationRepository.save(reservationToCheck);
 
     }
 }
