@@ -22,6 +22,13 @@ public class RabbitMqConfig {
     @Value("${spring.rabbitmq.port}")
     private String port;
 
+    @Value("${spring.rabbitmq.queue.requestPaymentQueue}")
+    private String requestPaymentQueue;
+
+    @Bean
+    public Queue requestPaymentQueue() {
+        return new Queue(requestPaymentQueue);
+    }
     @Bean
     public MessageConverter jsonMessageConverter() {
         return new Jackson2JsonMessageConverter();
