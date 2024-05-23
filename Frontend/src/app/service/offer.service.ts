@@ -7,7 +7,7 @@ import {Offer} from "../components/types/Offer";
 import {map, Observable} from "rxjs";
 import {FullOfferRequest} from "../DTO/request/fullOfferRequest";
 import {FullOfferResponse} from "../DTO/response/fullOfferResponse";
-import {Order} from "../components/types/order";
+import {Order, UserOrderApiResponse} from "../components/types/order";
 import {OrderResponse} from "../DTO/response/orderResponse";
 
 @Injectable({
@@ -32,19 +32,42 @@ export class OfferService {
   public getCountries(): Observable<string[]> {
     return this.http.get<any>(environment.API_URL + "/api/countries").pipe(
       map(response => response.body.countries)
-    );
+    )
   }
 
-  public saveReservationId(reservationId: string) {
-    sessionStorage.setItem('reservationId', reservationId)
+  public getOrderStatus(orderUUID: string): Observable<any> {
+    return this.http.post<any>(`${environment.API_URL}/api/order/${orderUUID}`, {})
   }
 
-  public getReservationId() {
-    return sessionStorage.getItem('reservationId')
+  public getUserOrders(username: string): Observable<UserOrderApiResponse> {
+    const body = { username: username };
+    return this.http.post<UserOrderApiResponse>(environment.API_URL + "/api/orders", body);
   }
 
-  public clearReservationId() {
-    sessionStorage.removeItem('reservationId');
+  public saveOrderResponse(reservation: OrderResponse) {
+    sessionStorage.setItem('orderResponse', JSON.stringify(reservation))
+  }
+
+  public getOrderResponse(): OrderResponse {
+    const offerData = sessionStorage.getItem('orderResponse');
+    return offerData ? JSON.parse(offerData) : null;
+  }
+
+  public clearOrderResponse() {
+    sessionStorage.removeItem('orderResponse');
+  }
+
+  public clearOrder() {
+    sessionStorage.removeItem('order');
+  }
+
+  public saveOrder(order: Order) {
+    sessionStorage.setItem('order', JSON.stringify(order))
+  }
+
+  public getOrder(): OrderResponse {
+    const offerData = sessionStorage.getItem('order');
+    return offerData ? JSON.parse(offerData) : null;
   }
 
   public saveOfferData(offer: Offer) {

@@ -99,7 +99,7 @@ export class SelectedOfferComponent implements OnInit {
                 console.log(value)
 
                 if (value.response) {
-                  this.offerService.saveReservationId(value.reservationId)
+                  this.offerService.saveOrderResponse(value)
                   this.router.navigate(['pay']);
                 }
                 else {
@@ -114,7 +114,10 @@ export class SelectedOfferComponent implements OnInit {
     }
     else {
       console.log("Offer jest null")
-        console.log(this.formData)
+      console.log(this.formData)
+      console.log(this.offer)
+      console.log(this.selectedOffer)
+      console.log(username)
     }
   }
 

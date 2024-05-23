@@ -1,7 +1,7 @@
 <form (ngSubmit)="onSubmit()">
   <mat-form-field appearance="fill">
     <mat-label>Kraj</mat-label>
-    <mat-select [(value)]="formData.country" [(ngModel)]="formData.country">
+    <mat-select [(value)]="formData.country" [(ngModel)]="formData.country" name="country">
       <mat-option value="">Wszystkie</mat-option>
       <mat-option *ngFor="let country of countries" [value]="country">
         {{ country }}
