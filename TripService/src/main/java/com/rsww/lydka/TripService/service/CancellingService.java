@@ -37,7 +37,7 @@ public class CancellingService {
 
         if(res.isEmpty())
             return;
-        ReservationRepository.Reservation reservationToCheck = res.get(0);
+        ReservationRepository.Reservation reservationToCheck = res.get(res.size() - 1);
 
         if(reservationToCheck.getPayed())
             return;
