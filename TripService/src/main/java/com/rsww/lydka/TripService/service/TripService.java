@@ -39,7 +39,7 @@ public class TripService {
         List<ReservationRepository.Reservation> res = reservationRepository.findReservationsByReservationId(reservationId.toString());
         if(res.isEmpty())
             return;
-        ReservationRepository.Reservation reservation = res.get(0);
+        ReservationRepository.Reservation reservation = res.get(res.size() - 1);
         if (reservation.getTripId() != null && reservation.getTripId().equals("Cancelled"))
         {
             return;
@@ -152,7 +152,7 @@ public class TripService {
         if (reservations.isEmpty()) {
             return new OrderInfoResponse(null);
         }
-        ReservationRepository.Reservation reservation = reservations.get(0);
+        ReservationRepository.Reservation reservation = reservations.get(reservations.size() - 1);
         return new OrderInfoResponse(reservation);
     }
 }
