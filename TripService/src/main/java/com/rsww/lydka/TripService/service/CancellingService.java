@@ -44,5 +44,8 @@ public class CancellingService {
         transportService.cancel(reservationToCheck.getEndFlightId(), numberOfPeople);
         String cancellationTime = LocalDateTime.now().toString();
         accommodationService.cancelReservation(UUID.randomUUID().toString(), cancellationTime, reservationToCheck.getReservationId());
+        reservation.setTripId("Cancelled");
+        reservationRepository.save(reservation);
+
     }
 }

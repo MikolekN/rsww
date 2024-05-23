@@ -36,15 +36,17 @@ public class TripService {
     }
 
     public void confirmReservation(UUID reservationId) {
-        Optional<ReservationRepository.Reservation> reservation = reservationRepository.findById(reservationId);
-        if (reservation.isPresent()) {
-            if (reservation.get().getTripId() != null && reservation.get().getTripId().equals("Cancelled"))
-            {
-                return;
-            }
-            reservation.get().setPayed(true);
-            reservationRepository.save(reservation.get());
+        List<ReservationRepository.Reservation> res = reservationRepository.findReservationsByReservationId(reservationId.toString());
+        if(res.isEmpty())
+            return;
+        ReservationRepository.Reservation reservation = res.get(0);
+        if (reservation.getTripId() != null && reservation.getTripId().equals("Cancelled"))
+        {
+            return;
         }
+        reservation.setPayed(true);
+        reservationRepository.save(reservation);
+
     }
 
     public PostReservationResponse reserveTrip(final PostReservationRequest request, String requestNumber) {
