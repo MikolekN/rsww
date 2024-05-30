@@ -1,6 +1,6 @@
 package com.rsww.mikolekn.APIGateway.order;
 
-import com.rsww.mikolekn.APIGateway.payment.PaymentService;
+import com.rsww.mikolekn.APIGateway.payment.service.PaymentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Queue;
