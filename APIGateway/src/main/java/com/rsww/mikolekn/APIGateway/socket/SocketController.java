@@ -1,16 +1,22 @@
 package com.rsww.mikolekn.APIGateway.socket;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 @Controller
 public class SocketController {
-    /*
-        Socket to which messages are sent
-        Path: /app/hello
-     */
-    @MessageMapping("/hello")
-    public void greeting(/* message */) throws Exception {
-        // Do sth with received message
+    private final SimpMessagingTemplate template;
+
+    @Autowired
+    SocketController(SimpMessagingTemplate template){
+        this.template = template;
+    }
+
+    /* /app/send/message */
+    @MessageMapping("/topic/message")
+    public void sendMessage(String message){
+        System.out.println(message);
     }
 }
