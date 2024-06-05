@@ -1,12 +1,10 @@
 import os
 import unittest
 
-from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-#from webdriver_manager.chrome import ChromeDriverManager
 
 
 class RegisterTests(unittest.TestCase):
@@ -62,17 +60,12 @@ class RegisterTests(unittest.TestCase):
 
         WebDriverWait(self.driver, 5).until(
             EC.element_to_be_clickable((By.XPATH, '/html/body/app-root/div/app-header/nav/div/div/a[3]'))).click()
-        #self.driver.execute_script("arguments[0].click();", offers)
 
-        self.driver.find_element(By.XPATH, '/html/body/app-root/div/div/app-offers/app-offer-search/form/mat-form-field[1]/div[1]/div[2]/div/input').send_keys('05.08.2024')
+        (self.driver.find_element(By.XPATH, '/html/body/app-root/div/div/app-offers/app-offer-search/form/mat-form-field[2]/div[1]/div[2]/div/input')).send_keys('05.08.2024')
 
         self.driver.find_element(By.XPATH,
-                             '/html/body/app-root/div/div/app-offers/app-offer-search/form/mat-form-field[2]/div[1]/div[2]/div/input').send_keys(
+                             '/html/body/app-root/div/div/app-offers/app-offer-search/form/mat-form-field[3]/div[1]/div[2]/div/input').send_keys(
         '12.08.2024')
-
-        self.driver.find_element(By.XPATH, '/html/body/app-root/div/div/app-offers/app-offer-search/form/mat-form-field[3]/div[1]/div[2]/div/input').send_keys('2')
-        self.driver.find_element(By.XPATH, '/html/body/app-root/div/div/app-offers/app-offer-search/form/mat-form-field[4]/div[1]/div[2]/div/input').send_keys('1')
-        self.driver.find_element(By.XPATH, '/html/body/app-root/div/div/app-offers/app-offer-search/form/mat-form-field[5]/div[1]/div[2]/div/input').send_keys('0')
 
         search = self.driver.find_element(By.XPATH, '/html/body/app-root/div/div/app-offers/app-offer-search/form/button')
         self.driver.implicitly_wait(5)
@@ -89,16 +82,27 @@ class RegisterTests(unittest.TestCase):
         self.driver.execute_script("arguments[0].click();", button)
 
         # offer choosed
-
         WebDriverWait(self.driver, 5).until(
             EC.element_to_be_clickable((By.XPATH,
-                                        "/html/body/app-root/div/div/app-selected-offer/mat-card/mat-card-content/select[2]"))).click()
+                                        "/html/body/app-root/div/div/app-selected-offer/mat-card/mat-card-content/select[1]/option[1]"))).click()
         WebDriverWait(self.driver, 5).until(
             EC.element_to_be_clickable((By.XPATH,
                                         "/html/body/app-root/div/div/app-selected-offer/mat-card/mat-card-content/select[2]/option[1]"))).click()
 
         WebDriverWait(self.driver, 5).until(
             EC.element_to_be_clickable((By.XPATH,
+                                        "/html/body/app-root/div/div/app-selected-offer/mat-card/mat-card-content/select[3]/option[1]"))).click()
+
+
+        WebDriverWait(self.driver, 5).until(
+            EC.element_to_be_clickable((By.XPATH,
                                         "/html/body/app-root/div/div/app-selected-offer/mat-card/mat-card-content/button"))).click()
 
         # offer reserved
+
+        WebDriverWait(self.driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH,
+                                        '/html/body/app-root/div/div/app-payment/button[1]'))).click()
+
+        self.driver.implicitly_wait(5)
+
