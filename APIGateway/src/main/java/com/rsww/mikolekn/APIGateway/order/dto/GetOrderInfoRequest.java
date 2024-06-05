@@ -17,7 +17,7 @@ public class GetOrderInfoRequest extends AbstractRequest {
     @JsonProperty("reservationId")
     private String reservationId;
 
-    GetOrderInfoRequest (UUID uuid, String reservationId) {
+    public GetOrderInfoRequest(UUID uuid, String reservationId) {
         super(uuid);
         this.reservationId = reservationId;
     }
