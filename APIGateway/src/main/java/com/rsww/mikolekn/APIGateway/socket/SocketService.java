@@ -12,8 +12,8 @@ public class SocketService {
         this.messagingTemplate = messagingTemplate;
     }
 
-    public void sendOfferReservedInfo() {
-        OfferReserved offerReserved = new OfferReserved("Ktoś właśnie zarezerwował ofertę");
+    public void sendOfferReservedInfo(String dateFrom, String dateTo, String hotelUuid) {
+        OfferReserved offerReserved = new OfferReserved("Ktoś właśnie zarezerwował ofertę", dateFrom, dateTo, hotelUuid);
         this.messagingTemplate.convertAndSend("/topic/live-reservation", offerReserved);
     }
 }

@@ -18,7 +18,7 @@ public class TestSocketController {
 
     @GetMapping
     public String testSocket() {
-        socketService.sendOfferReservedInfo();
+//        socketService.sendOfferReservedInfo();
         return "sended";
     }
 }

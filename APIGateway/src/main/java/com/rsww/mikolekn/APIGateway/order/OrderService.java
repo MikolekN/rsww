@@ -40,7 +40,7 @@ public class OrderService {
         UUID uuid = UUID.randomUUID();
         logger.info("{} Started an order request with uuid: {}", requestNumber, uuid);
 
-        socketService.sendOfferReservedInfo();
+        socketService.sendOfferReservedInfo(orderDto.dateFrom(), orderDto.dateTo(), orderDto.hotelUuid());
 
         OrderResponse orderResponse = rabbitTemplate.convertSendAndReceiveAsType(
                 reserveTrip.getName(),

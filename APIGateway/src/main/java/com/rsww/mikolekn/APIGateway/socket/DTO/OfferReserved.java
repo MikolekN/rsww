@@ -9,4 +9,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class OfferReserved {
     String message;
+    String start_date;
+    String end_date;
+    String hotel_uuid;
 }
