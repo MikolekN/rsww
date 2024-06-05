@@ -92,6 +92,8 @@ export class SelectedOfferComponent implements OnInit {
           numberOfChildrenUnder18: this.selectedOffer.number_of_children_under_18
       }
 
+      this.offerService.clearOfferData()
+
       this.offerInfo = "Przetwarzanie..."
 
       this.offerService.makeReservation(orderData).subscribe({
