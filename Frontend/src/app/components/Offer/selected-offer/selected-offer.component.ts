@@ -72,6 +72,9 @@ export class SelectedOfferComponent implements OnInit {
         }
       })
     }
+    else {
+      this.router.navigate(['offers'])
+    }
   }
 
   public goToPayment() {
@@ -102,7 +105,7 @@ export class SelectedOfferComponent implements OnInit {
 
                 if (value.response) {
                   this.offerService.saveOrderResponse(value)
-                  this.router.navigate(['pay']);
+                  this.router.navigate(['pay'])
                 }
                 else {
                   this.offerInfo = "Przepraszamy, oferta już nie jest dostępna."
