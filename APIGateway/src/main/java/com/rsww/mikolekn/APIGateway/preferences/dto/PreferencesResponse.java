@@ -1,7 +1,7 @@
 package com.rsww.mikolekn.APIGateway.preferences.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.rsww.mikolekn.APIGateway.order.Reservation;
+import com.rsww.mikolekn.APIGateway.order.model.Reservation;
 import com.rsww.mikolekn.APIGateway.utils.AbstractResponse;
 import lombok.*;
 

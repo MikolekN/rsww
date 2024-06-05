@@ -1,4 +1,4 @@
-package com.rsww.mikolekn.APIGateway.offer;
+package com.rsww.mikolekn.APIGateway.offer.service;
 
 import com.rsww.mikolekn.APIGateway.offer.dto.*;
 import org.slf4j.Logger;

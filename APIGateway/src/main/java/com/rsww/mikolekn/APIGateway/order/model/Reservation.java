@@ -1,4 +1,4 @@
-package com.rsww.mikolekn.APIGateway.order;
+package com.rsww.mikolekn.APIGateway.order.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

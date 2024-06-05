@@ -1,4 +1,4 @@
-package com.rsww.mikolekn.APIGateway.order;
+package com.rsww.mikolekn.APIGateway.order.dto;
 
 public record OrderDto(String username,
                        String flightToUuid,

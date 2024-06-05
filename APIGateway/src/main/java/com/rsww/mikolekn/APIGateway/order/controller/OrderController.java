@@ -1,5 +1,7 @@
-package com.rsww.mikolekn.APIGateway.order;
+package com.rsww.mikolekn.APIGateway.order.controller;
 
+import com.rsww.mikolekn.APIGateway.order.dto.*;
+import com.rsww.mikolekn.APIGateway.order.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

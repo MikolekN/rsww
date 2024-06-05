@@ -1,5 +1,6 @@
-package com.rsww.mikolekn.APIGateway.order;
+package com.rsww.mikolekn.APIGateway.order.service;
 
+import com.rsww.mikolekn.APIGateway.order.dto.*;
 import com.rsww.mikolekn.APIGateway.payment.service.PaymentService;
 import com.rsww.mikolekn.APIGateway.socket.SocketService;
 import org.slf4j.Logger;
