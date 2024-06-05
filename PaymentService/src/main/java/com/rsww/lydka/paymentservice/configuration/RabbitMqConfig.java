@@ -5,6 +5,7 @@ import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.amqp.core.Queue;
 
 
 @Configuration
@@ -22,6 +23,13 @@ public class RabbitMqConfig {
     @Value("${spring.rabbitmq.port}")
     private String port;
 
+    @Value("${spring.rabbitmq.queue.requestPaymentQueue}")
+    private String requestPaymentQueue;
+
+    @Bean
+    public Queue requestPaymentQueue() {
+        return new Queue(requestPaymentQueue);
+    }
     @Bean
     public MessageConverter jsonMessageConverter() {
         return new Jackson2JsonMessageConverter();

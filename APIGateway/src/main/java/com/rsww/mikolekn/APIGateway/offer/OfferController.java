@@ -1,9 +1,9 @@
 package com.rsww.mikolekn.APIGateway.offer;
 
-import com.rsww.mikolekn.APIGateway.offer.DTO.GetAllOffersResponse;
-import com.rsww.mikolekn.APIGateway.offer.DTO.GetOfferInfoResponse;
-import com.rsww.mikolekn.APIGateway.offer.DTO.OfferDto;
-import com.rsww.mikolekn.APIGateway.offer.DTO.OffersDto;
+import com.rsww.mikolekn.APIGateway.offer.dto.GetAllOffersResponse;
+import com.rsww.mikolekn.APIGateway.offer.dto.GetOfferInfoResponse;
+import com.rsww.mikolekn.APIGateway.offer.dto.OfferDto;
+import com.rsww.mikolekn.APIGateway.offer.dto.OffersDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

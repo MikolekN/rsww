@@ -19,6 +19,17 @@ public class OrderController {
         return orderService.orderTrip(orderDto);
     }
 
+    @PostMapping("/order/{id}")
+    public ResponseEntity<OrderInfoResponse> orderTrip(@PathVariable String id) {
+        ResponseEntity<OrderInfoResponse> responseEntity = orderService.getOrderInfo(id);
+        OrderInfoResponse response = responseEntity.getBody();
+        if (response != null) {
+            return ResponseEntity.ok(response);
+        }
+        return responseEntity;
+
+    }
+
     @PostMapping("/orders")
     public ResponseEntity<GetAllOrdersResponse> getOrders(@RequestBody OrdersDto ordersDto) {
         return orderService.getOrders(ordersDto);

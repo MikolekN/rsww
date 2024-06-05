@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {MatIcon} from "@angular/material/icon";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
@@ -10,6 +10,7 @@ import {OfferRequest} from "../../../DTO/request/offerRequest";
 import {OfferResponseRaw} from "../../../DTO/response/offerResponse";
 import {Offer} from "../../types/Offer";
 import {SingleOfferComponent} from "../single-offer/single-offer.component";
+import {MatOption, MatSelect} from "@angular/material/select";
 
 @Component({
   selector: 'app-offer-search',
@@ -22,25 +23,39 @@ import {SingleOfferComponent} from "../single-offer/single-offer.component";
     NgIf,
     MatButton,
     SingleOfferComponent,
-    NgForOf
+    NgForOf,
+    MatSelect,
+    MatOption
   ],
   templateUrl: './offer-search.component.html',
   styleUrl: './offer-search.component.css'
 })
-export class OfferSearchComponent {
+export class OfferSearchComponent implements OnInit {
   formData = {
     country: '',
     dateFrom: '',
     dateTo: '',
-    numberOfAdults: '',
-    numberofChildrenUnder10: '',
-    numberofChildrenUnder18: ''
+    numberOfAdults: '1',
+    numberofChildrenUnder10: '0',
+    numberofChildrenUnder18: '0'
   };
 
   public offers: Offer[] = []
   public loadingText: string = ""
+  public countries: string[] = [];
 
   constructor(private offerService: OfferService) {}
+
+  ngOnInit() {
+    this.offerService.getCountries().subscribe(
+      (data: string[]) => {
+        this.countries = data;
+      },
+      (error) => {
+        console.error('Error fetching countries', error);
+      }
+    );
+  }
 
   onSubmit() {
     console.log(this.formData);

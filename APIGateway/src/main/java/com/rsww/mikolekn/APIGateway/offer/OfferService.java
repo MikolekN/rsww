@@ -1,6 +1,6 @@
 package com.rsww.mikolekn.APIGateway.offer;
 
-import com.rsww.mikolekn.APIGateway.offer.DTO.*;
+import com.rsww.mikolekn.APIGateway.offer.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Queue;

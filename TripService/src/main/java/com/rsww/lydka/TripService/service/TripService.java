@@ -1,8 +1,7 @@
 package com.rsww.lydka.TripService.service;
 
 import com.rsww.lydka.TripService.listener.events.accommodation.MakeNewReservationResponse;
-import com.rsww.lydka.TripService.listener.events.orders.GetAllOrdersRequest;
-import com.rsww.lydka.TripService.listener.events.orders.GetAllOrdersResponse;
+import com.rsww.lydka.TripService.listener.events.orders.*;
 import com.rsww.lydka.TripService.listener.events.trip.reservation.PostReservationRequest;
 import com.rsww.lydka.TripService.listener.events.trip.reservation.PostReservationResponse;
 import com.rsww.lydka.TripService.listener.events.trip.reservation.transport.FlightReservation;
@@ -10,6 +9,7 @@ import com.rsww.lydka.TripService.repository.ReservationRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 
@@ -23,21 +23,30 @@ public class TripService {
     private final TransportService transportService;
     private final ReservationRepository reservationRepository;
 
+    private final CancellingService cancellingService;
+
     @Autowired
     public TripService(final DelegatingAccommodationService accommodationService,
                        final TransportService transportService,
-                       final ReservationRepository reservationRepository) {
+                       final ReservationRepository reservationRepository, CancellingService cancellingService) {
         this.accommodationService = accommodationService;
         this.transportService = transportService;
         this.reservationRepository = reservationRepository;
+        this.cancellingService = cancellingService;
     }
 
     public void confirmReservation(UUID reservationId) {
-        Optional<ReservationRepository.Reservation> reservation = reservationRepository.findById(reservationId);
-        if (reservation.isPresent()) {
-            reservation.get().setPayed(true);
-            reservationRepository.save(reservation.get());
+        List<ReservationRepository.Reservation> res = reservationRepository.findReservationsByReservationId(reservationId.toString());
+        if(res.isEmpty())
+            return;
+        ReservationRepository.Reservation reservation = res.get(res.size() - 1);
+        if (reservation.getTripId() != null && reservation.getTripId().equals("Cancelled"))
+        {
+            return;
         }
+        reservation.setPayed(true);
+        reservationRepository.save(reservation);
+
     }
 
     public PostReservationResponse reserveTrip(final PostReservationRequest request, String requestNumber) {
@@ -81,17 +90,17 @@ public class TripService {
             response.setReservationId(null);
             return response;
         }
-        reservation.setStartFlightId(startFlightReservation.getId());
+        reservation.setStartFlightId(startFlightReservation.getId().toString());
 
         FlightReservation endFlightReservation = transportService.reserve(request.getFlightFromUuid(), "0", people_count);
         logger.info("{} {} flights reservation.", requestNumber, endFlightReservation.isSuccessfullyReserved() ? "Successful" : "Unsuccessful");
         if (!endFlightReservation.isSuccessfullyReserved()) {
-            transportService.cancel(startFlightReservation.getId());
+            transportService.cancel(startFlightReservation.getId().toString(), startFlightReservation.getPeopleCount());
             String cancellationTime = LocalDateTime.now().toString();
             accommodationService.cancelReservation(UUID.randomUUID().toString(), cancellationTime, reservationId);
             return response;
         }
-        reservation.setEndFlightId(endFlightReservation.getId());
+        reservation.setEndFlightId(endFlightReservation.getId().toString());
 
         int numberOfAdults = Integer.parseInt(request.getNumberOfAdults());
         int numberOfChildrenUnder10 = Integer.parseInt(request.getNumberOfChildrenUnder10());
@@ -99,18 +108,51 @@ public class TripService {
 
         float roomPrice = hotelReservation.getReservationMadeEvent().getRoomPrice();
         float fullHotelPrice = (roomPrice * numberOfAdults) + (roomPrice * numberOfChildrenUnder10 * 0.5f) + (roomPrice * numberOfChildrenUnder18 * 0.7f);
-        float flightsPrice = (numberOfAdults + numberOfChildrenUnder18 + numberOfChildrenUnder10) * (Float.parseFloat(startFlightReservation.getFlight().getPrice()) + Float.parseFloat(endFlightReservation.getFlight().getPrice()));
+        float flightsPrice = (numberOfAdults + numberOfChildrenUnder18 + numberOfChildrenUnder10) * ((startFlightReservation.getFlight().getPrice()) + (endFlightReservation.getFlight().getPrice()));
         float price = fullHotelPrice + flightsPrice;
         reservation.setPrice((double) price);
 
         reservationRepository.save(reservation);
 
         response.setResponse(true);
+
+        cancellingService.checkPayment(reservation, numberOfAdults + numberOfChildrenUnder18 + numberOfChildrenUnder10);
         return response;
+    }
+    @Async
+    public void checkPayment(ReservationRepository.Reservation reservation, int numberOfPeople) {
+        try {
+            Thread.sleep(60000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return;
+        }
+        List<ReservationRepository.Reservation> res = reservationRepository.findReservationsByReservationId(reservation.getReservationId());
+        if(res.isEmpty())
+            return;
+        ReservationRepository.Reservation reservationToCheck = res.get(0);
+        if(reservationToCheck.getPayed())
+            return;
+        logger.info("Reservation {} was cancelled, because it wasn't paid.", reservation.getReservationId());
+        transportService.cancel(reservation.getStartFlightId(), numberOfPeople);
+        transportService.cancel(reservation.getEndFlightId(), numberOfPeople);
+        String cancellationTime = LocalDateTime.now().toString();
+        accommodationService.cancelReservation(UUID.randomUUID().toString(), cancellationTime, reservationToCheck.getReservationId());
+        reservation.setTripId("Cancelled");
+        reservationRepository.save(reservation);
     }
 
     public GetAllOrdersResponse getAllOrders(GetAllOrdersRequest request) {
         List<ReservationRepository.Reservation> reservations = reservationRepository.findAllByUser(request.getUsername());
         return new GetAllOrdersResponse(reservations);
+    }
+
+    public OrderInfoResponse reservationInfo(OrderInfoRequest request) {
+        List<ReservationRepository.Reservation> reservations = reservationRepository.findReservationsByReservationId(request.getReservationId());
+        if (reservations.isEmpty()) {
+            return new OrderInfoResponse(null);
+        }
+        ReservationRepository.Reservation reservation = reservations.get(reservations.size() - 1);
+        return new OrderInfoResponse(reservation);
     }
 }

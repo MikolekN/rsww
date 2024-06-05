@@ -4,10 +4,11 @@ import {HttpClient} from "@angular/common/http";
 import {OfferRequest} from "../DTO/request/offerRequest";
 import {OfferResponse, OfferResponseRaw} from "../DTO/response/offerResponse";
 import {Offer} from "../components/types/Offer";
-import {Observable} from "rxjs";
+import {map, Observable} from "rxjs";
 import {FullOfferRequest} from "../DTO/request/fullOfferRequest";
 import {FullOfferResponse} from "../DTO/response/fullOfferResponse";
-import {Order} from "../components/types/order";
+import {Order, UserOrderApiResponse} from "../components/types/order";
+import {OrderResponse} from "../DTO/response/orderResponse";
 
 @Injectable({
   providedIn: 'root'
@@ -24,17 +25,49 @@ export class OfferService {
     return this.http.post<FullOfferResponse>(environment.API_URL + "/api/offer", requestBody);
   }
 
-  public makeReservation(requestBody: Order) {
-    return this.http.post(environment.API_URL + "/api/order", requestBody);
+  public makeReservation(requestBody: Order): Observable<OrderResponse> {
+    return this.http.post<OrderResponse>(environment.API_URL + "/api/order", requestBody);
   }
 
-  public saveOrderData(order: Order) {
-    sessionStorage.setItem('orderData', JSON.stringify(order));
+  public getCountries(): Observable<string[]> {
+    return this.http.get<any>(environment.API_URL + "/api/countries").pipe(
+      map(response => response.body.countries)
+    )
   }
 
-  public getOrderData() {
-    const orderData = sessionStorage.getItem('orderData');
-    return orderData ? JSON.parse(orderData) : null;
+  public getOrderStatus(orderUUID: string): Observable<any> {
+    return this.http.post<any>(`${environment.API_URL}/api/order/${orderUUID}`, {})
+  }
+
+  public getUserOrders(username: string): Observable<UserOrderApiResponse> {
+    const body = { username: username };
+    return this.http.post<UserOrderApiResponse>(environment.API_URL + "/api/orders", body);
+  }
+
+  public saveOrderResponse(reservation: OrderResponse) {
+    sessionStorage.setItem('orderResponse', JSON.stringify(reservation))
+  }
+
+  public getOrderResponse(): OrderResponse {
+    const offerData = sessionStorage.getItem('orderResponse');
+    return offerData ? JSON.parse(offerData) : null;
+  }
+
+  public clearOrderResponse() {
+    sessionStorage.removeItem('orderResponse');
+  }
+
+  public clearOrder() {
+    sessionStorage.removeItem('order');
+  }
+
+  public saveOrder(order: Order) {
+    sessionStorage.setItem('order', JSON.stringify(order))
+  }
+
+  public getOrder(): OrderResponse {
+    const offerData = sessionStorage.getItem('order');
+    return offerData ? JSON.parse(offerData) : null;
   }
 
   public saveOfferData(offer: Offer) {

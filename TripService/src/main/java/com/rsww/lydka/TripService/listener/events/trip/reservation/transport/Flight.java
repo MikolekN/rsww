@@ -12,15 +12,15 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Flight {
-    private String id;
+    private UUID id;
     private String departureAirport;
     private String departureCountry;
     private String arrivalAirport;
     private String arrivalCountry;
-    private String departureDate;
-    private String arrivalDate;
-    private String travelTime;
-    private String sitsCount;
-    private String sitsOccupied;
-    private String price;
+    private LocalDate departureDate;
+    private LocalDate arrivalDate;
+    private int travelTime;
+    private int sitsCount;
+    private int sitsOccupied;
+    private int price;
 }

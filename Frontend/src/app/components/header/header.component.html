@@ -5,13 +5,14 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
     <div class="navbar-nav">
-      <a class="nav-item nav-link" href="#">Home</a>
-      <a *ngIf="!isUserLoggedIn(); else logOut" class="nav-item nav-link" href="/login">Log in</a>
+      <a class="nav-item nav-link" href="#">Strona główna</a>
+      <a *ngIf="!isUserLoggedIn(); else logOut" class="nav-item nav-link" href="/login">Zaloguj się</a>
       <ng-template #logOut>
-        <a href="#" class="nav-item nav-link pe-auto" (click)="logOutUser()">Log out</a>
+        <a href="#" class="nav-item nav-link pe-auto" (click)="logOutUser()">Wyloguj się</a>
       </ng-template>
 
-      <a *ngIf="isUserLoggedIn()" class="nav-item nav-link" href="/offers">Offers</a>
+      <a *ngIf="isUserLoggedIn()" class="nav-item nav-link" href="/offers">Oferty</a>
+      <a *ngIf="isUserLoggedIn()" class="nav-item nav-link" href="/preferences">Preferencje</a>
     </div>
   </div>
 </nav>

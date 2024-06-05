@@ -1,0 +1,15 @@
+<h1>Zamówienia użytkownika {{ username }}:</h1>
+
+<p>{{ errors }}</p>
+
+<div *ngFor="let order of orders">
+  <h3>Reservation ID: {{ order.reservationId }}</h3>
+  <p>User: {{ order.user }}</p>
+  <p>Payed: {{ order.payed }}</p>
+  <p>Reservation Time: {{ order.reservationTime }}</p>
+  <p>Start Flight ID: {{ order.startFlightId }}</p>
+  <p>End Flight ID: {{ order.endFlightId }}</p>
+  <p>Hotel ID: {{ order.hotelId }}</p>
+  <p>Price: {{ order.price }}</p>
+  <hr>
+</div>

@@ -1,24 +1,13 @@
 package com.rsww.mikolekn.APIGateway.order;
 
-import com.rsww.mikolekn.APIGateway.payment.PaymentRequest;
-import com.rsww.mikolekn.APIGateway.payment.PaymentResponse;
-import com.rsww.mikolekn.APIGateway.payment.PaymentService;
+import com.rsww.mikolekn.APIGateway.payment.service.PaymentService;
+import com.rsww.mikolekn.APIGateway.socket.SocketService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
-import com.rsww.mikolekn.APIGateway.offer.DTO.GetAllOffersRequest;
-import com.rsww.mikolekn.APIGateway.offer.DTO.GetAllOffersResponse;
-import com.rsww.mikolekn.APIGateway.offer.OfferService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -33,18 +22,25 @@ public class OrderService {
     static Logger logger = LoggerFactory.getLogger(PaymentService.class);
     private final Queue reserveTrip;
     private final Queue ordersQueue;
+    private final Queue orderInfoQueue;
+
+    private final SocketService socketService;
 
     @Autowired
-    OrderService(RabbitTemplate rabbitTemplate, Queue reserveTrip, Queue ordersQueue) {
+    OrderService(RabbitTemplate rabbitTemplate, Queue reserveTrip, Queue ordersQueue, Queue orderInfoQueue, SocketService socketService) {
         this.rabbitTemplate = rabbitTemplate;
         this.reserveTrip = reserveTrip;
         this.ordersQueue = ordersQueue;
+        this.orderInfoQueue = orderInfoQueue;
+        this.socketService = socketService;
     }
 
     public ResponseEntity<OrderResponse> orderTrip(OrderDto orderDto) {
         String requestNumber = "[" + Integer.toHexString(new Random().nextInt(0xFFFF)) + "]";
         UUID uuid = UUID.randomUUID();
         logger.info("{} Started an order request with uuid: {}", requestNumber, uuid);
+
+        socketService.sendOfferReservedInfo(orderDto.dateFrom(), orderDto.dateTo(), orderDto.hotelUuid());
 
         OrderResponse orderResponse = rabbitTemplate.convertSendAndReceiveAsType(
                 reserveTrip.getName(),
@@ -80,5 +76,20 @@ public class OrderService {
             logger.info("GetAllOrdersRequest received a timeout");
 
         return prepareResponse(response);
+    }
+
+    public ResponseEntity<OrderInfoResponse> getOrderInfo(String id) {
+        String requestNumber = "[" + Integer.toHexString(new Random().nextInt(0xFFFF)) + "]";
+        UUID uuid = UUID.randomUUID();
+        logger.info("{} Received an order info request with uuid: {}", requestNumber, uuid);
+
+        OrderInfoResponse orderInfoResponse = rabbitTemplate.convertSendAndReceiveAsType(
+            orderInfoQueue.getName(),
+            new GetOrderInfoRequest(uuid, id),
+            new ParameterizedTypeReference<>() {});
+
+        logger.info("{} Received a order info response: {}", requestNumber, orderInfoResponse);
+
+        return prepareResponse(orderInfoResponse);
     }
 }
