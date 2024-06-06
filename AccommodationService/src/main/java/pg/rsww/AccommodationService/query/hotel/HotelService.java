@@ -3,6 +3,7 @@ package pg.rsww.AccommodationService.query.hotel;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pg.rsww.AccommodationService.command.entity.HotelRemovedEvent;
 import pg.rsww.AccommodationService.command.entity.RoomAddedEvent;
 import pg.rsww.AccommodationService.query.changequery.GetHotelsRequest;
 import pg.rsww.AccommodationService.query.changequery.GetHotelsResponse;
@@ -188,5 +189,10 @@ public class HotelService {
     public GetHotelsResponse getHotels(GetHotelsRequest getHotelsRequest) {
         List<Hotel> hotels = hotelRepository.findAll();
         return new GetHotelsResponse(hotels);
+    }
+
+    public void removeHotel(HotelRemovedEvent hotelRemovedEvent) {
+        Hotel hotelToRemove = hotelRepository.findHotelByUuid(hotelRemovedEvent.getHotelUuid().toString());
+        hotelRepository.delete(hotelToRemove);
     }
 }

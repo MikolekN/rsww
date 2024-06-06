@@ -4,7 +4,10 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pg.rsww.AccommodationService.command.entity.HotelAddedEvent;
+import pg.rsww.AccommodationService.command.entity.HotelEvent;
+import pg.rsww.AccommodationService.command.entity.HotelRemovedEvent;
 import pg.rsww.AccommodationService.command.entity.command.AddNewHotelCommand;
+import pg.rsww.AccommodationService.command.entity.command.RemoveHotelCommand;
 
 import java.util.UUID;
 
@@ -28,5 +31,11 @@ public class HotelCommandService {
         return hotelAddedEvent;
         //System.out.println(hotelEventRepository.findAll());
         //rabbitTemplate.convertAndSend("hotel-created-queue", hotelAddedEvent);
+    }
+
+    public HotelRemovedEvent removeHotel(RemoveHotelCommand removeHotelCommand) {
+        HotelRemovedEvent hotelRemovedEvent = new HotelRemovedEvent(UUID.randomUUID(), removeHotelCommand.getUuid());
+        hotelEventRepository.save(hotelRemovedEvent);
+        return hotelRemovedEvent;
     }
 }

@@ -3,6 +3,7 @@ package pg.rsww.AccommodationService.query.room;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pg.rsww.AccommodationService.command.entity.RoomAddedEvent;
+import pg.rsww.AccommodationService.command.entity.RoomPriceChangeEvent;
 import pg.rsww.AccommodationService.query.changequery.GetRoomsRequest;
 import pg.rsww.AccommodationService.query.changequery.GetRoomsResponse;
 import pg.rsww.AccommodationService.query.changequery.RoomType;
@@ -53,5 +54,13 @@ public class RoomService {
             }
         }
         return new GetRoomsResponse(roomTypeList);
+    }
+
+    public void changeRoomPrice(RoomPriceChangeEvent roomPriceChangeEvent) {
+        List<Room> roomList = roomRepository.findAllByHotelUuidAndType(roomPriceChangeEvent.getHotelUuid().toString(), roomPriceChangeEvent.getRoomType());
+        for (Room room : roomList) {
+            room.setBasePrice(roomPriceChangeEvent.getNewPrice());
+            roomRepository.save(room);
+        }
     }
 }
