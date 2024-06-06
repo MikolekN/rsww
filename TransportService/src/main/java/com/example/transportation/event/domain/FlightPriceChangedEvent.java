@@ -11,7 +11,6 @@ import lombok.*;
 @Getter
 @Setter
 @Entity
-@Builder
 public class FlightPriceChangedEvent extends FlightChangedEvent{
     @Column(name = "old_price")
     @JsonProperty("old_price")

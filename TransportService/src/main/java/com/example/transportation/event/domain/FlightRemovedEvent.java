@@ -5,11 +5,9 @@ import lombok.*;
 
 @ToString
 @AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
 @Entity
-@Builder
 public class FlightRemovedEvent extends FlightChangedEvent {
 
 }

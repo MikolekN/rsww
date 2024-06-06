@@ -10,4 +10,5 @@ import java.util.UUID;
 
 @Repository
 public interface RoomPriceChangeEventRepository extends JpaRepository<RoomPriceChangeEvent, UUID> {
+    List<RoomPriceChangeEvent> findAllByHotelUuid(UUID hotelUuid);
 }
