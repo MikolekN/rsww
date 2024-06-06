@@ -66,6 +66,22 @@ public class RabbitMQConfiguration {
         return new Queue(queue);
     }
     @Bean
+    public Queue getAllHotelsQueue(@Value("${spring.rabbitmq.queue.GetAllHotelsQueue}") String queue) {
+        return new Queue(queue);
+    }
+    @Bean
+    public Queue getAllRoomTypesQueue(@Value("${spring.rabbitmq.queue.GetAllRoomTypesQueue}") String queue) {
+        return new Queue(queue);
+    }
+    @Bean
+    public Queue removeHotelQueue(@Value("${spring.rabbitmq.queue.RemoveHotelQueue}") String queue) {
+        return new Queue(queue);
+    }
+    @Bean
+    public Queue changeRoomPriceQueue(@Value("${spring.rabbitmq.queue.ChangeRoomPriceQueue}") String queue) {
+        return new Queue(queue);
+    }
+    @Bean
     TopicExchange exchange() {
         return new TopicExchange(accommodationTopic);
     }

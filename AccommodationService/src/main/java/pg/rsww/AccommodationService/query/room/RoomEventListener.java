@@ -7,6 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pg.rsww.AccommodationService.command.entity.HotelAddedEvent;
 import pg.rsww.AccommodationService.command.entity.RoomAddedEvent;
+import pg.rsww.AccommodationService.query.changequery.GetHotelsRequest;
+import pg.rsww.AccommodationService.query.changequery.GetHotelsResponse;
+import pg.rsww.AccommodationService.query.changequery.GetRoomsRequest;
+import pg.rsww.AccommodationService.query.changequery.GetRoomsResponse;
 import pg.rsww.AccommodationService.query.hotel.HotelEventListener;
 import pg.rsww.AccommodationService.query.hotel.HotelService;
 
@@ -25,5 +29,9 @@ public class RoomEventListener {
     public void RoomAddedEventHandler(RoomAddedEvent roomAddedEvent) {
         log.info(String.format("Received RoomAddedEvent %s", roomAddedEvent));
         roomService.addNewRoom(roomAddedEvent);
+    }
+    @RabbitListener(queues = "${spring.rabbitmq.queue.GetAllRoomTypesQueue}")
+    public GetRoomsResponse GetAllRoomTypesHandler(GetRoomsRequest getRoomsRequest) {
+        return roomService.getRooms(getRoomsRequest);
     }
 }
