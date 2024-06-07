@@ -22,13 +22,13 @@ public class FlightChangedEvent {
     @JsonProperty("flight_uuid")
     private UUID flightUuid;
 
-    @Column(name = "departure_airport")
-    @JsonProperty("departure_airport")
-    private String departureAirport;
+    @Column(name = "departure_country")
+    @JsonProperty("departure_country")
+    private String departureCountry;
 
-    @Column(name = "arrival_airport")
-    @JsonProperty("arrival_airport")
-    private String arrivalAirport;
+    @Column(name = "arrival_country")
+    @JsonProperty("arrival_country")
+    private String arrivalCountry;
 
     @Column(name = "departure_date")
     @JsonProperty("departure_date")

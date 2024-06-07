@@ -8,8 +8,15 @@ import org.springframework.stereotype.Component;
 import pg.rsww.AccommodationService.command.entity.HotelAddedEvent;
 import pg.rsww.AccommodationService.command.entity.HotelRemovedEvent;
 import pg.rsww.AccommodationService.command.entity.command.AddNewHotelCommand;
+import pg.rsww.AccommodationService.command.entity.command.GetLastHotelChangesRequest;
+import pg.rsww.AccommodationService.command.entity.command.GetLastRoomChangesRequest;
 import pg.rsww.AccommodationService.command.entity.command.RemoveHotelCommand;
+import pg.rsww.AccommodationService.command.entity.response.GetLastHotelChangesResponse;
+import pg.rsww.AccommodationService.command.entity.response.GetLastRoomChangesResponse;
 import pg.rsww.AccommodationService.query.hotel.HotelEventListener;
+
+import java.util.Comparator;
+import java.util.List;
 
 @Component
 public class HotelCommandListener {
@@ -37,5 +44,10 @@ public class HotelCommandListener {
         log.info(String.format("Received RemoveHotelCommand %s", removeHotelCommand));
         HotelRemovedEvent event = hotelCommandService.removeHotel(removeHotelCommand);
         hotelEventNotifier.HotelRemovedEventNotify(event);
+    }
+    @RabbitListener(queues = "${spring.rabbitmq.queue.GetHotelChangeEventsQueue}")
+    public GetLastHotelChangesResponse getLastFlightChanges(GetLastHotelChangesRequest request) {
+        List<HotelRemovedEvent> hotelRemovedEvents = hotelCommandService.getLastChangeEvents(request);
+        return new GetLastHotelChangesResponse(hotelRemovedEvents);
     }
 }

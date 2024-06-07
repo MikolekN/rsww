@@ -65,8 +65,8 @@ public class OfferChangesListener {
                 .uuid(UUID.randomUUID())
                 .timeStamp(LocalDateTime.now())
                 .flightUuid(flightToRemove.getId())
-                .arrivalAirport(flightToRemove.getArrivalAirport())
-                .departureAirport(flightToRemove.getDepartureAirport())
+                .arrivalCountry(flightToRemove.getArrivalCountry())
+                .departureCountry(flightToRemove.getDepartureCountry())
                 .arrivalDate(flightToRemove.getArrivalDate().toString())
                 .departureDate(flightToRemove.getDepartureDate().toString())
                 .build();
@@ -90,8 +90,8 @@ public class OfferChangesListener {
                 .uuid(UUID.randomUUID())
                 .timeStamp(LocalDateTime.now())
                 .flightUuid(flightToChange.getId())
-                .arrivalAirport(flightToChange.getArrivalAirport())
-                .departureAirport(flightToChange.getDepartureAirport())
+                .arrivalCountry(flightToChange.getArrivalCountry())
+                .departureCountry(flightToChange.getDepartureCountry())
                 .arrivalDate(flightToChange.getArrivalDate().toString())
                 .departureDate(flightToChange.getDepartureDate().toString())
                 .build();
@@ -103,7 +103,7 @@ public class OfferChangesListener {
     @RabbitListener(queues = "${spring.rabbitmq.queue.GetFlightChangeEventsQueue}")
     public GetLastFlightChangesResponse getLastFlightChanges(GetLastFlightChangesRequest request) {
         List<FlightChangedEvent> flightChangedEvents = flightChangedEventRepository.findAll().stream()
-                .sorted(Comparator.comparing(FlightChangedEvent::getTimeStamp)) // maybe .reversed()
+                .sorted(Comparator.comparing(FlightChangedEvent::getTimeStamp).reversed()) // maybe .reversed()
                 .limit(10)
                 .toList();
         return new GetLastFlightChangesResponse(flightChangedEvents);

@@ -3,12 +3,15 @@ package pg.rsww.AccommodationService.command.room;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pg.rsww.AccommodationService.command.entity.Event;
 import pg.rsww.AccommodationService.command.entity.RoomAddedEvent;
 import pg.rsww.AccommodationService.command.entity.RoomEvent;
 import pg.rsww.AccommodationService.command.entity.RoomPriceChangeEvent;
 import pg.rsww.AccommodationService.command.entity.command.AddNewRoomCommand;
 import pg.rsww.AccommodationService.command.entity.command.ChangeRoomPriceCommand;
+import pg.rsww.AccommodationService.command.entity.command.GetLastRoomChangesRequest;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -54,5 +57,12 @@ public class RoomCommandService {
                 changeRoomPriceCommand.getChangedPrice());
         roomPriceChangeEventRepository.save(event);
         return event;
+    }
+
+    public List<RoomPriceChangeEvent> getLastChangeEvents(GetLastRoomChangesRequest request) {
+        return roomPriceChangeEventRepository.findAll().stream()
+                .sorted(Comparator.comparing(Event::getTimeStamp).reversed()) // maybe .reversed()
+                .limit(10)
+                .toList();
     }
 }

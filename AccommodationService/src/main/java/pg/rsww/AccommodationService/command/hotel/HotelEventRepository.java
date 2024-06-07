@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import pg.rsww.AccommodationService.command.entity.Event;
 import pg.rsww.AccommodationService.command.entity.HotelEvent;
+import pg.rsww.AccommodationService.command.entity.HotelRemovedEvent;
 
 import java.util.List;
 import java.util.UUID;
@@ -11,4 +12,6 @@ import java.util.UUID;
 @Repository
 public interface HotelEventRepository extends JpaRepository<HotelEvent, UUID> {
     List<HotelEvent> findAllByHotelUuid(UUID hotelUuid);
+
+    List<HotelRemovedEvent> findAllBy();
 }
