@@ -11,27 +11,16 @@ import java.util.UUID;
 @NoArgsConstructor
 @ToString
 public class Flight {
-
     private UUID id;
-
     private String departureAirport;
-
     private String departureCountry;
-
     private String arrivalAirport;
-
     private String arrivalCountry;
-
     private LocalDate departureDate;
-
     private LocalDate arrivalDate;
-
     private int travelTime;
-
     private int sitsCount;
-
     private int sitsOccupied;
-
     private int price;
 
     public Flight(String departureAirport, String departureCountry, String arrivalAirport, String arrivalCountry,

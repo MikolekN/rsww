@@ -1,8 +1,5 @@
 package com.rsww.mikolekn.APIGateway.preferences.service;
 
-import com.rsww.mikolekn.APIGateway.order.Reservation;
-import com.rsww.mikolekn.APIGateway.payment.dto.PaymentRequest;
-import com.rsww.mikolekn.APIGateway.payment.dto.PaymentResponse;
 import com.rsww.mikolekn.APIGateway.payment.service.PaymentService;
 import com.rsww.mikolekn.APIGateway.preferences.dto.PreferencesRequest;
 import com.rsww.mikolekn.APIGateway.preferences.dto.PreferencesResponse;

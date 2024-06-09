@@ -1,7 +1,7 @@
 package com.rsww.lydka.TripService.service;
 
-import com.rsww.lydka.TripService.listener.events.payment.PayForReservationCommand;
-import com.rsww.lydka.TripService.listener.events.payment.PaymentResponse;
+import com.rsww.lydka.TripService.listener.events.payment.command.PayForReservationCommand;
+import com.rsww.lydka.TripService.listener.events.payment.response.PaymentResponse;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Autowired;
