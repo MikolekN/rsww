@@ -1,5 +1,7 @@
 package com.rsww.lydka.TripService.listener;
 
+import com.rsww.lydka.TripService.dto.PreferencesRequest;
+import com.rsww.lydka.TripService.dto.PreferencesResponse;
 import com.rsww.lydka.TripService.listener.events.orders.GetAllOrdersRequest;
 import com.rsww.lydka.TripService.listener.events.orders.GetAllOrdersResponse;
 import com.rsww.lydka.TripService.listener.events.orders.OrderInfoRequest;
@@ -8,6 +10,7 @@ import com.rsww.lydka.TripService.listener.events.payment.PayForReservationComma
 import com.rsww.lydka.TripService.listener.events.payment.PaymentResponse;
 import com.rsww.lydka.TripService.listener.events.trip.reservation.PostReservationRequest;
 import com.rsww.lydka.TripService.listener.events.trip.reservation.PostReservationResponse;
+import com.rsww.lydka.TripService.repository.ReservationRepository;
 import com.rsww.lydka.TripService.service.PaymentService;
 import com.rsww.lydka.TripService.service.TripService;
 import org.slf4j.LoggerFactory;
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Component;
 
 import org.slf4j.Logger;
 
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -44,6 +48,17 @@ public class TripEventsListener {
         }
         logger.info("{} {} reservation.", requestNumber, (reservationResult.isResponse() ? "Successful" : "Unsuccessful"));
         return reservationResult;
+    }
+
+    @RabbitListener(queues = "${spring.rabbitmq.queue.getPreferences}")
+    public PreferencesResponse getPreferences(PreferencesRequest request) {
+        String requestNumber = "[" + Integer.toHexString(new Random().nextInt(0xFFFF)) + "]";
+        logger.info("{} Received a preferences request.", requestNumber);
+
+        PreferencesResponse response = tripService.getPreferences(request, requestNumber);
+
+        logger.info("{} {} preferences.", requestNumber, (response.isResponse() ? "Successful" : "Unsuccessful"));
+        return response;
     }
 
     @RabbitListener(queues = "${spring.rabbitmq.queue.ordersQueue}")

@@ -114,4 +114,9 @@ public class ListeningQueuesConfig {
     Queue orderInfoQueue(@Value("${spring.rabbitmq.queue.orderInfoQueue}") final String orderInfoQueue) {
         return new Queue(orderInfoQueue, true);
     }
+
+    @Bean(name = "getPreferences")
+    Queue getPreferences(@Value("${spring.rabbitmq.queue.getPreferences}") final String getPreferences) {
+        return new Queue(getPreferences, true);
+    }
 }

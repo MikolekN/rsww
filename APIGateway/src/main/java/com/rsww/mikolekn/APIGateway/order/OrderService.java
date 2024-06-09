@@ -57,7 +57,7 @@ public class OrderService {
                         orderDto.numberOfChildrenUnder10(),
                         orderDto.numberOfChildrenUnder18()),
                 new ParameterizedTypeReference<>() {});
-        logger.info("{} Received a payment response: {}", requestNumber, orderResponse);
+        logger.info("{} Received a order response: {}", requestNumber, orderResponse);
 
         return prepareResponse(orderResponse);
     }

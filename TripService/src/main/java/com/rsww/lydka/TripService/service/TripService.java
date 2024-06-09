@@ -1,5 +1,7 @@
 package com.rsww.lydka.TripService.service;
 
+import com.rsww.lydka.TripService.dto.PreferencesRequest;
+import com.rsww.lydka.TripService.dto.PreferencesResponse;
 import com.rsww.lydka.TripService.listener.events.accommodation.MakeNewReservationResponse;
 import com.rsww.lydka.TripService.listener.events.orders.*;
 import com.rsww.lydka.TripService.listener.events.trip.reservation.PostReservationRequest;
@@ -145,6 +147,20 @@ public class TripService {
     public GetAllOrdersResponse getAllOrders(GetAllOrdersRequest request) {
         List<ReservationRepository.Reservation> reservations = reservationRepository.findAllByUser(request.getUsername());
         return new GetAllOrdersResponse(reservations);
+    }
+
+    public PreferencesResponse getPreferences(PreferencesRequest request, String requestNumber) {
+        logger.info("{} Started preferences.", requestNumber);
+        PreferencesResponse response = new PreferencesResponse(request.getUuid(), false, List.of());
+
+        try {
+            List<ReservationRepository.Reservation> reservations = reservationRepository.findAllByUser(request.getUsername());
+            response.setPreferences(reservations);
+            response.setResponse(true);
+            return response;
+        } catch (Exception e) {
+            return response;
+        }
     }
 
     public OrderInfoResponse reservationInfo(OrderInfoRequest request) {
