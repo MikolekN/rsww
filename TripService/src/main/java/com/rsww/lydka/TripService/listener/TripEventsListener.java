@@ -1,11 +1,11 @@
 package com.rsww.lydka.TripService.listener;
 
-import com.rsww.lydka.TripService.listener.events.orders.GetAllOrdersRequest;
-import com.rsww.lydka.TripService.listener.events.orders.GetAllOrdersResponse;
-import com.rsww.lydka.TripService.listener.events.orders.OrderInfoRequest;
-import com.rsww.lydka.TripService.listener.events.orders.OrderInfoResponse;
-import com.rsww.lydka.TripService.listener.events.payment.PayForReservationCommand;
-import com.rsww.lydka.TripService.listener.events.payment.PaymentResponse;
+import com.rsww.lydka.TripService.listener.events.orders.request.GetAllOrdersRequest;
+import com.rsww.lydka.TripService.listener.events.orders.response.GetAllOrdersResponse;
+import com.rsww.lydka.TripService.listener.events.orders.request.OrderInfoRequest;
+import com.rsww.lydka.TripService.listener.events.orders.response.OrderInfoResponse;
+import com.rsww.lydka.TripService.listener.events.payment.command.PayForReservationCommand;
+import com.rsww.lydka.TripService.listener.events.payment.response.PaymentResponse;
 import com.rsww.lydka.TripService.listener.events.trip.reservation.PostReservationRequest;
 import com.rsww.lydka.TripService.listener.events.trip.reservation.PostReservationResponse;
 import com.rsww.lydka.TripService.service.PaymentService;

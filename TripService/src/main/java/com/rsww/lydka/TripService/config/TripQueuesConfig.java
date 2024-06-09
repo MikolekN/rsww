@@ -1,16 +1,13 @@
 package com.rsww.lydka.TripService.config;
 
-import org.springframework.amqp.core.AnonymousQueue;
 import org.springframework.amqp.core.Queue;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.core.io.ClassPathResource;
 
 // TODO: sprawdzic czy wszystkie potrzebne kolejki sa i usunac te niepotrzebne
 @Configuration
-public class ListeningQueuesConfig {
+public class TripQueuesConfig {
     @Bean(name = "reserveHotelQueue")
     Queue reserveHotelQueue(@Value("${spring.rabbitmq.queue.reservationMakeQueue}") final String reserveHotelQueue) {
         return new Queue(reserveHotelQueue, true);
@@ -31,11 +28,6 @@ public class ListeningQueuesConfig {
         return new Queue(addHotelQueue, true);
     }
 
-//    @Bean(name = "deleteHotelQueue")
-//    Queue deleteHotelQueue(@Value("${spring.rabbitmq.queue.hotel.delete}") final String deleteHotelQueue) {
-//        return new Queue(deleteHotelQueue, true);
-//    }
-
     @Bean(name = "addRoomQueue")
     Queue addRoomQueue(@Value("${spring.rabbitmq.queue.roomCreateQueue}") final String addRoomQueue) {
         return new Queue(addRoomQueue, true);
@@ -55,11 +47,6 @@ public class ListeningQueuesConfig {
     public Queue getHotelDetailsQueue(@Value("${spring.rabbitmq.queue.hotelInfoRequestQueue}") String queueName) {
         return new Queue(queueName, true);
     }
-
-//    @Bean(name = "autoDeleteQueue")
-//    Queue autoDeleteQueue() {
-//        return new AnonymousQueue();
-//    }
 
     @Bean(name = "getTrips")
     public Queue getTripsQueue(@Value("${spring.rabbitmq.queue.getTrips}") final String queueName) {

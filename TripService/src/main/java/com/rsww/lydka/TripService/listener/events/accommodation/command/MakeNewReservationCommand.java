@@ -1,4 +1,4 @@
-package com.rsww.lydka.TripService.listener.events.accommodation;
+package com.rsww.lydka.TripService.listener.events.accommodation.command;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

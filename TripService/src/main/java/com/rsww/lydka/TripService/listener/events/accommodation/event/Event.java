@@ -1,9 +1,5 @@
-package com.rsww.lydka.TripService.listener.events.accommodation;
+package com.rsww.lydka.TripService.listener.events.accommodation.event;
 
-import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
-import jakarta.persistence.MappedSuperclass;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.ToString;

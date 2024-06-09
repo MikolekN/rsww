@@ -1,5 +1,6 @@
 package com.rsww.lydka.TripService.service;
 
+import com.rsww.lydka.TripService.entity.Reservation;
 import com.rsww.lydka.TripService.repository.ReservationRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,21 +27,22 @@ public class CancellingService {
     }
 
     @Async
-    public void checkPayment(ReservationRepository.Reservation reservation, int numberOfPeople) {
+    public void checkPayment(Reservation reservation, int numberOfPeople) {
         try {
             Thread.sleep(60000);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             return;
         }
-        List<ReservationRepository.Reservation> res = reservationRepository.findReservationsByReservationId(reservation.getReservationId());
+        List<Reservation> res = reservationRepository.findReservationsByReservationId(reservation.getReservationId());
 
         if(res.isEmpty())
             return;
-        ReservationRepository.Reservation reservationToCheck = res.get(res.size() - 1);
+        Reservation reservationToCheck = res.get(res.size() - 1);
 
         if(reservationToCheck.getPayed())
             return;
+
         logger.info("Reservation {} was cancelled, because it wasn't paid.", reservation.getReservationId());
         transportService.cancel(reservationToCheck.getStartFlightId(), numberOfPeople);
         transportService.cancel(reservationToCheck.getEndFlightId(), numberOfPeople);
@@ -50,6 +52,5 @@ public class CancellingService {
 
         reservationToCheck.setTripId("Cancelled");
         reservationRepository.save(reservationToCheck);
-
     }
 }

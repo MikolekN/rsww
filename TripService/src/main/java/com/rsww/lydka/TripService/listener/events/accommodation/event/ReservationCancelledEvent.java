@@ -1,6 +1,5 @@
-package com.rsww.lydka.TripService.listener.events.accommodation;
+package com.rsww.lydka.TripService.listener.events.accommodation.event;
 
-import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

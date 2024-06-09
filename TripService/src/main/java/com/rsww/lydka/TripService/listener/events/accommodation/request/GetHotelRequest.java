@@ -1,4 +1,4 @@
-package com.rsww.lydka.TripService.listener.events.accommodation;
+package com.rsww.lydka.TripService.listener.events.accommodation.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

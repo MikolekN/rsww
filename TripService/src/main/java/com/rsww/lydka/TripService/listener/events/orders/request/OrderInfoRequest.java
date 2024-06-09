@@ -1,4 +1,4 @@
-package com.rsww.lydka.TripService.listener.events.orders;
+package com.rsww.lydka.TripService.listener.events.orders.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;

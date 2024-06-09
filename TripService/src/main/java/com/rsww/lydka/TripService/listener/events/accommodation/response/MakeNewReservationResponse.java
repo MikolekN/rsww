@@ -1,6 +1,7 @@
-package com.rsww.lydka.TripService.listener.events.accommodation;
+package com.rsww.lydka.TripService.listener.events.accommodation.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.rsww.lydka.TripService.listener.events.accommodation.event.ReservationMadeEvent;
 import lombok.*;
 
 @ToString

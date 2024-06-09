@@ -1,5 +1,6 @@
 package com.rsww.lydka.TripService.repository;
 
+import com.rsww.lydka.TripService.entity.Reservation;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,27 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface ReservationRepository extends MongoRepository<ReservationRepository.Reservation, UUID> {
+public interface ReservationRepository extends MongoRepository<Reservation, UUID> {
     List<Reservation> findReservationsByReservationId(String reservationId);
     List<Reservation> findAllByUser(String user);
-    @Data
-    @Builder
-    @Jacksonized
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class Reservation {
-        private String reservationId;
-        private String user;
-        private Boolean payed;
-        private LocalDateTime reservationTime;
-
-        private String startFlightReservation;
-        private String endFlightReservation;
-        private String startFlightId;
-        private String endFlightId;
-        private String hotelReservation;
-        private String tripId; // Czy to jest potrzebne?
-        private String hotelId;
-        private Double price;
-    }
 }

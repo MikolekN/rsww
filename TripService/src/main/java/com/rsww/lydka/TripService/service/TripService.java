@@ -1,7 +1,11 @@
 package com.rsww.lydka.TripService.service;
 
-import com.rsww.lydka.TripService.listener.events.accommodation.MakeNewReservationResponse;
-import com.rsww.lydka.TripService.listener.events.orders.*;
+import com.rsww.lydka.TripService.entity.Reservation;
+import com.rsww.lydka.TripService.listener.events.accommodation.response.MakeNewReservationResponse;
+import com.rsww.lydka.TripService.listener.events.orders.request.GetAllOrdersRequest;
+import com.rsww.lydka.TripService.listener.events.orders.request.OrderInfoRequest;
+import com.rsww.lydka.TripService.listener.events.orders.response.GetAllOrdersResponse;
+import com.rsww.lydka.TripService.listener.events.orders.response.OrderInfoResponse;
 import com.rsww.lydka.TripService.listener.events.trip.reservation.PostReservationRequest;
 import com.rsww.lydka.TripService.listener.events.trip.reservation.PostReservationResponse;
 import com.rsww.lydka.TripService.listener.events.trip.reservation.transport.FlightReservation;
@@ -36,10 +40,10 @@ public class TripService {
     }
 
     public void confirmReservation(UUID reservationId) {
-        List<ReservationRepository.Reservation> res = reservationRepository.findReservationsByReservationId(reservationId.toString());
+        List<Reservation> res = reservationRepository.findReservationsByReservationId(reservationId.toString());
         if(res.isEmpty())
             return;
-        ReservationRepository.Reservation reservation = res.get(res.size() - 1);
+        Reservation reservation = res.get(res.size() - 1);
         if (reservation.getTripId() != null && reservation.getTripId().equals("Cancelled"))
         {
             return;
@@ -55,7 +59,7 @@ public class TripService {
         String reservationId = UUID.randomUUID().toString();
         LocalDateTime reservationTime = LocalDateTime.now();
 
-        ReservationRepository.Reservation reservation = new ReservationRepository.Reservation();
+        Reservation reservation = new Reservation();
         reservation.setReservationId(reservationId);
         reservation.setUser(request.getUsername());
         reservation.setPayed(false);
@@ -120,17 +124,17 @@ public class TripService {
         return response;
     }
     @Async
-    public void checkPayment(ReservationRepository.Reservation reservation, int numberOfPeople) {
+    public void checkPayment(Reservation reservation, int numberOfPeople) {
         try {
             Thread.sleep(60000);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             return;
         }
-        List<ReservationRepository.Reservation> res = reservationRepository.findReservationsByReservationId(reservation.getReservationId());
+        List<Reservation> res = reservationRepository.findReservationsByReservationId(reservation.getReservationId());
         if(res.isEmpty())
             return;
-        ReservationRepository.Reservation reservationToCheck = res.get(0);
+        Reservation reservationToCheck = res.get(0);
         if(reservationToCheck.getPayed())
             return;
         logger.info("Reservation {} was cancelled, because it wasn't paid.", reservation.getReservationId());
@@ -143,16 +147,16 @@ public class TripService {
     }
 
     public GetAllOrdersResponse getAllOrders(GetAllOrdersRequest request) {
-        List<ReservationRepository.Reservation> reservations = reservationRepository.findAllByUser(request.getUsername());
+        List<Reservation> reservations = reservationRepository.findAllByUser(request.getUsername());
         return new GetAllOrdersResponse(reservations);
     }
 
     public OrderInfoResponse reservationInfo(OrderInfoRequest request) {
-        List<ReservationRepository.Reservation> reservations = reservationRepository.findReservationsByReservationId(request.getReservationId());
+        List<Reservation> reservations = reservationRepository.findReservationsByReservationId(request.getReservationId());
         if (reservations.isEmpty()) {
             return new OrderInfoResponse(null);
         }
-        ReservationRepository.Reservation reservation = reservations.get(reservations.size() - 1);
+        Reservation reservation = reservations.get(reservations.size() - 1);
         return new OrderInfoResponse(reservation);
     }
 }

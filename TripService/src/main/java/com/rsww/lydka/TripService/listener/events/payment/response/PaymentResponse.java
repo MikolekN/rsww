@@ -1,4 +1,4 @@
-package com.rsww.lydka.TripService.listener.events.payment;
+package com.rsww.lydka.TripService.listener.events.payment.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

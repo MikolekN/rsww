@@ -1,6 +1,9 @@
 package com.rsww.lydka.TripService.service;
 
-import com.rsww.lydka.TripService.listener.events.accommodation.*;
+import com.rsww.lydka.TripService.listener.events.accommodation.command.CancelReservationCommand;
+import com.rsww.lydka.TripService.listener.events.accommodation.command.MakeNewReservationCommand;
+import com.rsww.lydka.TripService.listener.events.accommodation.event.ReservationCancelledEvent;
+import com.rsww.lydka.TripService.listener.events.accommodation.response.MakeNewReservationResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.AsyncRabbitTemplate;
@@ -31,14 +34,14 @@ public class DelegatingAccommodationService {
     }
 
     public MakeNewReservationResponse reserve(String reservationId,
-                                       String timestamp,
-                                       String hotelId,
-                                       String roomType,
-                                       final String startDate,
-                                       final String endDate,
-                                       final String numberOfAdults,
-                                       final String numberOfChildrenUnder10,
-                                       final String numberOfChildrenUnder18) {
+                                              String timestamp,
+                                              String hotelId,
+                                              String roomType,
+                                              final String startDate,
+                                              final String endDate,
+                                              final String numberOfAdults,
+                                              final String numberOfChildrenUnder10,
+                                              final String numberOfChildrenUnder18) {
 
         MakeNewReservationCommand request = new MakeNewReservationCommand(UUID.fromString(reservationId),
                 LocalDateTime.parse(timestamp),
@@ -66,8 +69,8 @@ public class DelegatingAccommodationService {
     }
 
     public ReservationCancelledEvent cancelReservation(String uuid,
-                                              String timestamp,
-                                              String reservationId) {
+                                                       String timestamp,
+                                                       String reservationId) {
         ReservationCancelledEvent response = null;
         CancelReservationCommand request = new CancelReservationCommand(UUID.fromString(uuid), LocalDateTime.parse(timestamp), UUID.fromString(reservationId));
         CompletableFuture<ReservationCancelledEvent> responseCompletableFuture = rabbitTemplate.convertSendAndReceiveAsType(
