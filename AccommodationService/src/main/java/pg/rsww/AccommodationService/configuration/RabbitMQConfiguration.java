@@ -66,6 +66,46 @@ public class RabbitMQConfiguration {
         return new Queue(queue);
     }
     @Bean
+    public Queue getAllHotelsQueue(@Value("${spring.rabbitmq.queue.GetAllHotelsQueue}") String queue) {
+        return new Queue(queue);
+    }
+    @Bean
+    public Queue getAllRoomTypesQueue(@Value("${spring.rabbitmq.queue.GetAllRoomTypesQueue}") String queue) {
+        return new Queue(queue);
+    }
+    @Bean
+    public Queue removeHotelQueue(@Value("${spring.rabbitmq.queue.RemoveHotelQueue}") String queue) {
+        return new Queue(queue);
+    }
+    @Bean
+    public Queue changeRoomPriceQueue(@Value("${spring.rabbitmq.queue.ChangeRoomPriceQueue}") String queue) {
+        return new Queue(queue);
+    }
+    @Bean
+    public Queue getHotelChangeEventsQueue(@Value("${spring.rabbitmq.queue.GetHotelChangeEventsQueue}") String queue) {
+        return new Queue(queue);
+    }
+    @Bean
+    public Queue getRoomChangeEventsQueue(@Value("${spring.rabbitmq.queue.GetRoomChangeEventsQueue}") String queue) {
+        return new Queue(queue);
+    }
+    @Bean
+    public Queue RoomPriceChangedEventQueue(@Value("${spring.rabbitmq.queue.RoomPriceChangedEventQueue}") String queue) {
+        return new Queue(queue);
+    }
+    @Bean
+    public Queue HotelRemovedEventQueue(@Value("${spring.rabbitmq.queue.HotelRemovedEventQueue}") String queue) {
+        return new Queue(queue);
+    }
+    @Bean
+    public Queue HotelRemovedEventOfferQueue(@Value("${spring.rabbitmq.queue.HotelRemovedEventOfferQueue}") String queue) {
+        return new Queue(queue);
+    }
+    @Bean
+    public Queue RoomPriceChangedEventOfferQueue(@Value("${spring.rabbitmq.queue.RoomPriceChangedEventOfferQueue}") String queue) {
+        return new Queue(queue);
+    }
+    @Bean
     TopicExchange exchange() {
         return new TopicExchange(accommodationTopic);
     }

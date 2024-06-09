@@ -9,6 +9,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pg.rsww.AccommodationService.command.entity.HotelAddedEvent;
+import pg.rsww.AccommodationService.command.entity.HotelRemovedEvent;
 
 @Component
 public class HotelEventListener {
@@ -23,5 +24,10 @@ public class HotelEventListener {
     public void HotelAddedEventHandler(HotelAddedEvent hotelAddedEvent) {
         log.info(String.format("Received HotelAddedEvent %s", hotelAddedEvent));
         hotelService.addNewHotel(hotelAddedEvent);
+    }
+    @RabbitListener(queues = "${spring.rabbitmq.queue.HotelRemovedEventQueue}")
+    public void HotelRemovedEventHandler(HotelRemovedEvent hotelRemovedEvent) {
+        log.info(String.format("Received HotelRemovedEvent %s", hotelRemovedEvent));
+        hotelService.removeHotel(hotelRemovedEvent);
     }
 }

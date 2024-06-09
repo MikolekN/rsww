@@ -61,6 +61,30 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    public Queue getAllFlightsQueue(@Value("${spring.rabbitmq.queue.GetAllFlightsQueue}") String queue) {
+        return new Queue(queue);
+    }
+    @Bean
+    public Queue removeFlightQueue(@Value("${spring.rabbitmq.queue.RemoveFlightQueue}") String queue) {
+        return new Queue(queue);
+    }
+    @Bean
+    public Queue changeFlightPriceQueue(@Value("${spring.rabbitmq.queue.ChangeFlightPriceQueue}") String queue) {
+        return new Queue(queue);
+    }
+    @Bean
+    public Queue flightRemovedEventQueue(@Value("${spring.rabbitmq.queue.FlightRemovedEventQueue}") String queue) {
+        return new Queue(queue);
+    }
+    @Bean
+    public Queue flightPriceChangedEventQueue(@Value("${spring.rabbitmq.queue.FlightPriceChangedEventQueue}") String queue) {
+        return new Queue(queue);
+    }
+    @Bean
+    public Queue getFlightChangeEventsQueue(@Value("${spring.rabbitmq.queue.GetFlightChangeEventsQueue}") String queue) {
+        return new Queue(queue);
+    }
+    @Bean
     TopicExchange exchange() {
         return new TopicExchange(transportTopic);
     }

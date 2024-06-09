@@ -17,6 +17,7 @@ import java.util.UUID;
 @ToString
 @Getter
 @Setter
+@Builder
 public class HotelEvent extends Event {
     @JsonProperty("hotel_uuid")
     private UUID hotelUuid;

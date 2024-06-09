@@ -8,6 +8,7 @@ import pg.rsww.AccommodationService.command.entity.command.CancelReservationComm
 import pg.rsww.AccommodationService.command.entity.command.MakeNewReservationCommand;
 import pg.rsww.AccommodationService.command.hotel.HotelEventRepository;
 import pg.rsww.AccommodationService.command.room.RoomEventRepository;
+import pg.rsww.AccommodationService.command.room.RoomPriceChangeEventRepository;
 
 import java.util.List;
 import java.util.Objects;
@@ -19,12 +20,14 @@ public class ReservationCommandService {
     private final ReservationEventRepository reservationEventRepository;
     private final HotelEventRepository hotelEventRepository;
     private final RoomEventRepository roomEventRepository;
+    private final RoomPriceChangeEventRepository roomPriceChangeEventRepository;
 
     @Autowired
-    public ReservationCommandService(ReservationEventRepository reservationEventRepository, HotelEventRepository hotelEventRepository, RoomEventRepository roomEventRepository) {
+    public ReservationCommandService(ReservationEventRepository reservationEventRepository, HotelEventRepository hotelEventRepository, RoomEventRepository roomEventRepository, RoomPriceChangeEventRepository roomPriceChangeEventRepository) {
         this.reservationEventRepository = reservationEventRepository;
         this.hotelEventRepository = hotelEventRepository;
         this.roomEventRepository = roomEventRepository;
+        this.roomPriceChangeEventRepository = roomPriceChangeEventRepository;
     }
     public Optional<ReservationMadeEvent> makeNewReservation(MakeNewReservationCommand makeNewReservationCommand) {
         UUID hotelUuid = makeNewReservationCommand.getHotel();
@@ -33,11 +36,15 @@ public class ReservationCommandService {
         if (hotelEvents.isEmpty()) {
             //System.out.println("WRONG HOTEL");
             return Optional.empty();
-            // TODO if we add HotelRemoveEvent - then we would need to check if this event came and return Optional.empty() as well
+        }
+        for (HotelEvent hotelEvent: hotelEvents) {
+            if (hotelEvent instanceof HotelRemovedEvent) {
+                return Optional.empty();
+            }
         }
         // Checking if any of the rooms is suitable
         List<RoomEvent> roomEvents = roomEventRepository.findAllByHotelUuid(hotelUuid);
-        UUID suitableRoomUuid = null; // FIXME
+        UUID suitableRoomUuid = null;
         float roomPrice = 0;
         if (roomEvents.isEmpty()) {
             //System.out.println("NO ROOMS");
@@ -45,8 +52,6 @@ public class ReservationCommandService {
         }
         for (RoomEvent roomEvent: roomEvents) {
             //System.out.println(roomEvent);
-            // TODO if we add RoomRemoveEvent - then we would need to check if this event came
-            // TODO and dont check this room anymore
             UUID roomUuid = roomEvent.getRoomUuid();
             if (roomEvent instanceof RoomAddedEvent) {
                 if (((RoomAddedEvent) roomEvent).getCapacity()
@@ -90,10 +95,16 @@ public class ReservationCommandService {
             }
         }
 
-        if(suitableRoomUuid == null) {
+        if (suitableRoomUuid == null) {
             return Optional.empty();
         }
-
+        List<RoomPriceChangeEvent> roomPriceChangeEvents = roomPriceChangeEventRepository.findAllByHotelUuid(hotelUuid);
+        for (RoomPriceChangeEvent roomPriceChangeEvent: roomPriceChangeEvents) {
+            if (makeNewReservationCommand.getRoomType().equals(roomPriceChangeEvent.getRoomType()))
+            {
+                roomPrice = roomPriceChangeEvent.getNewPrice();
+            }
+        }
         ReservationMadeEvent reservationMadeEvent = new ReservationMadeEvent(UUID.randomUUID(),
                 makeNewReservationCommand.getUuid(), makeNewReservationCommand.getTimeStamp(),
                 makeNewReservationCommand.getStartDate(), makeNewReservationCommand.getEndDate(),
