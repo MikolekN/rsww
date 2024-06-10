@@ -23,7 +23,7 @@ public class CommandsGenerator {
     }
 
 
-    @Scheduled(fixedRate = 500000)
+    @Scheduled(fixedRate = 60000)
     public void reportCurrentTime() {
         Command[] availableCommands = Command.values();
         Command chosenCommand = availableCommands[random.nextInt(availableCommands.length)];

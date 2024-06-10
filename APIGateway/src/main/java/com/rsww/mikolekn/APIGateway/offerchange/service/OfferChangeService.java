@@ -1,9 +1,6 @@
 package com.rsww.mikolekn.APIGateway.offerchange.service;
 
-import com.rsww.mikolekn.APIGateway.offer.OfferService;
-import com.rsww.mikolekn.APIGateway.offer.dto.GetAllOffersRequest;
-import com.rsww.mikolekn.APIGateway.offer.dto.GetAllOffersResponse;
-import com.rsww.mikolekn.APIGateway.offer.dto.OffersDto;
+
 import com.rsww.mikolekn.APIGateway.offerchange.dto.GetLastChangesResponse;
 import com.rsww.mikolekn.APIGateway.offerchange.dto.GetOfferChangesRequest;
 import com.rsww.mikolekn.APIGateway.offerchange.dto.GetOfferChangesResponse;
@@ -12,7 +9,6 @@ import com.rsww.mikolekn.APIGateway.offerchange.model.FlightPriceChangedEvent;
 import com.rsww.mikolekn.APIGateway.offerchange.model.FlightRemovedEvent;
 import com.rsww.mikolekn.APIGateway.offerchange.model.HotelRemovedEvent;
 import com.rsww.mikolekn.APIGateway.offerchange.model.RoomPriceChangeEvent;
-import com.rsww.mikolekn.APIGateway.utils.RequestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Queue;
@@ -21,8 +17,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+
 
 import java.util.UUID;
 
