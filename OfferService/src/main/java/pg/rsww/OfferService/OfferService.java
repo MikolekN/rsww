@@ -43,13 +43,18 @@ public class OfferService {
     private final Queue getHotelChangeEventsQueue;
     private final Queue getRoomChangeEventsQueue;
     private final Queue getFlightChangeEventsQueue;
+    private final Queue getFlightRemovedEventsQueue;
+    private final Queue getFlightPriceChangeEventsQueue;
+
 
     @Autowired
-    public OfferService(AsyncRabbitTemplate rabbitTemplate, Queue getHotelChangeEventsQueue, Queue getRoomChangeEventsQueue, Queue getFlightChangeEventsQueue) {
+    public OfferService(AsyncRabbitTemplate rabbitTemplate, Queue getHotelChangeEventsQueue, Queue getRoomChangeEventsQueue, Queue getFlightChangeEventsQueue, Queue getFlightRemovedEventsQueue, Queue getFlightPriceChangeEventsQueue) {
         this.rabbitTemplate = rabbitTemplate;
         this.getHotelChangeEventsQueue = getHotelChangeEventsQueue;
         this.getRoomChangeEventsQueue = getRoomChangeEventsQueue;
         this.getFlightChangeEventsQueue = getFlightChangeEventsQueue;
+        this.getFlightRemovedEventsQueue = getFlightRemovedEventsQueue;
+        this.getFlightPriceChangeEventsQueue = getFlightPriceChangeEventsQueue;
     }
 
     public GetAllOffersResponse getAllOffers(GetAllOffersRequest getAllOffersRequest) {
@@ -259,13 +264,22 @@ public class OfferService {
         } catch (Exception e) {
             log.warn("GetLastRoomChangesRequest got timeout");
         }
-        List<FlightChangedEvent> flightChangedEvents = new ArrayList<>();;
-        CompletableFuture<GetLastFlightChangesResponse> getLastFlightChangesResponseCompletableFuture = rabbitTemplate.convertSendAndReceiveAsType(getFlightChangeEventsQueue.getName(), new GetLastFlightChangesRequest(UUID.randomUUID()), new ParameterizedTypeReference<>(){});
+
+        List<FlightRemovedEvent> flightRemovedEvents = new ArrayList<>();;
+        CompletableFuture<GetLastFlightsRemovedResponse> getLastFlightsRemovedResponseCompletableFuture = rabbitTemplate.convertSendAndReceiveAsType(getFlightRemovedEventsQueue.getName(), new GetLastFlightChangesRequest(UUID.randomUUID()), new ParameterizedTypeReference<>(){});
         try {
-            flightChangedEvents = getLastFlightChangesResponseCompletableFuture.get().getFlightChangedEvents();
+            flightRemovedEvents = getLastFlightsRemovedResponseCompletableFuture.get().getFlightRemovedEvents();
         } catch (Exception e) {
-            log.warn("GetLastFlightChangesRequest got timeout");
+            log.warn("GetLastFlightsRemovedRequest got timeout");
         }
+        List<FlightPriceChangedEvent> flightPriceChangedEvents = new ArrayList<>();;
+        CompletableFuture<GetLastFlightPriceChangesResponse> getLastFlightPriceChangesResponseCompletableFuture = rabbitTemplate.convertSendAndReceiveAsType(getFlightPriceChangeEventsQueue.getName(), new GetLastFlightChangesRequest(UUID.randomUUID()), new ParameterizedTypeReference<>(){});
+        try {
+            flightPriceChangedEvents = getLastFlightPriceChangesResponseCompletableFuture.get().getFlightPriceChangedEvents();
+        } catch (Exception e) {
+            log.warn("GetLastFlightPriceChangesRequest got timeout");
+        }
+
         List<OfferChangeEvent> offerChangeEventList = new ArrayList<>();
         for (HotelRemovedEvent event: hotelChangedEvents) {
             OfferChangeEvent offerChangeEvent = new OfferChangeEvent(event.getUuid(),
@@ -279,20 +293,17 @@ public class OfferService {
                     String.format("%s from hotel uuid=%s price was changed from %s to %s", event.getRoomType(), event.getHotelUuid(), event.getOldPrice(), event.getNewPrice()));
             offerChangeEventList.add(offerChangeEvent);
         }
-        for (FlightChangedEvent event: flightChangedEvents) {
-            if (event instanceof FlightRemovedEvent flightRemovedEvent) {
-                OfferChangeEvent offerChangeEvent = new OfferChangeEvent(flightRemovedEvent.getUuid(),
-                        flightRemovedEvent.getTimeStamp(),
-                        String.format("%s flight (%s) from %s to %s was removed", flightRemovedEvent.getFlightUuid(), flightRemovedEvent.getDepartureDate(), flightRemovedEvent.getDepartureCountry(), flightRemovedEvent.getArrivalCountry()));
-                offerChangeEventList.add(offerChangeEvent);
-
-            }
-            if (event instanceof FlightPriceChangedEvent flightPriceChangedEvent) {
-                OfferChangeEvent offerChangeEvent = new OfferChangeEvent(flightPriceChangedEvent.getUuid(),
-                        flightPriceChangedEvent.getTimeStamp(),
-                        String.format("%s flight (%s) from %s to %s price was changed from %s to %s", flightPriceChangedEvent.getFlightUuid(), flightPriceChangedEvent.getDepartureDate(), flightPriceChangedEvent.getDepartureCountry(), flightPriceChangedEvent.getArrivalCountry(), flightPriceChangedEvent.getOldPrice(), flightPriceChangedEvent.getNewPrice()));
-                offerChangeEventList.add(offerChangeEvent);
-            }
+        for (FlightRemovedEvent flightRemovedEvent: flightRemovedEvents) {
+            OfferChangeEvent offerChangeEvent = new OfferChangeEvent(flightRemovedEvent.getUuid(),
+                    flightRemovedEvent.getTimeStamp(),
+                    String.format("%s flight (%s) from %s to %s was removed", flightRemovedEvent.getFlightUuid(), flightRemovedEvent.getDepartureDate(), flightRemovedEvent.getDepartureCountry(), flightRemovedEvent.getArrivalCountry()));
+            offerChangeEventList.add(offerChangeEvent);
+        }
+        for (FlightPriceChangedEvent flightPriceChangedEvent: flightPriceChangedEvents) {
+            OfferChangeEvent offerChangeEvent = new OfferChangeEvent(flightPriceChangedEvent.getUuid(),
+                    flightPriceChangedEvent.getTimeStamp(),
+                    String.format("%s flight (%s) from %s to %s price was changed from %s to %s", flightPriceChangedEvent.getFlightUuid(), flightPriceChangedEvent.getDepartureDate(), flightPriceChangedEvent.getDepartureCountry(), flightPriceChangedEvent.getArrivalCountry(), flightPriceChangedEvent.getOldPrice(), flightPriceChangedEvent.getNewPrice()));
+            offerChangeEventList.add(offerChangeEvent);
         }
         offerChangeEventList = offerChangeEventList.stream().sorted(Comparator.comparing(OfferChangeEvent::getTimeStamp).reversed())
                 .limit(10)

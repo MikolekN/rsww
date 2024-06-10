@@ -1,15 +1,13 @@
 package com.example.transportation.command;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.UUID;
 
 @ToString
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 public class ChangeFlightPriceCommand {

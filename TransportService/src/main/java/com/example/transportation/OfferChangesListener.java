@@ -10,9 +10,7 @@ import com.example.transportation.event.domain.FlightRemovedEvent;
 import com.example.transportation.event.repo.FlightChangedEventRepository;
 import com.example.transportation.flight.domain.Flight;
 import com.example.transportation.flight.repo.FlightRepository;
-import com.example.transportation.query.GetFlightsRequest;
-import com.example.transportation.query.GetLastFlightChangesRequest;
-import com.example.transportation.query.GetLastFlightChangesResponse;
+import com.example.transportation.query.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Queue;
@@ -61,7 +59,7 @@ public class OfferChangesListener {
         Flight flightToRemove = optionalFlight.get();
         flightRepository.delete(flightToRemove);
         log.info(String.format("flight of uuid: %s was successfully removed", command.getUuid().toString()));
-        FlightRemovedEvent event = (FlightRemovedEvent) FlightChangedEvent.builder()
+        FlightRemovedEvent event = FlightRemovedEvent.builder()
                 .uuid(UUID.randomUUID())
                 .timeStamp(LocalDateTime.now())
                 .flightUuid(flightToRemove.getId())
@@ -86,7 +84,7 @@ public class OfferChangesListener {
         flightToChange.setPrice((int) command.getChangedPrice());
         flightRepository.save(flightToChange);
         log.info(String.format("flight of uuid: %s price was successfully changed to %s", command.getUuid().toString(), command.getChangedPrice()));
-        FlightPriceChangedEvent event = (FlightPriceChangedEvent) FlightChangedEvent.builder()
+        FlightPriceChangedEvent event = FlightPriceChangedEvent.builder()
                 .uuid(UUID.randomUUID())
                 .timeStamp(LocalDateTime.now())
                 .flightUuid(flightToChange.getId())
@@ -109,6 +107,22 @@ public class OfferChangesListener {
         return new GetLastFlightChangesResponse(flightChangedEvents);
     }
 
+    @RabbitListener(queues = "${spring.rabbitmq.queue.GetFlightRemovedEventsQueue}")
+    public GetLastFlightsRemovedResponse getLastFlightsRemoved(GetLastFlightChangesRequest request) {
+        List<FlightRemovedEvent> flightChangedEvents = flightChangedEventRepository.findAllFlightRemovedEvents().stream()
+                .sorted(Comparator.comparing(FlightChangedEvent::getTimeStamp).reversed()) // maybe .reversed()
+                .limit(10)
+                .toList();
+        return new GetLastFlightsRemovedResponse(flightChangedEvents);
+    }
+    @RabbitListener(queues = "${spring.rabbitmq.queue.GetFlightPriceChangeEventsQueue}")
+    public GetLastFlightPriceChangesResponse getLastFlightPriceChanges(GetLastFlightChangesRequest request) {
+        List<FlightPriceChangedEvent> flightChangedEvents = flightChangedEventRepository.findAllFlightPriceChangeEvents().stream()
+                .sorted(Comparator.comparing(FlightChangedEvent::getTimeStamp).reversed()) // maybe .reversed()
+                .limit(10)
+                .toList();
+        return new GetLastFlightPriceChangesResponse(flightChangedEvents);
+    }
 }
 
 

@@ -1,28 +1,67 @@
-GET http://localhost:8095/api/offers
+POST http://localhost:8080/api/offers
 Content-Type: application/json
 
 {
   "country": "",
-  "dateFrom": "2025-01-01",
-  "dateTo": "2025-01-08",
+  "dateFrom": "2024-07-08",
+  "dateTo": "2024-07-01",
   "numberOfAdults": 2,
-  "numberOfChildrenUnder10": 1,
+  "numberOfChildrenUnder10": 0,
   "numberOfChildrenUnder18": 0
 }
 ###
 
-GET http://localhost:8095/api/offer
+POST http://localhost:8080/api/offer
 Content-Type: application/json
 
 {
-"hotelUuid": "dc73bb56-f398-4218-b043-fff977dfb41c",
-"dateFrom": "2025-01-01",
-"dateTo": "2025-01-08",
+"hotelUuid": "e8c55e3e-154b-4689-982b-fcf83428e404",
+"dateFrom": "2024-07-01",
+"dateTo": "2024-07-08",
 "numberOfAdults": 2,
-"numberOfChildrenUnder10": 1,
+"numberOfChildrenUnder10": 0,
 "numberOfChildrenUnder18": 0
 }
 ###
 
 
-GET http://localhost:8095/api/countries
+GET http://localhost:8080/api/countries
+
+
+###
+POST http://localhost:8080/api/payment
+Content-Type: application/json
+
+{
+"reservationId": "dc73bb56-f398-4218-b043-fff977dfb41c"
+}
+
+###
+POST http://localhost:8080/api/orders
+Content-Type: application/json
+
+{
+  "username": "user1"
+}
+
+###
+POST http://localhost:8080/api/order
+Content-Type: application/json
+
+{
+  "username": "user1",
+  "flightFromUuid": "d52408e3-f365-476e-b08d-880892ffe032",
+  "flightToUuid": "18678b51-80f3-4f61-93df-d1b6fb31ba29",
+  "hotelUuid": "e8c55e3e-154b-4689-982b-fcf83428e404",
+  "roomType": "Pokój standardowy 2 os. Widok na miasto (balkon lub taras)",
+  "dateFrom": "2024-07-01",
+  "dateTo": "2024-07-08",
+  "numberOfAdults": "2",
+  "numberOfChildrenUnder10": "0",
+  "numberOfChildrenUnder18": "0"
+}
+
+###
+
+
+POST http://localhost:8080/api/offer-changes

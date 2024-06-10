@@ -9,12 +9,10 @@ import java.util.UUID;
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-@AllArgsConstructor
 @NoArgsConstructor
 @ToString
 @Getter
 @Setter
-@Builder
 public class FlightChangedEvent {
     @Id
     private UUID uuid;
@@ -37,4 +35,14 @@ public class FlightChangedEvent {
     @Column(name = "arrival_date")
     @JsonProperty("arrival_date")
     private String arrivalDate;
+
+    public FlightChangedEvent(UUID uuid, LocalDateTime timeStamp, UUID flightUuid, String departureCountry, String arrivalCountry, String departureDate, String arrivalDate) {
+        this.uuid = uuid;
+        this.timeStamp = timeStamp;
+        this.flightUuid = flightUuid;
+        this.departureCountry = departureCountry;
+        this.arrivalCountry = arrivalCountry;
+        this.departureDate = departureDate;
+        this.arrivalDate = arrivalDate;
+    }
 }

@@ -5,8 +5,10 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import lombok.*;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 @ToString
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
@@ -18,4 +20,11 @@ public class FlightPriceChangedEvent extends FlightChangedEvent{
     @Column(name = "new_price")
     @JsonProperty("new_price")
     private int newPrice;
+
+    @Builder
+    public FlightPriceChangedEvent(UUID uuid, LocalDateTime timeStamp, UUID flightUuid, String departureCountry, String arrivalCountry, String departureDate, String arrivalDate, int oldPrice, int newPrice) {
+        super(uuid, timeStamp, flightUuid, departureCountry, arrivalCountry, departureDate, arrivalDate);
+        this.oldPrice = oldPrice;
+        this.newPrice = newPrice;
+    }
 }
