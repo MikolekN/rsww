@@ -17,7 +17,7 @@ import {interval, startWith, Subject, switchMap, takeUntil} from "rxjs";
 })
 export class PaymentComponent implements OnInit, OnDestroy {
 
-  public reservationStatus= "Ładowanie..."
+  public reservationStatus = "Ładowanie..."
   public paymentStatus: string = ""
   private destroy$ = new Subject<void>()
 
@@ -39,60 +39,51 @@ export class PaymentComponent implements OnInit, OnDestroy {
     this.destroy$.complete()
   }
 
-  private startPolling(orderResponseId : string) {
+  private startPolling(orderResponseId: string) {
     interval(2000)
       .pipe(
         startWith(0),
         takeUntil(this.destroy$),
         switchMap(() => this.offerService.getOrderStatus(orderResponseId))
       ).subscribe({
-          next: (value) => {
-            if (value.order.tripId !== null) {
-              this.reservationStatus = "Czas na rezerwację minął (1 min)."
-              this.paymentButtonDisabled = true
-            }
-            else if (value.order.payed === true) {
-              this.reservationStatus = "Rezerwacja pomyślnie opłacona."
-              this.paymentButtonDisabled = true
-            }
-            else {
-              this.reservationStatus = "Rezerwacja w toku."
-            }
-          },
-          error: (err) => {
-            console.log(err)
-          }
-        })
+      next: (value) => {
+        if (value.order.tripId !== null) {
+          this.reservationStatus = "Czas na rezerwację minął (1 min)."
+          this.paymentButtonDisabled = true
+        } else if (value.order.payed === true) {
+          this.reservationStatus = "Rezerwacja pomyślnie opłacona."
+          this.paymentButtonDisabled = true
+        } else {
+          this.reservationStatus = "Rezerwacja w toku."
+        }
+      },
+      error: (err) => {
+        console.log(err)
+      }
+    })
   }
 
   public pay() {
     this.paymentStatus = "Płatność w toku..."
 
-    const offerData = this.offerService.getOfferData()
     const reservationId = this.offerService.getOrderResponse().reservationId
 
-    if (offerData !== null) {
-      const request: PaymentDataRequest = {
-        reservationId: reservationId
-      }
+    const request: PaymentDataRequest = {
+      reservationId: reservationId
+    }
 
-      this.payService.payForOffer(request).subscribe({
-        next: (value: PaymentResponse) => {
-          if (value.response) {
-            this.paymentStatus = "Płatność udana! Id płatności: " + value.uuid
-          }
-          else {
-            this.paymentStatus = "Płatność się nie powiodła. Id płatności: " + value.uuid
-          }
-        },
-        error: () => {
-          this.paymentStatus = "Płatność się nie powiodła."
+    this.payService.payForOffer(request).subscribe({
+      next: (value: PaymentResponse) => {
+        if (value.response) {
+          this.paymentStatus = "Płatność udana! Id płatności: " + value.uuid
+        } else {
+          this.paymentStatus = "Płatność się nie powiodła. Id płatności: " + value.uuid
         }
-      })
-    }
-    else {
-      this.paymentStatus = "Rezerwacja nie udała się."
-    }
+      },
+      error: () => {
+        this.paymentStatus = "Płatność się nie powiodła."
+      }
+    })
   }
 
   public cancel() {
