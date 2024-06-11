@@ -71,7 +71,14 @@ public class OfferChangeService {
     }
 
     public void notifyOfferChangeEvent(OfferChangeEvent event) {
-        messagingTemplate.convertAndSend("/topic/offer-change-event", event);
+        rabbitTemplate.setReplyTimeout(15000);
+
+        GetOfferChangesResponse response = rabbitTemplate.convertSendAndReceiveAsType(
+                getLastOfferChangesQueue.getName(),
+                new GetOfferChangesRequest(UUID.randomUUID()),
+                new ParameterizedTypeReference<>() {});
+        if (response != null)
+            messagingTemplate.convertAndSend("/topic/offer-change-event", response);
     }
 
     public void generateChangeFlightPriceCommand(ChangeFlightPriceCommand command) {
