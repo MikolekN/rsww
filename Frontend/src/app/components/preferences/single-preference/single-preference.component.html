@@ -1,0 +1,10 @@
+<mat-card class="my-3">
+  <mat-card-content class="py-3">
+    <h2>Preferowana oferta:</h2>
+    <p>ID rezerwacji: {{ userOrder?.reservationId }}</p>
+    <p>Lot 1: {{ userOrder?.startFlightId }}</p>
+    <p>Lot2: {{ userOrder?.endFlightId }}</p>
+    <p>Hotel: {{ userOrder?.hotelId }}</p>
+    <h3>Cena: {{ userOrder?.price }} PLN</h3>
+  </mat-card-content>
+</mat-card>

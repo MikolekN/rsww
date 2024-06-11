@@ -26,6 +26,12 @@ export interface UserOrder {
   price: number;
 }
 
+export interface UserPreferencesResponse {
+  uuid: string
+  response: boolean
+  preferences: UserOrder[]
+}
+
 export interface UserOrderApiResponse {
   uuid: any;
   response: boolean;

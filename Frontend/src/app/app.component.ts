@@ -3,7 +3,7 @@ import {AuthService} from "./service/auth.service";
 import {HeaderComponent} from "./components/header/header.component";
 import {FooterComponent} from "./components/footer/footer.component";
 import {RouterOutlet} from "@angular/router";
-import {OfferNotificationService} from "./service/socket/offer-notification.service";
+import {SocketService} from "./service/socket/socket.service";
 
 @Component({
   selector: 'app-root',
@@ -14,7 +14,7 @@ import {OfferNotificationService} from "./service/socket/offer-notification.serv
 })
 export class AppComponent implements OnInit {
   constructor(private authService: AuthService,
-              private offerNotifyService: OfferNotificationService) {}
+              private offerNotifyService: SocketService) {}
 
   isLoggedIn() {
     return this.authService.isLoggedIn();

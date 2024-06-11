@@ -6,11 +6,13 @@ import {OfferReservedNotification} from "../../DTO/socket";
 import {parseJson} from "@angular/cli/src/utilities/json-file";
 import {environment} from "../../config/environment";
 import {OfferService} from "../offer.service";
+import {UserOrder, UserPreferencesResponse} from "../../components/types/order";
+import {BehaviorSubject} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
-export class OfferNotificationService {
+export class SocketService {
   constructor(private snackbar: MatSnackBar,
               private offerService: OfferService) {
     this.initializeWebSocketConnection();
@@ -19,7 +21,9 @@ export class OfferNotificationService {
   public stompClient: any
   public msg = []
 
-  private wsObj: CompatClient | null = null
+  private userPreferencesSubject = new BehaviorSubject<UserOrder[] | null>(null);
+  public userPreferences$ = this.userPreferencesSubject.asObservable();
+
   private serverUrl = environment.socketUrl;
 
   public initializeWebSocketConnection() {
@@ -31,6 +35,11 @@ export class OfferNotificationService {
     this.initOfferReservedNotification()
 
   }
+
+
+  /*
+    Reservation notification
+   */
 
   private initOfferReservedNotification() {
     const that = this
@@ -55,7 +64,25 @@ export class OfferNotificationService {
     }
   }
 
-  sendMessage(message: any) {
-    this.stompClient.send('/topic/live-reservation' , {}, message);
+  /*
+    User preferences
+   */
+
+  public initUserPreferencesEndpoint(username: string) {
+    const that = this
+
+    this.stompClient.connect({}, function(frame: any) {
+      that.stompClient.subscribe('/topic/user-preferences/' + username, (message: any) => {
+        if (message.body) {
+          const data:UserPreferencesResponse = parseJson(message.body)
+          console.log(data)
+
+          that.userPreferencesSubject.next(data.preferences)
+        }
+      });
+    });
+  }
+  public sendUserPreferencesRequest(username: string) {
+    this.stompClient.send('/app/topic/getUserPreferences' , {}, username);
   }
 }
