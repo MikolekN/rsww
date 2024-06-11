@@ -15,8 +15,11 @@ import java.util.UUID;
 public class HotelRemovedEvent extends HotelEvent {
     @JsonProperty("country")
     private String country;
-    public HotelRemovedEvent(UUID uuid, UUID hotelUuid, String country) {
+    @JsonProperty("name")
+    private String name;
+    public HotelRemovedEvent(UUID uuid, UUID hotelUuid, String country, String name) {
         super(uuid, hotelUuid);
         this.country = country;
+        this.name = name;
     }
 }

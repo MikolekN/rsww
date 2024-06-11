@@ -39,13 +39,15 @@ public class HotelCommandService {
 
     public HotelRemovedEvent removeHotel(RemoveHotelCommand removeHotelCommand) {
         String country ="";
+        String hotelName="";
         List<HotelEvent> hotelEventList = hotelEventRepository.findAllByHotelUuid(removeHotelCommand.getUuid());
         for (HotelEvent event: hotelEventList) {
             if (event instanceof HotelAddedEvent) {
                 country = ((HotelAddedEvent) event).getCountry();
+                hotelName = ((HotelAddedEvent) event).getName();
             }
         }
-        HotelRemovedEvent hotelRemovedEvent = new HotelRemovedEvent(UUID.randomUUID(), removeHotelCommand.getUuid(), country);
+        HotelRemovedEvent hotelRemovedEvent = new HotelRemovedEvent(UUID.randomUUID(), removeHotelCommand.getUuid(), country, hotelName);
         hotelEventRepository.save(hotelRemovedEvent);
         return hotelRemovedEvent;
     }

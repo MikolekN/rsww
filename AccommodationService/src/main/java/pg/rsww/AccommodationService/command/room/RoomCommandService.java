@@ -3,13 +3,11 @@ package pg.rsww.AccommodationService.command.room;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pg.rsww.AccommodationService.command.entity.Event;
-import pg.rsww.AccommodationService.command.entity.RoomAddedEvent;
-import pg.rsww.AccommodationService.command.entity.RoomEvent;
-import pg.rsww.AccommodationService.command.entity.RoomPriceChangeEvent;
+import pg.rsww.AccommodationService.command.entity.*;
 import pg.rsww.AccommodationService.command.entity.command.AddNewRoomCommand;
 import pg.rsww.AccommodationService.command.entity.command.ChangeRoomPriceCommand;
 import pg.rsww.AccommodationService.command.entity.command.GetLastRoomChangesRequest;
+import pg.rsww.AccommodationService.command.hotel.HotelEventRepository;
 
 import java.util.Comparator;
 import java.util.List;
@@ -18,12 +16,15 @@ import java.util.UUID;
 @Service
 public class RoomCommandService {
     private final RoomEventRepository roomEventRepository;
+    private final HotelEventRepository hotelEventRepository;
+
     private final RoomPriceChangeEventRepository roomPriceChangeEventRepository;
     private final RabbitTemplate rabbitTemplate;
 
     @Autowired
-    public RoomCommandService(RoomEventRepository roomEventRepository, RoomPriceChangeEventRepository roomPriceChangeEventRepository, RabbitTemplate rabbitTemplate) {
+    public RoomCommandService(RoomEventRepository roomEventRepository, HotelEventRepository hotelEventRepository, RoomPriceChangeEventRepository roomPriceChangeEventRepository, RabbitTemplate rabbitTemplate) {
         this.roomEventRepository = roomEventRepository;
+        this.hotelEventRepository = hotelEventRepository;
         this.roomPriceChangeEventRepository = roomPriceChangeEventRepository;
         this.rabbitTemplate = rabbitTemplate;
     }
@@ -50,11 +51,21 @@ public class RoomCommandService {
                 break;
             }
         }
+
+        String hotelName="";
+        List<HotelEvent> hotelEventList = hotelEventRepository.findAllByHotelUuid(changeRoomPriceCommand.getHotelUuid());
+        for (HotelEvent event: hotelEventList) {
+            if (event instanceof HotelAddedEvent) {
+                hotelName = ((HotelAddedEvent) event).getName();
+            }
+        }
+
         RoomPriceChangeEvent event = new RoomPriceChangeEvent(UUID.randomUUID(),
                 changeRoomPriceCommand.getHotelUuid(),
                 changeRoomPriceCommand.getRoomType(),
                 oldPrice,
-                changeRoomPriceCommand.getChangedPrice());
+                changeRoomPriceCommand.getChangedPrice(),
+                hotelName);
         roomPriceChangeEventRepository.save(event);
         return event;
     }

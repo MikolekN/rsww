@@ -1,4 +1,4 @@
-package pg.rsww.ChangeOfferService.command;
+package com.rsww.mikolekn.APIGateway.offerchange.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
@@ -10,7 +10,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Setter
-public class RemoveFlightCommand {
+public class RemoveHotelCommand {
     @JsonProperty("uuid")
     private UUID uuid;
+
 }

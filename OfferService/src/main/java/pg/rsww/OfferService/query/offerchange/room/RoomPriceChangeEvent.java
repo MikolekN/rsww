@@ -22,12 +22,14 @@ public class RoomPriceChangeEvent extends Event {
     private float oldPrice;
     @JsonProperty("new_price")
     private float newPrice;
-
-    public RoomPriceChangeEvent(UUID uuid, UUID hotelUuid, String roomType, float oldPrice, float newPrice) {
+    @JsonProperty("hotel_name")
+    private String hotelName;
+    public RoomPriceChangeEvent(UUID uuid, UUID hotelUuid, String roomType, float oldPrice, float newPrice, String hotelName) {
         super(uuid, LocalDateTime.now());
         this.hotelUuid = hotelUuid;
         this.roomType = roomType;
         this.oldPrice = oldPrice;
         this.newPrice = newPrice;
+        this.hotelName = hotelName;
     }
 }

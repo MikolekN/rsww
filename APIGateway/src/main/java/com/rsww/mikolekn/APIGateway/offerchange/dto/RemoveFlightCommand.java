@@ -1,4 +1,4 @@
-package pg.rsww.ChangeOfferService.command;
+package com.rsww.mikolekn.APIGateway.offerchange.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;

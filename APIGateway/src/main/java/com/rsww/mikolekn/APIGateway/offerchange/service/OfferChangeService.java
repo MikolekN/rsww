@@ -1,10 +1,7 @@
 package com.rsww.mikolekn.APIGateway.offerchange.service;
 
 
-import com.rsww.mikolekn.APIGateway.offerchange.dto.GetLastChangesResponse;
-import com.rsww.mikolekn.APIGateway.offerchange.dto.GetOfferChangesRequest;
-import com.rsww.mikolekn.APIGateway.offerchange.dto.GetOfferChangesResponse;
-import com.rsww.mikolekn.APIGateway.offerchange.dto.OfferChangeEvent;
+import com.rsww.mikolekn.APIGateway.offerchange.dto.*;
 import com.rsww.mikolekn.APIGateway.offerchange.model.FlightPriceChangedEvent;
 import com.rsww.mikolekn.APIGateway.offerchange.model.FlightRemovedEvent;
 import com.rsww.mikolekn.APIGateway.offerchange.model.HotelRemovedEvent;
@@ -31,10 +28,19 @@ public class OfferChangeService {
 
     static Logger logger = LoggerFactory.getLogger(OfferChangeService.class);
     private final Queue getLastOfferChangesQueue;
-    public OfferChangeService(RabbitTemplate rabbitTemplate, SimpMessagingTemplate messagingTemplate, Queue getLastOfferChangesQueue) {
+
+    private final Queue generateFlightPriceChangeQueue;
+    private final Queue generateRoomPriceChangeQueue;
+    private final Queue generateFlightRemoveQueue;
+    private final Queue generateHotelRemoveQueue;
+    public OfferChangeService(RabbitTemplate rabbitTemplate, SimpMessagingTemplate messagingTemplate, Queue getLastOfferChangesQueue, Queue generateFlightPriceChangeQueue, Queue generateRoomPriceChangeQueue, Queue generateFlightRemoveQueue, Queue generateHotelRemoveQueue) {
         this.rabbitTemplate = rabbitTemplate;
         this.messagingTemplate = messagingTemplate;
         this.getLastOfferChangesQueue = getLastOfferChangesQueue;
+        this.generateFlightPriceChangeQueue = generateFlightPriceChangeQueue;
+        this.generateRoomPriceChangeQueue = generateRoomPriceChangeQueue;
+        this.generateFlightRemoveQueue = generateFlightRemoveQueue;
+        this.generateHotelRemoveQueue = generateHotelRemoveQueue;
     }
 
     public ResponseEntity<GetLastChangesResponse> getOfferChanges() {
@@ -66,5 +72,21 @@ public class OfferChangeService {
 
     public void notifyOfferChangeEvent(OfferChangeEvent event) {
         messagingTemplate.convertAndSend("/topic/offer-change-event", event);
+    }
+
+    public void generateChangeFlightPriceCommand(ChangeFlightPriceCommand command) {
+        rabbitTemplate.convertAndSend(generateFlightPriceChangeQueue.getName(), command);
+    }
+
+    public void generateChangeRoomPriceCommand(ChangeRoomPriceCommand command) {
+        rabbitTemplate.convertAndSend(generateRoomPriceChangeQueue.getName(), command);
+    }
+
+    public void generateRemoveHotelCommand(RemoveHotelCommand command) {
+        rabbitTemplate.convertAndSend(generateHotelRemoveQueue.getName(), command);
+    }
+
+    public void generateRemoveFlightCommand(RemoveFlightCommand command) {
+        rabbitTemplate.convertAndSend(generateFlightRemoveQueue.getName(), command);
     }
 }

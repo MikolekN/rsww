@@ -80,7 +80,7 @@ public class OfferQueryListener {
         log.info(String.format("Received RoomPriceChangeEvent %s", roomPriceChangeEvent));
         OfferChangeEvent offerChangeEvent = new OfferChangeEvent(roomPriceChangeEvent.getUuid(),
                 roomPriceChangeEvent.getTimeStamp(),
-                String.format("%s from hotel uuid=%s price was changed from %s to %s", roomPriceChangeEvent.getRoomType(), roomPriceChangeEvent.getHotelUuid(), roomPriceChangeEvent.getOldPrice(), roomPriceChangeEvent.getNewPrice()));
+                String.format("%s from hotel %s price was changed from %s to %s", roomPriceChangeEvent.getRoomType(), roomPriceChangeEvent.getHotelName(), roomPriceChangeEvent.getOldPrice(), roomPriceChangeEvent.getNewPrice()));
         rabbitTemplate.convertAndSend(roomPriceChangedEventFrontQueue.getName(), roomPriceChangeEvent);
         rabbitTemplate.convertAndSend(offerChangeFrontQueue.getName(), offerChangeEvent);
     }
@@ -107,7 +107,7 @@ public class OfferQueryListener {
         log.info(String.format("Received HotelRemovedEvent %s", hotelRemovedEvent));
         OfferChangeEvent offerChangeEvent = new OfferChangeEvent(hotelRemovedEvent.getUuid(),
                 hotelRemovedEvent.getTimeStamp(),
-                String.format("%s hotel was removed", hotelRemovedEvent.getHotelUuid()));
+                String.format("%s hotel was removed", hotelRemovedEvent.getName()   ));
         rabbitTemplate.convertAndSend(hotelRemovedEventFrontQueue.getName(), hotelRemovedEvent);
         rabbitTemplate.convertAndSend(offerChangeFrontQueue.getName(), offerChangeEvent);
     }

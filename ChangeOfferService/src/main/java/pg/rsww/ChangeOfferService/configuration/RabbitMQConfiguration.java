@@ -40,6 +40,22 @@ public class RabbitMQConfiguration {
         return new Queue(queue);
     }
     @Bean
+    public Queue generateFlightPriceChangeQueue(@Value("${spring.rabbitmq.queue.GenerateFlightPriceChangeQueue}") String queue) {
+        return new Queue(queue);
+    }
+    @Bean
+    public Queue generateRoomPriceChangeQueue(@Value("${spring.rabbitmq.queue.GenerateRoomPriceChangeQueue}") String queue) {
+        return new Queue(queue);
+    }
+    @Bean
+    public Queue generateFlightRemoveQueue(@Value("${spring.rabbitmq.queue.GenerateFlightRemoveQueue}") String queue) {
+        return new Queue(queue);
+    }
+    @Bean
+    public Queue generateHotelRemoveQueue(@Value("${spring.rabbitmq.queue.GenerateHotelRemoveQueue}") String queue) {
+        return new Queue(queue);
+    }
+    @Bean
     public MessageConverter jsonMessageConverter() { return new Jackson2JsonMessageConverter();}
     @Bean
     public AsyncRabbitTemplate asyncRabbitTemplate(RabbitTemplate rabbitTemplate) {

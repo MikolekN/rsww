@@ -284,13 +284,13 @@ public class OfferService {
         for (HotelRemovedEvent event: hotelChangedEvents) {
             OfferChangeEvent offerChangeEvent = new OfferChangeEvent(event.getUuid(),
                     event.getTimeStamp(),
-                    String.format("%s hotel was removed", event.getHotelUuid()));
+                    String.format("%s hotel was removed", event.getName()));
             offerChangeEventList.add(offerChangeEvent);
         }
         for (RoomPriceChangeEvent event: roomChangedEvents) {
             OfferChangeEvent offerChangeEvent = new OfferChangeEvent(event.getUuid(),
                     event.getTimeStamp(),
-                    String.format("%s from hotel uuid=%s price was changed from %s to %s", event.getRoomType(), event.getHotelUuid(), event.getOldPrice(), event.getNewPrice()));
+                    String.format("%s from hotel %s price was changed from %s to %s", event.getRoomType(), event.getHotelName(), event.getOldPrice(), event.getNewPrice()));
             offerChangeEventList.add(offerChangeEvent);
         }
         for (FlightRemovedEvent flightRemovedEvent: flightRemovedEvents) {
