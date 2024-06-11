@@ -135,6 +135,19 @@ services:
       - POSTGRES_DATABASE=transport
       - POSTGRES_PORT=5432
 
+  changeofferservice:
+    build:
+      context: ../ChangeOfferService/
+      dockerfile: Dockerfile
+    container_name: 'change-offer-service'
+    depends_on:
+      - rabbitmq
+    environment:
+      - RABBIT_HOST=rabbitmq
+      - RABBIT_PORT=5672
+      - RABBIT_USR=guest
+      - RABBIT_PWD=guest
+
   mongo-express:
     image: mongo-express
     ports:
