@@ -8,15 +8,17 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class SocketController {
     private final SimpMessagingTemplate template;
+    private final SocketService socketService;
 
     @Autowired
-    SocketController(SimpMessagingTemplate template){
+    SocketController(SimpMessagingTemplate template, SocketService socketService){
         this.template = template;
+        this.socketService = socketService;
     }
 
     /* /app/send/message */
-    @MessageMapping("/topic/message")
-    public void sendMessage(String message){
-        System.out.println(message);
+    @MessageMapping("/topic/getUserPreferences")
+    public void getUserPreferences(String username){
+        this.socketService.sendUserPreferences(username);
     }
 }
