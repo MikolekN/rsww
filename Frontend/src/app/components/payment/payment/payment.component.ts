@@ -2,7 +2,6 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {PaymentService} from "../../../service/payment.service";
 import {OfferService} from "../../../service/offer.service";
 import {PaymentDataRequest} from "../../../DTO/request/PaymentDataRequest";
-import {FullOfferResponse} from "../../../DTO/response/fullOfferResponse";
 import {PaymentResponse} from "../../../DTO/response/PaymentResponse";
 import {Router} from "@angular/router";
 import {MatSnackBar} from "@angular/material/snack-bar";
@@ -22,6 +21,8 @@ export class PaymentComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>()
 
   public paymentButtonDisabled: boolean = false
+
+  private stopPolling$ = new Subject<void>()
 
   constructor(private payService: PaymentService,
               private offerService: OfferService,
@@ -43,24 +44,32 @@ export class PaymentComponent implements OnInit, OnDestroy {
     interval(2000)
       .pipe(
         startWith(0),
-        takeUntil(this.destroy$),
+        takeUntil(this.stopPolling$),
         switchMap(() => this.offerService.getOrderStatus(orderResponseId))
-      ).subscribe({
-      next: (value) => {
-        if (value.order.tripId !== null) {
-          this.reservationStatus = "Czas na rezerwację minął (1 min)."
-          this.paymentButtonDisabled = true
-        } else if (value.order.payed === true) {
-          this.reservationStatus = "Rezerwacja pomyślnie opłacona."
-          this.paymentButtonDisabled = true
-        } else {
-          this.reservationStatus = "Rezerwacja w toku."
+      )
+      .subscribe({
+        next: (value) => {
+          if (value.order.tripId !== null) {
+            this.reservationStatus = "Czas na rezerwację minął (1 min).";
+            this.paymentButtonDisabled = true;
+            this.stopPolling();
+          } else if (value.order.payed) {
+            this.reservationStatus = "Rezerwacja pomyślnie opłacona.";
+            this.paymentButtonDisabled = true;
+            this.stopPolling();
+          } else {
+            this.reservationStatus = "Rezerwacja w toku.";
+          }
+        },
+        error: (err) => {
+          console.log(err);
         }
-      },
-      error: (err) => {
-        console.log(err)
-      }
-    })
+      })
+  }
+
+  private stopPolling() {
+    this.stopPolling$.next();
+    this.stopPolling$.complete();
   }
 
   public pay() {
@@ -76,7 +85,8 @@ export class PaymentComponent implements OnInit, OnDestroy {
       next: (value: PaymentResponse) => {
         if (value.response) {
           this.paymentStatus = "Płatność udana! Id płatności: " + value.uuid
-        } else {
+        }
+        else {
           this.paymentStatus = "Płatność się nie powiodła. Id płatności: " + value.uuid
         }
       },
