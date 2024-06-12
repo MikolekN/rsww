@@ -1,0 +1,10 @@
+<h1>Top 10 ostatnich zmian</h1>
+<div *ngFor="let offerChangeEvent of offerChanges">
+  <mat-card class="my-3">
+    <mat-card-content class="py-3">
+      <h2>Zmiana {{ offerChangeEvent.uuid }}</h2>
+      <p>{{ offerChangeEvent.time_stamp }}</p>
+      <p>{{ offerChangeEvent.content }}</p>
+    </mat-card-content>
+  </mat-card>
+</div>

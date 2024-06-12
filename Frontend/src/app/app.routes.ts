@@ -7,6 +7,7 @@ import {SelectedOfferComponent} from "./components/Offer/selected-offer/selected
 import {PaymentComponent} from "./components/payment/payment/payment.component";
 import {UserOrdersComponent} from "./components/order/user-orders/user-orders.component";
 import {UserPreferencesComponent} from "./components/preferences/user-preferences/user-preferences.component";
+import {Top10Component} from "./components/top10/top10.component";
 
 export const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -16,6 +17,7 @@ export const routes: Routes = [
   {path: 'orders', component: UserOrdersComponent},
   {path: 'pay', component: PaymentComponent},
   {path: 'preferences', component: UserPreferencesComponent},
+  {path: 'top10', component: Top10Component},
 ];
 
 @NgModule({

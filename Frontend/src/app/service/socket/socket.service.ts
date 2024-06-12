@@ -7,15 +7,19 @@ import {parseJson} from "@angular/cli/src/utilities/json-file"
 import {environment} from "../../config/environment"
 import {OfferService} from "../offer.service"
 import {UserOrder, UserPreferencesResponse} from "../../components/types/order"
-import {BehaviorSubject} from "rxjs"
+import {BehaviorSubject, Observable} from "rxjs"
 import {HotelRemoved} from "../../DTO/events";
+import {HttpClient} from "@angular/common/http";
+import {OfferResponseRaw} from "../../DTO/response/offerResponse";
+import {OfferChangeResponse} from "../../components/types/top10";
 
 @Injectable({
   providedIn: 'root'
 })
 export class SocketService {
   constructor(private snackbar: MatSnackBar,
-              private offerService: OfferService) {
+              private offerService: OfferService,
+              private http: HttpClient) {
     this.initializeWebSocketConnection()
   }
 
@@ -40,6 +44,9 @@ export class SocketService {
   private flightPriceChangedSubject = new BehaviorSubject<any>(null)
   public flightPriceChanged$ = this.flightPriceChangedSubject.asObservable()
 
+  private tenLastChangesSubject = new BehaviorSubject<any>(null)
+  public  tenLastChanges$ = this. tenLastChangesSubject.asObservable()
+
   private serverUrl = environment.socketUrl
 
   public initializeWebSocketConnection() {
@@ -57,6 +64,7 @@ export class SocketService {
       that.initHotelRemovedEvent()
       that.initRoomPriceChangedEvent()
       that.initFlightPriceChangedEvent()
+      that.initTenLastChangesEndpoint()
 
       that.socketConnectedSubject.next(true)
     }, function(error: any) {
@@ -106,6 +114,25 @@ export class SocketService {
   }
   public sendUserPreferencesRequest(username: string) {
     this.stompClient.send('/app/topic/getUserPreferences' , {}, username)
+  }
+
+  /*
+    10 last changes
+   */
+
+  public initTenLastChangesEndpoint() {
+    const that = this
+    this.stompClient.subscribe('/topic/offer-change-event', (message: any) => {
+      if (message.body) {
+        const data: any = parseJson(message.body)
+        console.log(data)
+
+        that.tenLastChangesSubject.next(data)
+      }
+    })
+  }
+  public getLastChangesRequestREST(): Observable<OfferChangeResponse> {
+    return this.http.post<OfferChangeResponse>(environment.API_URL + "/api/offer-changes", {});
   }
 
   /*
