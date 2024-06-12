@@ -20,8 +20,8 @@ import {SinglePreferenceComponent} from "../single-preference/single-preference.
   styleUrl: './user-preferences.component.css'
 })
 export class UserPreferencesComponent implements OnInit, OnDestroy {
-  userPreferences: UserOrder[] | null = null
-  private subscription: Subscription | null = null
+  public userPreferences: UserOrder[] | null = null
+  private subscription: Subscription = Subscription.EMPTY
 
   constructor(private authService: AuthService,
               private socketService: SocketService) {
@@ -29,10 +29,9 @@ export class UserPreferencesComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscription = this.socketService.userPreferences$.subscribe(preferences => {
-      this.userPreferences = preferences;
-      console.log('Updated user preferences:', this.userPreferences);
+      this.userPreferences = preferences
+      console.log('Updated user preferences:', this.userPreferences)
     })
-
 
     const username = this.authService.getUsername()
 
@@ -53,9 +52,7 @@ export class UserPreferencesComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.subscription !== null) {
-      this.subscription.unsubscribe()
-    }
+    this.subscription.unsubscribe()
   }
 
 }

@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {OfferService} from "../../../service/offer.service";
 import {Offer} from "../../types/Offer";
 import {MatCard, MatCardContent, MatCardSubtitle, MatCardTitle} from "@angular/material/card";
@@ -13,6 +13,9 @@ import {OffersComponent} from "../offers/offers.component";
 import {Order} from "../../types/order";
 import {AuthService} from "../../../service/auth.service";
 import {OrderResponse} from "../../../DTO/response/orderResponse";
+import {MatSnackBar} from "@angular/material/snack-bar";
+import {Subscription} from "rxjs";
+import {SocketService} from "../../../service/socket/socket.service";
 
 class FlightSelectionForm {
   departureFlightId: string | null = null
@@ -35,7 +38,7 @@ class FlightSelectionForm {
   templateUrl: './selected-offer.component.html',
   styleUrl: './selected-offer.component.css'
 })
-export class SelectedOfferComponent implements OnInit {
+export class SelectedOfferComponent implements OnInit, OnDestroy {
   public offer: FullOffer | null = null
   public formData: FlightSelectionForm = new FlightSelectionForm()
 
@@ -43,38 +46,45 @@ export class SelectedOfferComponent implements OnInit {
 
   public offerInfo = ""
 
+  private hotelRemovedSubscription: Subscription = Subscription.EMPTY
+  private flightRemovedSubscription: Subscription  = Subscription.EMPTY
+  private roomPriceChanged: Subscription  = Subscription.EMPTY
+  private flightPriceChanged: Subscription  = Subscription.EMPTY
+
   constructor(private offerService: OfferService,
               private router: Router,
-              private authService: AuthService) {
+              private authService: AuthService,
+              private snackbar: MatSnackBar,
+              private socketService: SocketService) {
   }
 
   ngOnInit(): void {
-    this.selectedOffer = this.offerService.getOfferData()
+    this.fetchOffer()
 
-    if (this.selectedOffer !== null) {
-      const request: FullOfferRequest = {
-        hotelUuid: this.selectedOffer.hotel_uuid,
-        dateFrom: this.selectedOffer.start_date,
-        dateTo: this.selectedOffer.end_date,
-        numberOfAdults: this.selectedOffer.number_of_adults,
-        numberOfChildrenUnder10: this.selectedOffer.number_of_children_under_10,
-        numberOfChildrenUnder18: this.selectedOffer.number_of_children_under_18
-      }
+    const that = this
 
-      this.offerService.getSelectedOffer(request).subscribe({
-        next: (value: FullOfferResponse) => {
-          if (value.response) {
-            console.log(value)
-            this.offer = value.offer
-          }
-        },
-        error: () => {
-        }
-      })
-    }
-    else {
-      this.router.navigate(['offers'])
-    }
+    this.hotelRemovedSubscription = this.socketService.hotelRemoved$.subscribe(data => {
+      that.fetchOffer()
+    })
+
+    this.flightRemovedSubscription = this.socketService.flightRemoved$.subscribe(data => {
+      that.fetchOffer()
+    })
+
+    this.roomPriceChanged = this.socketService.roomPriceChanged$.subscribe(data => {
+      that.fetchOffer()
+    })
+
+    this.flightPriceChanged = this.socketService.flightPriceChanged$.subscribe(data => {
+      that.fetchOffer()
+    })
+  }
+
+  ngOnDestroy(): void {
+    this.hotelRemovedSubscription.unsubscribe()
+    this.flightRemovedSubscription.unsubscribe()
+    this.roomPriceChanged.unsubscribe()
+    this.flightPriceChanged.unsubscribe()
   }
 
   public goToPayment() {
@@ -123,6 +133,37 @@ export class SelectedOfferComponent implements OnInit {
       console.log(this.offer)
       console.log(this.selectedOffer)
       console.log(username)
+    }
+  }
+
+  private fetchOffer() {
+    this.selectedOffer = this.offerService.getOfferData()
+
+    if (this.selectedOffer !== null) {
+      const request: FullOfferRequest = {
+        hotelUuid: this.selectedOffer.hotel_uuid,
+        dateFrom: this.selectedOffer.start_date,
+        dateTo: this.selectedOffer.end_date,
+        numberOfAdults: this.selectedOffer.number_of_adults,
+        numberOfChildrenUnder10: this.selectedOffer.number_of_children_under_10,
+        numberOfChildrenUnder18: this.selectedOffer.number_of_children_under_18
+      }
+
+      this.offerService.getSelectedOffer(request).subscribe({
+        next: (value: FullOfferResponse) => {
+          if (value.response) {
+            console.log(value)
+            this.offer = value.offer
+          }
+        },
+        error: () => {
+          this.snackbar.open("Oferta została usunięta lub wykupiona", "Zamknij")
+          this.router.navigate(['offers'])
+        }
+      })
+    }
+    else {
+      this.router.navigate(['offers'])
     }
   }
 
