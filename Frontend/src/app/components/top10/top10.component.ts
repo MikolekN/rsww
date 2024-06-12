@@ -33,7 +33,7 @@ export class Top10Component implements OnInit {
     })
 
     this.subscription = this.socketService.tenLastChanges$.subscribe(changes => {
-      this.offerChanges = changes
+      this.offerChanges = changes.offer_change_events
       console.log('Updated changes:', this.offerChanges)
     })
   }
