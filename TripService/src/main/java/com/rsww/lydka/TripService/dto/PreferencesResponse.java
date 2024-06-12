@@ -2,6 +2,7 @@ package com.rsww.lydka.TripService.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.rsww.lydka.TripService.entity.Reservation;
+import com.rsww.lydka.TripService.entity.ReservationInfo;
 import lombok.*;
 
 import java.util.List;
@@ -20,5 +21,5 @@ public class PreferencesResponse {
     private boolean response = false;
 
     @JsonProperty("preferences")
-    private List<Reservation> preferences;
+    private List<ReservationInfo> preferences;
 }

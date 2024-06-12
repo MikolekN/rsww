@@ -1,4 +1,4 @@
-package com.rsww.lydka.TripService.entity;
+package com.rsww.mikolekn.APIGateway.preferences.model;
 
 import lombok.*;
 import lombok.extern.jackson.Jacksonized;
