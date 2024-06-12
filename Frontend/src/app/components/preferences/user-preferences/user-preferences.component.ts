@@ -22,6 +22,7 @@ import {SinglePreferenceComponent} from "../single-preference/single-preference.
 export class UserPreferencesComponent implements OnInit, OnDestroy {
   public userPreferences: UserOrder[] | null = null
   private subscription: Subscription = Subscription.EMPTY
+  private socketSubscription: Subscription = Subscription.EMPTY
 
   constructor(private authService: AuthService,
               private socketService: SocketService) {
@@ -36,13 +37,11 @@ export class UserPreferencesComponent implements OnInit, OnDestroy {
     const username = this.authService.getUsername()
 
     if (username !== null) {
-      this.socketService.initUserPreferencesEndpoint(username)
+      this.socketSubscription = this.socketService.socketConnected$.subscribe(connected => {
+        this.socketService.initUserPreferencesEndpoint(username)
+        this.socketService.sendUserPreferencesRequest(username)
+      })
 
-      setTimeout(() =>
-        {
-          this.socketService.sendUserPreferencesRequest(username)
-        },
-        1000);
     }
 
   }

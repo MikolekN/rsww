@@ -22,6 +22,9 @@ export class SocketService {
   public stompClient: any
   public msg = []
 
+  private socketConnectedSubject = new BehaviorSubject<any>(null)
+  public socketConnected$ = this.socketConnectedSubject.asObservable()
+
   private userPreferencesSubject = new BehaviorSubject<UserOrder[] | null>(null)
   public userPreferences$ = this.userPreferencesSubject.asObservable()
 
@@ -54,6 +57,8 @@ export class SocketService {
       that.initHotelRemovedEvent()
       that.initRoomPriceChangedEvent()
       that.initFlightPriceChangedEvent()
+
+      that.socketConnectedSubject.next(true)
     }, function(error: any) {
       console.error('Error: ' + error)
     })
