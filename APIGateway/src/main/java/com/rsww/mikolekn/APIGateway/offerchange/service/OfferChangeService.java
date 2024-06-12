@@ -51,7 +51,10 @@ public class OfferChangeService {
                 getLastOfferChangesQueue.getName(),
                 new GetOfferChangesRequest(UUID.randomUUID()),
                 new ParameterizedTypeReference<>() {});
-        return prepareResponse(new GetLastChangesResponse(response.getOfferChangeEvents()));
+        GetLastChangesResponse changesResponse = new GetLastChangesResponse(response.getOfferChangeEvents());
+        if (response.getOfferChangeEvents() != null)
+            changesResponse.setResponse(true);
+        return prepareResponse(changesResponse);
     }
 
     public void notifyHotelRemovedEvent(HotelRemovedEvent event) {
