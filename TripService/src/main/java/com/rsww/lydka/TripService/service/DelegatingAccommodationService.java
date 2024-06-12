@@ -1,8 +1,10 @@
 package com.rsww.lydka.TripService.service;
 
+import com.rsww.lydka.TripService.dto.GetHotelsRequest;
 import com.rsww.lydka.TripService.listener.events.accommodation.command.CancelReservationCommand;
 import com.rsww.lydka.TripService.listener.events.accommodation.command.MakeNewReservationCommand;
 import com.rsww.lydka.TripService.listener.events.accommodation.event.ReservationCancelledEvent;
+import com.rsww.lydka.TripService.listener.events.accommodation.response.GetHotelsResponse;
 import com.rsww.lydka.TripService.listener.events.accommodation.response.MakeNewReservationResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,15 +24,18 @@ public class DelegatingAccommodationService {
     private final Logger logger = LoggerFactory.getLogger(DelegatingAccommodationService.class);
     private final String reserveHotelQueueName;
     private final String cancelHotelReservationQueueName;
+    private final String getAllHotelsQueueName;
     private final AsyncRabbitTemplate rabbitTemplate;
 
     @Autowired
     public DelegatingAccommodationService(final AsyncRabbitTemplate rabbitTemplate,
                                   @Value("${spring.rabbitmq.queue.reservationMakeQueue}") final String reserveHotelQueueName,
-                                  @Value("${spring.rabbitmq.queue.reservationCancelQueue}") final String cancelHotelReservationQueueName) {
+                                  @Value("${spring.rabbitmq.queue.reservationCancelQueue}") final String cancelHotelReservationQueueName,
+                                  @Value("${spring.rabbitmq.queue.GetAllHotelsQueue}") final String getAllHotelsQueueName) {
         this.rabbitTemplate = rabbitTemplate;
         this.reserveHotelQueueName = reserveHotelQueueName;
         this.cancelHotelReservationQueueName = cancelHotelReservationQueueName;
+        this.getAllHotelsQueueName = getAllHotelsQueueName;
     }
 
     public MakeNewReservationResponse reserve(String reservationId,
@@ -82,6 +87,21 @@ public class DelegatingAccommodationService {
             response = responseCompletableFuture.get();
         } catch (Exception e) {
             logger.warn("CancelReservationRequest got timeout");
+        }
+        return response;
+    }
+
+    public GetHotelsResponse getAllHotels(GetHotelsRequest request) {
+        GetHotelsResponse response = null;
+        CompletableFuture<GetHotelsResponse> responseCompletableFuture = rabbitTemplate.convertSendAndReceiveAsType(
+                getAllHotelsQueueName,
+                request,
+                new ParameterizedTypeReference<>() {}
+        );
+        try {
+            response = responseCompletableFuture.get();
+        } catch (Exception e) {
+            logger.warn("GetHotelsRequest got timeout");
         }
         return response;
     }

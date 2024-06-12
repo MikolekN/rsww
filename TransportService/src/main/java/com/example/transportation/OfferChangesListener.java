@@ -49,6 +49,7 @@ public class OfferChangesListener {
         List<Flight> flights = flightRepository.findAll();
         return new GetFlightsInfoResponse(flights);
     }
+
     @RabbitListener(queues = "${spring.rabbitmq.queue.RemoveFlightQueue}")
     public void removeFlight(RemoveFlightCommand command) {
         Optional<Flight> optionalFlight = flightRepository.findById(command.getUuid());
@@ -72,6 +73,7 @@ public class OfferChangesListener {
         flightChangedEventRepository.save(event);
         rabbitTemplate.convertAndSend(flightRemovedEventQueue.getName(), event);
     }
+
     @RabbitListener(queues = "${spring.rabbitmq.queue.ChangeFlightPriceQueue}")
     public void changeFlightPrice(ChangeFlightPriceCommand command) {
         Optional<Flight> optionalFlight = flightRepository.findById(command.getUuid());
@@ -98,6 +100,7 @@ public class OfferChangesListener {
         flightChangedEventRepository.save(event);
         rabbitTemplate.convertAndSend(flightPriceChangedEventQueue.getName(), event);
     }
+
     @RabbitListener(queues = "${spring.rabbitmq.queue.GetFlightChangeEventsQueue}")
     public GetLastFlightChangesResponse getLastFlightChanges(GetLastFlightChangesRequest request) {
         List<FlightChangedEvent> flightChangedEvents = flightChangedEventRepository.findAll().stream()
@@ -115,6 +118,7 @@ public class OfferChangesListener {
                 .toList();
         return new GetLastFlightsRemovedResponse(flightChangedEvents);
     }
+
     @RabbitListener(queues = "${spring.rabbitmq.queue.GetFlightPriceChangeEventsQueue}")
     public GetLastFlightPriceChangesResponse getLastFlightPriceChanges(GetLastFlightChangesRequest request) {
         List<FlightPriceChangedEvent> flightChangedEvents = flightChangedEventRepository.findAllFlightPriceChangeEvents().stream()

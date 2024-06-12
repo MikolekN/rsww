@@ -1,6 +1,10 @@
 package com.rsww.lydka.TripService.service;
 
+import com.rsww.lydka.TripService.dto.GetFlightsRequest;
+import com.rsww.lydka.TripService.dto.GetHotelsRequest;
+import com.rsww.lydka.TripService.entity.Hotel;
 import com.rsww.lydka.TripService.entity.Reservation;
+import com.rsww.lydka.TripService.entity.ReservationInfo;
 import com.rsww.lydka.TripService.listener.events.accommodation.response.MakeNewReservationResponse;
 import com.rsww.lydka.TripService.listener.events.orders.request.GetAllOrdersRequest;
 import com.rsww.lydka.TripService.listener.events.orders.request.OrderInfoRequest;
@@ -10,6 +14,7 @@ import com.rsww.lydka.TripService.dto.PreferencesRequest;
 import com.rsww.lydka.TripService.dto.PreferencesResponse;
 import com.rsww.lydka.TripService.listener.events.trip.reservation.PostReservationRequest;
 import com.rsww.lydka.TripService.listener.events.trip.reservation.PostReservationResponse;
+import com.rsww.lydka.TripService.listener.events.trip.reservation.transport.Flight;
 import com.rsww.lydka.TripService.listener.events.trip.reservation.transport.FlightReservation;
 import com.rsww.lydka.TripService.repository.ReservationRepository;
 import org.slf4j.Logger;
@@ -30,15 +35,17 @@ public class TripService {
     private final ReservationRepository reservationRepository;
 
     private final CancellingService cancellingService;
+    private final DelegatingAccommodationService delegatingAccommodationService;
 
     @Autowired
     public TripService(final DelegatingAccommodationService accommodationService,
                        final TransportService transportService,
-                       final ReservationRepository reservationRepository, CancellingService cancellingService) {
+                       final ReservationRepository reservationRepository, CancellingService cancellingService, DelegatingAccommodationService delegatingAccommodationService) {
         this.accommodationService = accommodationService;
         this.transportService = transportService;
         this.reservationRepository = reservationRepository;
         this.cancellingService = cancellingService;
+        this.delegatingAccommodationService = delegatingAccommodationService;
     }
 
     public void confirmReservation(UUID reservationId) {
@@ -115,8 +122,11 @@ public class TripService {
         float roomPrice = hotelReservation.getReservationMadeEvent().getRoomPrice();
         float fullHotelPrice = (roomPrice * numberOfAdults) + (roomPrice * numberOfChildrenUnder10 * 0.5f) + (roomPrice * numberOfChildrenUnder18 * 0.7f);
         float flightsPrice = (numberOfAdults + numberOfChildrenUnder18 + numberOfChildrenUnder10) * ((startFlightReservation.getFlight().getPrice()) + (endFlightReservation.getFlight().getPrice()));
+        logger.info("testowy log");
+        System.out.println(fullHotelPrice+ " " +flightsPrice);
+        logger.info("{} {} hotel cena, lot cena", fullHotelPrice, flightsPrice);
         float price = fullHotelPrice + flightsPrice;
-        reservation.setPrice((double) price);
+        reservation.setPrice((int)price);
 
         reservationRepository.save(reservation);
 
@@ -159,7 +169,36 @@ public class TripService {
 
         try {
             List<Reservation> reservations = reservationRepository.findAllByUser(request.getUsername());
-            response.setPreferences(reservations);
+            Collections.reverse(reservations);
+
+            GetHotelsRequest getHotelsRequest = new GetHotelsRequest(UUID.randomUUID());
+            List<Hotel> hotels = delegatingAccommodationService.getAllHotels(getHotelsRequest).getHotels();
+
+            // TODO: zakomentowane bo jeszcze nie dziala
+            //GetFlightsRequest getFlightsRequest = new GetFlightsRequest(UUID.randomUUID());
+            //List<Flight> flights = transportService.getAllFlights(getFlightsRequest).getFlights();
+
+
+            List<ReservationInfo> reservationInfos = new ArrayList<>();
+
+            for (Reservation reservation : reservations) {
+
+                Hotel hotel = hotels.stream()
+                        .filter(h -> h.getUuid().equals(reservation.getHotelId()))
+                        .findFirst()
+                        .orElse(null);
+
+                logger.info("{} Hotel", hotel);
+
+                ReservationInfo reservationInfo = new ReservationInfo(reservation.getReservationId(), reservation.getUser(), reservation.getPayed(),
+                        reservation.getReservationTime(), reservation.getStartFlightReservation(), reservation.getEndFlightReservation(),
+                        reservation.getStartFlightId(), reservation.getEndFlightId(), reservation.getHotelReservation(), reservation.getTripId(),
+                        reservation.getHotelId(), reservation.getPrice(), hotel.getName(), hotel.getCountry());
+
+                reservationInfos.add(reservationInfo);
+            }
+
+            response.setPreferences(reservationInfos);
             response.setResponse(true);
             return response;
         } catch (Exception e) {
