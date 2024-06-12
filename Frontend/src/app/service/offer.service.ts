@@ -31,7 +31,7 @@ export class OfferService {
 
   public getCountries(): Observable<string[]> {
     return this.http.get<any>(environment.API_URL + "/api/countries").pipe(
-      map(response => response.body.countries)
+      map(response => response.countries)
     )
   }
 
