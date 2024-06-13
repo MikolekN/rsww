@@ -60,6 +60,7 @@ public class OrderService {
                 new ParameterizedTypeReference<>() {});
 
         logger.info("{} Received an order response: {}", requestNumber, orderResponse);
+        socketService.sendUserPreferences(orderDto.username());
         return prepareResponse(orderResponse);
     }
 
