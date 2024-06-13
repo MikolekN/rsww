@@ -178,7 +178,7 @@ public class TripService {
 
             for (Reservation reservation : reservations) {
 
-                Flight flight = transportService.getFlight(reservation.getStartFlightId());
+                Flight flight = transportService.getFlight(reservation.getStartFlightReservation());
 
                 Hotel hotel = hotels.stream()
                         .filter(h -> h.getUuid().equals(reservation.getHotelId()))
@@ -188,8 +188,8 @@ public class TripService {
                 ReservationInfo reservationInfo = new ReservationInfo(reservation.getReservationId(), reservation.getUser(), reservation.getPayed(),
                         reservation.getReservationTime(), reservation.getStartFlightReservation(), reservation.getEndFlightReservation(),
                         reservation.getStartFlightId(), reservation.getEndFlightId(), reservation.getHotelReservation(), reservation.getTripId(),
-                        reservation.getHotelId(), reservation.getPrice(), hotel.getName(), hotel.getCountry(), flight.getArrivalAirport(),
-                        flight.getDepartureCountry(), flight.getDepartureAirport(), flight.getArrivalCountry());
+                        reservation.getHotelId(), reservation.getPrice(), hotel.getName(), hotel.getCountry(), flight.getDepartureAirport(),
+                        flight.getDepartureCountry(), flight.getArrivalAirport(), flight.getArrivalCountry());
 
                 reservationInfos.add(reservationInfo);
             }
