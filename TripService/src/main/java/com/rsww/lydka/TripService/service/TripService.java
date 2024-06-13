@@ -172,58 +172,22 @@ public class TripService {
             GetHotelsRequest getHotelsRequest = new GetHotelsRequest(UUID.randomUUID());
             List<Hotel> hotels = delegatingAccommodationService.getAllHotels(getHotelsRequest).getHotels();
 
-            GetFlightsRequest getFlightsRequest = new GetFlightsRequest(UUID.randomUUID());
-            List<Flight> flights = transportService.getAllFlights(getFlightsRequest).getFlights();
-
-            logger.info("Trip Service FLight ID: {}", flights.get(0).getId());
-
-            for (Flight flight : flights) {
-                logger.info("Flight ID: {}", flight.getId().toString());
-            }
-
             List<ReservationInfo> reservationInfos = new ArrayList<>();
 
             for (Reservation reservation : reservations) {
 
-                logger.info("Reservation start flight ID: {}", reservation.getStartFlightId());
-                logger.info("Reservation end flight ID: {}", reservation.getEndFlightId());
+                Flight flight = transportService.getFlight(reservation.getStartFlightId());
 
                 Hotel hotel = hotels.stream()
                         .filter(h -> h.getUuid().equals(reservation.getHotelId()))
                         .findFirst()
                         .orElse(null);
 
-//                Flight departureFlight = flights.stream()
-//                        .filter(f -> f.getId().equals((reservation.getStartFlightId())))
-//                        .findFirst()
-//                        .orElse(null);
-//
-//                logger.info("departureFlight flight id: {}", departureFlight.getId());
-//
-//
-//                Flight arrivalFlight = flights.stream()
-//                        .filter(f -> f.getId().equals((reservation.getEndFlightId())))
-//                        .findFirst()
-//                        .orElse(null);
-//
-//                logger.info("arrivalFlight flight id: {}", arrivalFlight.getId());
-
-                Flight departureFlight = flights.get(0);
-                Flight arrivalFlight = flights.get(1);
-
-///             departureFlight.getDepartureAirport(), departureFlight.getDepartureCountry(),
-//                        departureFlight.getArrivalAirport(), departureFlight.getArrivalCountry()
-                // Departure flight: Poznań Bułgaria, Arrival Flight: Varna Polska
-
-                logger.info("Departure flight: {} {}, Arrival Flight: {} {}",
-                        departureFlight.getDepartureAirport(), departureFlight.getDepartureCountry(),
-                        departureFlight.getArrivalAirport(), departureFlight.getArrivalCountry());
-
                 ReservationInfo reservationInfo = new ReservationInfo(reservation.getReservationId(), reservation.getUser(), reservation.getPayed(),
                         reservation.getReservationTime(), reservation.getStartFlightReservation(), reservation.getEndFlightReservation(),
                         reservation.getStartFlightId(), reservation.getEndFlightId(), reservation.getHotelReservation(), reservation.getTripId(),
-                        reservation.getHotelId(), reservation.getPrice(), hotel.getName(), hotel.getCountry(), departureFlight.getDepartureAirport(),
-                        departureFlight.getDepartureCountry(), arrivalFlight.getArrivalAirport(), arrivalFlight.getArrivalCountry());
+                        reservation.getHotelId(), reservation.getPrice(), hotel.getName(), hotel.getCountry(), flight.getArrivalAirport(),
+                        flight.getDepartureCountry(), flight.getDepartureAirport(), flight.getArrivalCountry());
 
                 reservationInfos.add(reservationInfo);
             }

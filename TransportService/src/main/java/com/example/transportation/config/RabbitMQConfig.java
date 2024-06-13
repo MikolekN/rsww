@@ -92,6 +92,12 @@ public class RabbitMQConfig {
     public Queue getFlightPriceChangeEventsQueue(@Value("${spring.rabbitmq.queue.GetFlightPriceChangeEventsQueue}") String queue) {
         return new Queue(queue);
     }
+
+    @Bean
+    public Queue getFlightQueue(@Value("${spring.rabbitmq.queue.GetFlightQueue}") String queue) {
+        return new Queue(queue);
+    }
+
     @Bean
     TopicExchange exchange() {
         return new TopicExchange(transportTopic);

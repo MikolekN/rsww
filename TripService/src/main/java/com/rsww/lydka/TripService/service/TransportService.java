@@ -27,6 +27,7 @@ public class TransportService {
     private final Queue ReserveFlightQueue;
     private final Queue CancelFlightReservationQueue;
     private final Queue getAllFlightsQueue;
+    private final Queue getFlightQueue;
     private final RabbitTemplate template;
     private final AsyncRabbitTemplate asyncRabbitTemplate;
 
@@ -35,11 +36,13 @@ public class TransportService {
                             Queue ReserveFlightQueue,
                             Queue CancelFlightReservationQueue,
                             Queue getAllFlightsQueue,
+                            Queue getFlightQueue,
                             AsyncRabbitTemplate asyncRabbitTemplate) {
         this.template = template;
         this.ReserveFlightQueue = ReserveFlightQueue;
         this.CancelFlightReservationQueue = CancelFlightReservationQueue;
         this.getAllFlightsQueue = getAllFlightsQueue;
+        this.getFlightQueue = getFlightQueue;
         this.asyncRabbitTemplate = asyncRabbitTemplate;
     }
 
@@ -80,5 +83,22 @@ public class TransportService {
         }
         logger.info("{} getAllFlights response", response);
         return response;
+    }
+
+    public Flight getFlight(String flightId) {
+        Flight flight = null;
+        CompletableFuture<Flight> responseCompletableFuture = asyncRabbitTemplate.convertSendAndReceiveAsType(
+                getFlightQueue.getName(),
+                flightId,
+                new ParameterizedTypeReference<>() {}
+        );
+        try {
+            flight = responseCompletableFuture.get();
+        } catch (Exception e) {
+            logger.warn("GetFlightsRequest got timeout");
+            return flight;
+        }
+        logger.info("{} getAllFlights response", flight);
+        return flight;
     }
 }
