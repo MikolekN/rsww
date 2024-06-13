@@ -3,8 +3,8 @@ Content-Type: application/json
 
 {
   "country": "",
-  "dateFrom": "2024-07-08",
-  "dateTo": "2024-07-01",
+  "dateFrom": "2024-07-01",
+  "dateTo": "2024-07-08",
   "numberOfAdults": 2,
   "numberOfChildrenUnder10": 0,
   "numberOfChildrenUnder18": 0
@@ -15,7 +15,7 @@ POST http://localhost:8080/api/offer
 Content-Type: application/json
 
 {
-"hotelUuid": "e8c55e3e-154b-4689-982b-fcf83428e404",
+"hotelUuid": "1e1d784f-d017-4f99-8b42-71ae2b2f3983",
 "dateFrom": "2024-07-01",
 "dateTo": "2024-07-08",
 "numberOfAdults": 2,
@@ -72,8 +72,29 @@ POST http://localhost:8080/api/offer-changes/change-room-price
 Content-Type: application/json
 
 {
-  "hotel_uuid": "e8c55e3e-154b-4689-982b-fcf83428e404",
-  "room_type": "Pokój standardowy 2 os. Widok na miasto (balkon lub taras)",
+  "hotel_uuid": "1e1d784f-d017-4f99-8b42-71ae2b2f3983",
+  "room_type": "Pokój 2 os. boczny widok na morze",
   "changed_price": 999
 
+}
+
+###
+
+
+POST http://localhost:8080/api/offer-changes/remove-hotel
+Content-Type: application/json
+
+{
+   "uuid": "595ccda5-4008-45be-a239-d2a02f263df2"
+}
+
+
+###
+
+POST http://localhost:8080/api/offer-changes/change-flight-price
+Content-Type: application/json
+
+{
+"uuid": "27e5a168-d2c4-4e43-9bdd-9ce8a90d844f",
+"changed_price": 123
 }

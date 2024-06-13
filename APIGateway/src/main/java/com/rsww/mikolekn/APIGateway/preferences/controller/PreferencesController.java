@@ -1,28 +1,21 @@
 package com.rsww.mikolekn.APIGateway.preferences.controller;
 
-import com.rsww.mikolekn.APIGateway.payment.controller.PaymentController;
+import com.rsww.mikolekn.APIGateway.offerchange.model.FlightRemovedEvent;
 import com.rsww.mikolekn.APIGateway.preferences.dto.PreferencesResponse;
 import com.rsww.mikolekn.APIGateway.preferences.service.PreferencesService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.stereotype.Controller;
 
-@RestController
-@RequestMapping("/api/preferences")
+@Controller
 public class PreferencesController {
-    private static final Logger logger = LoggerFactory.getLogger(PaymentController.class);
     private final PreferencesService preferencesService;
 
-    @Autowired
     public PreferencesController(PreferencesService preferencesService) {
         this.preferencesService = preferencesService;
     }
 
-    @GetMapping("/{username}")
-    public ResponseEntity<PreferencesResponse> payment(@PathVariable String username) {
-        logger.info("Preferences request received for user: {}", username);
-        return preferencesService.getPreferences(username);
+    @RabbitListener(queues = "${spring.rabbitmq.queue.PreferencesFrontQueue}")
+    public void flightRemovedEventHandler(PreferencesResponse preferencesResponse) {
+        preferencesService.notifyPreferencesFrontQueue(preferencesResponse);
     }
 }

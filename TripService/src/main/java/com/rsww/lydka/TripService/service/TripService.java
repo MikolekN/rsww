@@ -16,9 +16,12 @@ import com.rsww.lydka.TripService.listener.events.trip.reservation.PostReservati
 import com.rsww.lydka.TripService.listener.events.trip.reservation.PostReservationResponse;
 import com.rsww.lydka.TripService.listener.events.trip.reservation.transport.Flight;
 import com.rsww.lydka.TripService.listener.events.trip.reservation.transport.FlightReservation;
+import com.rsww.lydka.TripService.repository.ReservationInfoRepository;
 import com.rsww.lydka.TripService.repository.ReservationRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -33,6 +36,9 @@ public class TripService {
     private final DelegatingAccommodationService accommodationService;
     private final TransportService transportService;
     private final ReservationRepository reservationRepository;
+    private final ReservationInfoRepository reservationInfoRepository;
+    private final RabbitTemplate template;
+    private final Queue preferencesFrontQueue;
 
     private final CancellingService cancellingService;
     private final DelegatingAccommodationService delegatingAccommodationService;
@@ -40,17 +46,25 @@ public class TripService {
     @Autowired
     public TripService(final DelegatingAccommodationService accommodationService,
                        final TransportService transportService,
-                       final ReservationRepository reservationRepository, CancellingService cancellingService, DelegatingAccommodationService delegatingAccommodationService) {
+                       final ReservationRepository reservationRepository,
+                       CancellingService cancellingService,
+                       DelegatingAccommodationService delegatingAccommodationService,
+                       final ReservationInfoRepository reservationInfoRepository,
+                       RabbitTemplate template,
+                       Queue preferencesFrontQueue) {
         this.accommodationService = accommodationService;
         this.transportService = transportService;
         this.reservationRepository = reservationRepository;
         this.cancellingService = cancellingService;
         this.delegatingAccommodationService = delegatingAccommodationService;
+        this.reservationInfoRepository = reservationInfoRepository;
+        this.template = template;
+        this.preferencesFrontQueue = preferencesFrontQueue;
     }
 
     public void confirmReservation(UUID reservationId) {
         List<Reservation> res = reservationRepository.findReservationsByReservationId(reservationId.toString());
-        if(res.isEmpty())
+        if (res.isEmpty())
             return;
         Reservation reservation = res.get(res.size() - 1);
         if (reservation.getTripId() != null && reservation.getTripId().equals("Cancelled"))
@@ -59,6 +73,34 @@ public class TripService {
         }
         reservation.setPayed(true);
         reservationRepository.save(reservation);
+
+        // rabbitTemplate send reservationInfo
+        // zbudowanie PreferencesResponse i wyslania na kolejke
+
+        GetHotelsRequest getHotelsRequest = new GetHotelsRequest(UUID.randomUUID());
+        List<Hotel> hotels = delegatingAccommodationService.getAllHotels(getHotelsRequest).getHotels();
+
+        Flight flight = transportService.getFlight(reservation.getStartFlightReservation());
+
+        Hotel hotel = hotels.stream()
+                .filter(h -> h.getUuid().equals(reservation.getHotelId()))
+                .findFirst()
+                .orElse(null);
+
+        ReservationInfo reservationInfo = new ReservationInfo(reservation.getReservationId(), reservation.getUser(), reservation.getPayed(),
+                reservation.getReservationTime(), reservation.getStartFlightReservation(), reservation.getEndFlightReservation(),
+                reservation.getStartFlightId(), reservation.getEndFlightId(), reservation.getHotelReservation(), reservation.getTripId(),
+                reservation.getHotelId(), reservation.getPrice(), hotel.getName(), hotel.getCountry(), flight.getDepartureAirport(),
+                flight.getDepartureCountry(), flight.getArrivalAirport(), flight.getArrivalCountry());
+
+        reservationInfoRepository.save(reservationInfo);
+
+        String requestNumber = "[" + Integer.toHexString(new Random().nextInt(0xFFFF)) + "]";
+        PreferencesRequest request = new PreferencesRequest(UUID.randomUUID(), reservation.getUser());
+
+        PreferencesResponse response = getPreferences(request, requestNumber);
+
+        template.convertAndSend(preferencesFrontQueue.getName(), response);
 
     }
 
@@ -168,33 +210,9 @@ public class TripService {
         PreferencesResponse response = new PreferencesResponse(request.getUuid(), false, List.of());
 
         try {
-            List<Reservation> reservations = reservationRepository.findAllByUser(request.getUsername());
+            List<ReservationInfo> reservations = reservationInfoRepository.findAllByUser(request.getUsername());
             Collections.reverse(reservations);
-
-            GetHotelsRequest getHotelsRequest = new GetHotelsRequest(UUID.randomUUID());
-            List<Hotel> hotels = delegatingAccommodationService.getAllHotels(getHotelsRequest).getHotels();
-
-            List<ReservationInfo> reservationInfos = new ArrayList<>();
-
-            for (Reservation reservation : reservations) {
-
-                Flight flight = transportService.getFlight(reservation.getStartFlightReservation());
-
-                Hotel hotel = hotels.stream()
-                        .filter(h -> h.getUuid().equals(reservation.getHotelId()))
-                        .findFirst()
-                        .orElse(null);
-
-                ReservationInfo reservationInfo = new ReservationInfo(reservation.getReservationId(), reservation.getUser(), reservation.getPayed(),
-                        reservation.getReservationTime(), reservation.getStartFlightReservation(), reservation.getEndFlightReservation(),
-                        reservation.getStartFlightId(), reservation.getEndFlightId(), reservation.getHotelReservation(), reservation.getTripId(),
-                        reservation.getHotelId(), reservation.getPrice(), hotel.getName(), hotel.getCountry(), flight.getDepartureAirport(),
-                        flight.getDepartureCountry(), flight.getArrivalAirport(), flight.getArrivalCountry());
-
-                reservationInfos.add(reservationInfo);
-            }
-
-            response.setPreferences(reservationInfos);
+            response.setPreferences(reservations);
             response.setResponse(true);
             return response;
         } catch (Exception e) {
