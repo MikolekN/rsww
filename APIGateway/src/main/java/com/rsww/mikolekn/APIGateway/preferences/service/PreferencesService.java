@@ -1,5 +1,6 @@
 package com.rsww.mikolekn.APIGateway.preferences.service;
 
+import com.rsww.mikolekn.APIGateway.offerchange.model.HotelRemovedEvent;
 import com.rsww.mikolekn.APIGateway.payment.service.PaymentService;
 import com.rsww.mikolekn.APIGateway.preferences.dto.PreferencesRequest;
 import com.rsww.mikolekn.APIGateway.preferences.dto.PreferencesResponse;
@@ -11,6 +12,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -19,12 +21,15 @@ import java.util.UUID;
 public class PreferencesService {
     private static final Logger logger = LoggerFactory.getLogger(PaymentService.class);
     private final RabbitTemplate rabbitTemplate;
+    private final SimpMessagingTemplate messagingTemplate;
     private final Queue getPreferences;
 
     @Autowired
-    public PreferencesService(RabbitTemplate rabbitTemplate, Queue getPreferences) {
+    public PreferencesService(RabbitTemplate rabbitTemplate, Queue getPreferences,
+                              SimpMessagingTemplate messagingTemplate) {
         this.rabbitTemplate = rabbitTemplate;
         this.getPreferences = getPreferences;
+        this.messagingTemplate = messagingTemplate;
     }
 
     public ResponseEntity<PreferencesResponse> getPreferences(String username) {
@@ -45,6 +50,10 @@ public class PreferencesService {
             logger.error("{} Exception during preferences request process: {}", requestNumber, e.getMessage());
             return ResponseEntity.status(500).build();
         }
+    }
 
+    public void notifyPreferencesFrontQueue(PreferencesResponse event) {
+        messagingTemplate.convertAndSend("/topic/user-preferences/" + event.getPreferences().get(0).getUser(),
+                event);
     }
 }

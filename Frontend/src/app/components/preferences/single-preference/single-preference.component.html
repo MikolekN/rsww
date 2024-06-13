@@ -3,8 +3,9 @@
     <h2>Preferowana oferta:</h2>
     <p>ID rezerwacji: {{ userOrder?.reservationId }}</p>
     <p>Typ transportu: samolot</p>
-    <p>Kraj: {{ userOrder?.hotelId }}</p>
-    <p>Hotel: {{ userOrder?.hotelId }}</p>
+    <p>Hotel: {{ userOrder?.hotelName }}</p>
+    <p>Kraj wylotu: {{ userOrder?.departureCountry }}</p>
+    <p>Kraj przylotu: {{ userOrder?.arrivalCountry }}</p>
     <h3>Cena: {{ userOrder?.price }} PLN</h3>
   </mat-card-content>
 </mat-card>

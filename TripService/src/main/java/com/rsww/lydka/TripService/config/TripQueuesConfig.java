@@ -116,4 +116,9 @@ public class TripQueuesConfig {
     Queue getFlightQueue(@Value("${spring.rabbitmq.queue.GetFlightQueue}") final String getFlight) {
         return new Queue(getFlight, true);
     }
+
+    @Bean(name = "preferencesFrontQueue")
+    Queue preferencesFrontQueue(@Value("${spring.rabbitmq.queue.PreferencesFrontQueue}") final String preferencesFrontQueue) {
+        return new Queue(preferencesFrontQueue, true);
+    }
 }

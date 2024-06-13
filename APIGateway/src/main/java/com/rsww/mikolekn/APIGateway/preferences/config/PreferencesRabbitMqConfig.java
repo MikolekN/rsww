@@ -14,4 +14,12 @@ public class PreferencesRabbitMqConfig {
     public Queue getPreferences() {
         return new Queue(getPreferences);
     }
+
+    @Value("${spring.rabbitmq.queue.PreferencesFrontQueue}")
+    private String preferencesFrontQueue;
+
+    @Bean
+    public Queue preferencesFrontQueue() {
+        return new Queue(preferencesFrontQueue);
+    }
 }

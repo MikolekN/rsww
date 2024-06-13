@@ -24,6 +24,12 @@ export interface UserOrder {
   tripId: any;
   hotelId: string;
   price: number;
+  hotelName: string;
+  country: string;
+  departureAirport: string;
+  departureCountry: string;
+  arrivalAirport: string;
+  arrivalCountry: string;
 }
 
 export interface UserPreferencesResponse {
