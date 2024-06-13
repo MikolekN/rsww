@@ -1,4 +1,5 @@
 import os
+import time
 import unittest
 
 from selenium.webdriver.common.by import By
@@ -57,11 +58,13 @@ class RegisterTests(unittest.TestCase):
         self.driver.execute_script("arguments[0].click();", login)
 
         # user logged in
-
-        WebDriverWait(self.driver, 5).until(
+        time.sleep(1)
+        WebDriverWait(self.driver, 10).until(
             EC.element_to_be_clickable((By.XPATH, '/html/body/app-root/div/app-header/nav/div/div/a[3]'))).click()
 
-        (self.driver.find_element(By.XPATH, '/html/body/app-root/div/div/app-offers/app-offer-search/form/mat-form-field[2]/div[1]/div[2]/div/input')).send_keys('05.08.2024')
+        #self.driver.get(os.path.join(self.BASE_URL, "offers"))
+
+        self.driver.find_element(By.XPATH, '/html/body/app-root/div/div/app-offers/app-offer-search/form/mat-form-field[2]/div[1]/div[2]/div/input').send_keys('05.08.2024')
 
         self.driver.find_element(By.XPATH,
                              '/html/body/app-root/div/div/app-offers/app-offer-search/form/mat-form-field[3]/div[1]/div[2]/div/input').send_keys(
@@ -81,7 +84,12 @@ class RegisterTests(unittest.TestCase):
 
         self.driver.execute_script("arguments[0].click();", button)
 
+        self.driver.refresh()
+
         # offer choosed
+
+        time.sleep(2)
+
         WebDriverWait(self.driver, 5).until(
             EC.element_to_be_clickable((By.XPATH,
                                         "/html/body/app-root/div/div/app-selected-offer/mat-card/mat-card-content/select[1]/option[1]"))).click()
@@ -93,12 +101,15 @@ class RegisterTests(unittest.TestCase):
             EC.element_to_be_clickable((By.XPATH,
                                         "/html/body/app-root/div/div/app-selected-offer/mat-card/mat-card-content/select[3]/option[1]"))).click()
 
+        time.sleep(2)
 
         WebDriverWait(self.driver, 5).until(
             EC.element_to_be_clickable((By.XPATH,
                                         "/html/body/app-root/div/div/app-selected-offer/mat-card/mat-card-content/button"))).click()
 
         # offer reserved
+
+        time.sleep(2)
 
         WebDriverWait(self.driver, 10).until(
             EC.element_to_be_clickable((By.XPATH,
