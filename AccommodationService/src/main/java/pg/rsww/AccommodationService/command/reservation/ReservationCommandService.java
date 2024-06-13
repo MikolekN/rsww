@@ -98,6 +98,10 @@ public class ReservationCommandService {
         if (suitableRoomUuid == null) {
             return Optional.empty();
         }
+
+        // TODO: usunąc jesli nie poprawi
+        roomPrice = roomEventRepository.findRoomEventByRoomUuid(suitableRoomUuid).get().getBasePrice();
+
         List<RoomPriceChangeEvent> roomPriceChangeEvents = roomPriceChangeEventRepository.findAllByHotelUuid(hotelUuid);
         for (RoomPriceChangeEvent roomPriceChangeEvent: roomPriceChangeEvents) {
             if (makeNewReservationCommand.getRoomType().equals(roomPriceChangeEvent.getRoomType()))

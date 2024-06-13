@@ -15,7 +15,7 @@ POST http://localhost:8080/api/offer
 Content-Type: application/json
 
 {
-"hotelUuid": "1e1d784f-d017-4f99-8b42-71ae2b2f3983",
+"hotelUuid": "d26336de-458f-4a41-9f33-fd332c7c73bf",
 "dateFrom": "2024-07-01",
 "dateTo": "2024-07-08",
 "numberOfAdults": 2,
@@ -72,9 +72,9 @@ POST http://localhost:8080/api/offer-changes/change-room-price
 Content-Type: application/json
 
 {
-  "hotel_uuid": "1e1d784f-d017-4f99-8b42-71ae2b2f3983",
-  "room_type": "Pokój 2 os. boczny widok na morze",
-  "changed_price": 999
+  "hotel_uuid": "d26336de-458f-4a41-9f33-fd332c7c73bf",
+  "room_type": "Pokój 2 os.",
+  "changed_price": 12345
 
 }
 
