@@ -103,7 +103,8 @@ public class TripService {
             response.setReservationId(null);
             return response;
         }
-        reservation.setStartFlightId(startFlightReservation.getId().toString());
+        reservation.setStartFlightId(startFlightReservation.getFlight().getId().toString());
+        reservation.setStartFlightReservation(startFlightReservation.getId().toString());
 
         FlightReservation endFlightReservation = transportService.reserve(request.getFlightFromUuid(), "0", people_count);
         logger.info("{} {} flights reservation.", requestNumber, endFlightReservation.isSuccessfullyReserved() ? "Successful" : "Unsuccessful");
@@ -113,7 +114,8 @@ public class TripService {
             accommodationService.cancelReservation(UUID.randomUUID().toString(), cancellationTime, reservationId);
             return response;
         }
-        reservation.setEndFlightId(endFlightReservation.getId().toString());
+        reservation.setEndFlightId(endFlightReservation.getFlight().getId().toString());
+        reservation.setEndFlightReservation(endFlightReservation.getId().toString());
 
         int numberOfAdults = Integer.parseInt(request.getNumberOfAdults());
         int numberOfChildrenUnder10 = Integer.parseInt(request.getNumberOfChildrenUnder10());

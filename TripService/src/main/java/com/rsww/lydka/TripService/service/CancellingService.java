@@ -44,8 +44,8 @@ public class CancellingService {
             return;
 
         logger.info("Reservation {} was cancelled, because it wasn't paid.", reservation.getReservationId());
-        transportService.cancel(reservationToCheck.getStartFlightId(), numberOfPeople);
-        transportService.cancel(reservationToCheck.getEndFlightId(), numberOfPeople);
+        transportService.cancel(reservationToCheck.getStartFlightReservation(), numberOfPeople);
+        transportService.cancel(reservationToCheck.getEndFlightReservation(), numberOfPeople);
         String cancellationTime = LocalDateTime.now().toString();
 
         accommodationService.cancelReservation(UUID.randomUUID().toString(), cancellationTime, reservationToCheck.getReservationId());
